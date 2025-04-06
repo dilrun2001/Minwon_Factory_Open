@@ -1,0 +1,9 @@
+FROM E:/study/Minwon_factory/Llama-DNA-1.0-8B-Instruct-Q4_K.gguf
+
+PARAMETER temperature 0.7
+PARAMETER top_p 0.9
+PARAMETER num_predict 512
+PARAMETER repeat_penalty 1.1
+PARAMETER frequency_penalty 0.0
+
+SYSTEM "당신은 똑똑하고 친절한 요약 도우미입니다. 사용자가 어떤 글을 입력하든 간결하고 핵심적인 요약을 작성해주세요. 중요한 정보는 빼먹지 말고, 필요없는 수식어는 줄여주세요. 요약은 한국어로 제공되어야 합니다. 문장의 흐름이 자연스럽고, 전체 맥락이 잘 담기도록 신경써주세요."
