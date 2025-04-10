@@ -1,19 +1,43 @@
 import streamlit as st
-from langchain_ollama.llms import OllamaLLM
-from langchain_core.prompts import PromptTemplate
-from langchain_core.output_parsers import StrOutputParser
 import pandas as pd
 from datetime import datetime
 from menu import menu
 from setting import *
-from css.util import *
+from css.theme import load_css
+from database import *
+import pymysql
+from pymysql.cursors import DictCursor
 
 
 st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
 
 
-Apply_Global_Style()
-Apply_Header_Deactive()
+#mysql_info = st.secrets["mysql"]
+
+#def get_connection():
+#    return pymysql.connect(
+#        host = mysql_info["host"],
+#        user = mysql_info['user'],
+#        password = mysql_info["password"],
+#        database=mysql_info["database"],
+#        charset="utf8mb4",
+#        cursorclass=DictCursor
+#    )
+
+#def run_query(query):
+#    conn = get_connection()
+#    with conn.cursor() as cursor:
+#        cursor.execute(query)
+#        result = cursor.fetchall()
+    #cursor = conn.cursor(dictionary=True)
+    #cursor.execute(query)
+    #result = cursor.fetchall()
+    #cursor.close()
+#    conn.close()
+#    return pd.DataFrame(result)
+
+
+
 st.title("📝 민원 응답 생성기")
 
 #도움말, 프로그램 개요 등 입력 파트
@@ -41,9 +65,11 @@ st.markdown('''
 
         3-1 css 폴더에 있는 util 테마를 베이스로 깔고 가는게 1차 방안
             - 적용되어 있는 함수는 3개, 슬라이더 색상 변경, 우측 상단 툴바 삭제     
+            - https://github.com/BugzTheBunny/streamlit_custom_gui/blob/main/frontend/css/streamlit.css
 ''', unsafe_allow_html=True)
 
 if st.button("Dialog Test"):
+    st.session_state.current_dialog = "사용자를 입력해주세요."
     setting()
 
 
@@ -67,8 +93,15 @@ if "tel" not in st.session_state:
 if "llm_model" not in st.session_state:
     st.session_state.llm_model = "llama3:latest"
 if "df" not in st.session_state:
-    st.session_state.df = pd.DataFrame()
+    st.session_state.df = run_query("SELECT * FROM example") #->데스크탑용("SELECT * FROM example")
+if "history" not in st.session_state:
+    st.session_state.history = run_query("SELECT * FROM history")
+if "userdata" not in st.session_state:
+    st.session_state.userdata = run_query("SELECT * FROM userdata")
 if "main" not in st.session_state:
     st.session_state.main = None
+if "current_dialog" not in st.session_state:
+    st.session_state.current_dialog = True
 
+load_css()
 menu()

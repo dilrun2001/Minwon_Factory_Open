@@ -1,0 +1,38 @@
+/*새올민원자동답변기 스타일링*/
+
+/*우측 상단 툴바 제거거*/
+[data-testid = "stToolbar"]{
+    display: none !important;
+}
+
+/*슬라이더*/
+[role = "slider"]{
+    background-color: #DFE5EE !important;
+}
+
+/*슬라이더 핸들 색상*/
+[data-testid = "stSliderThumbValue"]{
+    color: #DFE5EE !important;
+}
+
+/*Header 링크*/
+[data-testid = "stHeaderActionElements"]{
+    display: none !important;
+}
+
+/*버튼 자체 스타일링*/
+.stButton button{
+    background-color: #262730;
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+}
+
+/*버튼 마우스 포커스*/
+.stButton button:hover{
+    border: #DFE5EE;
+    background-color: skyblue;
+    color: black;
+}
+

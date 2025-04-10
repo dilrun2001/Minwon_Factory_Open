@@ -5,13 +5,28 @@ from langchain_core.output_parsers import StrOutputParser
 import pandas as pd
 from datetime import datetime
 from menu import menu
-from css.util import Apply_Global_Style
+from css.theme import load_css
+from database import *
+from st_aggrid import AgGrid, GridOptionsBuilder
 st.set_page_config(page_title = "민원히스토리", layout = "wide")
-Apply_Global_Style()
+load_css()
 menu()
-if not st.session_state.df.empty:
-    st.dataframe(st.session_state.df)
-    st.button("")
-else:
-    st.info("아직 생성된 답변이 없습니다.")
+#col1 = st.columns(1)
+#with col1:
+
+if st.button("민원 답변 내역"):
+    history = st.session_state.history#run_query("SELECT * FROM history")
+    #st.write(history)
+    #st.dataframe(run_query("SELECT * FROM history"))
+    if not history.empty:
+        gb = GridOptionsBuilder.from_dataframe(history)
+        gb.configure_default_column(editable=False, filter=True, resizable=True)
+        grid_options = gb.build()
+        AgGrid(history, gridOptions=grid_options, theme = "balham")
+        #st.dataframe(history)
+    else:
+        st.info("아직 생성된 답변이 없습니다.")
+    #if st.button("가입된 유저 내역"):
+    #    if not st.session_state.history.empty:
+    #        pass
 

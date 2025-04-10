@@ -1,8 +1,8 @@
 import streamlit as st
 from menu import menu
-from css.util import Apply_Global_Style
+from css.theme import load_css
 st.set_page_config(page_title = "설정 화면 테스트", layout = "wide")
-Apply_Global_Style()
+load_css()
 menu()
 llm_model = st.selectbox(
      "LLM 모델 선택", ("gemma3:latest", "llama3:latest"), index = 0

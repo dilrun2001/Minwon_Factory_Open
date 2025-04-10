@@ -6,12 +6,12 @@ import pandas as pd
 from datetime import datetime
 from menu import menu
 from setting import *
-from css.util import *
+from css.theme import load_css
+from database import *
 
 st.set_page_config(page_title = "민원 입력 및 응답 생성", layout = "wide")
 
-Apply_Global_Style()
-Apply_Slidebar_Style()
+load_css()
 menu()
 
 @st.cache_resource
@@ -59,17 +59,21 @@ col1, col2 = st.columns(2, border = True)
 with col1:
     
     minwon = st.text_area(
-        "민원 내용을 입력해주세요.", placeholder = placeholder_minwon, height = 450
+        "민원 내용을 입력해주세요.", placeholder = placeholder_minwon, height = 350
+    )
+    minwon_sub = st.text_area(
+        "민원 요지를 입력해주세요.", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height = 70
     )
    
 
 
 with col2:
+    
     answer  = st.text_area(
-        "답변 요지를 입력해주세요." , placeholder = placeholder_answer, height = 105
+        "답변 요지를 입력해주세요." , placeholder = "답변요지 : 현장확인 후 조속히 처리하겠음.", height = 200
     )
     answer_format = st.text_area(
-        "답변 양식을 입력하세요.", value = default_answer, height = 300
+        "답변 양식을 입력하세요.", value = default_answer, height = 220
     )
 
 
@@ -97,21 +101,22 @@ def genereate_response():
     if minwon and answer_format and answer and st.session_state.name:
         #with st.spinner("답변을 생성 중입니다..."):
         response  = "답변 테스트"
-        chain.invoke({
-                "minwon" : minwon,
-                "answer_format" : answer_format,
-                "answer" : answer,
-                "name" : st.session_state.name,
-                "category" : st.session_state.category,
-                "urgency" : urgency,
-            }
-        )
+        #chain.invoke({
+        #        "minwon" : minwon,
+        #        "answer_format" : answer_format,
+        #        "answer" : answer,
+        #        "name" : st.session_state.name,
+        #        "category" : st.session_state.category,
+        #        "urgency" : urgency,
+        #    }
+        #)
         st.success("답변이 생성되었습니다. 내용을 확인해주세요.")
         st.write(response)
 
         st.session_state.df._append(
             {
                 "timestamp" : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "name": st.session_state.name,
                 "category" : st.session_state.category,
                 "urgency" : urgency,
                 "minwon" : minwon,
@@ -119,6 +124,10 @@ def genereate_response():
             },
             ignore_index = True
         )
+        run_query("INSERT INTO history (timestamp, name, category, urgency, minwon, response) VALUES (%s, %s, %s, %s, %s, %s)", 
+                  (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, urgency, minwon, response),
+                    fetch = False
+                  )
         
     else:
         st.error("모든 필드를 입력해주세요.")
@@ -126,4 +135,4 @@ def genereate_response():
 if st.button("답변 생성"):
     genereate_response()
 if st.button("정보 수정"):
-    setting()
+    login()
