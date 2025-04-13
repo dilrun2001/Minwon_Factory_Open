@@ -83,7 +83,7 @@ for page in range(1, 400):
                         print("✅ 민원 수집:", title)
 
 # ✅ JSONL 파일로 저장 (각 줄마다 하나의 JSON 객체)
-with open("data.jsonl", "w", encoding="utf-8") as f:
+with open("instruction_data.jsonl", "w", encoding="utf-8") as f:
     for item in tinyllama_data:
         json_line = json.dumps(item, ensure_ascii=False)
         f.write(json_line + "\n")
