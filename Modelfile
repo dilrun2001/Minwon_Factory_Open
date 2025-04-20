@@ -1,8 +1,7 @@
-FROM E:/study/Minwon_factory/workspace/Llama-DNA-1.0-8B-Instruct-Q4_K.gguf
+FROM llama-dna-1.0-8b-instruct-q4_k
 
-ADAPTER final-lora-instruct
+ADAPTER ./adapters/final-lora-instruct
 
-PARAMETERS
-    --dataset E:/study\Minwon_factory/workspace/data_collecting/final_lora_dataset.jsonl
-    --format jsonl
-    --type instruction
+PARAMETER dataset "E:/study/Minwon_factory/workspace/data_collecting/final_lora_dataset.jsonl"
+PARAMETER format "jsonl"
+PARAMETER type "instruction"
