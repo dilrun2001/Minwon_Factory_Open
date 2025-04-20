@@ -1,9 +1,6 @@
 [theme]
 base="dark"
-primaryColor="#DFE5EE"
-backgroundColor="#0c0a09"
-secondaryBackgroundColor = "#262730"
-
+primaryColor = "#DFE5EE"
 
 
 [server]

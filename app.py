@@ -1,49 +1,25 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-from menu import menu
-from setting import *
+from util.menu import *
+from util.setting import *
 from css.theme import load_css
-from database import *
+from util.database import *
 import pymysql
 from pymysql.cursors import DictCursor
+from util.state import *
 
 
 st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
 
-
-#mysql_info = st.secrets["mysql"]
-
-#def get_connection():
-#    return pymysql.connect(
-#        host = mysql_info["host"],
-#        user = mysql_info['user'],
-#        password = mysql_info["password"],
-#        database=mysql_info["database"],
-#        charset="utf8mb4",
-#        cursorclass=DictCursor
-#    )
-
-#def run_query(query):
-#    conn = get_connection()
-#    with conn.cursor() as cursor:
-#        cursor.execute(query)
-#        result = cursor.fetchall()
-    #cursor = conn.cursor(dictionary=True)
-    #cursor.execute(query)
-    #result = cursor.fetchall()
-    #cursor.close()
-#    conn.close()
-#    return pd.DataFrame(result)
-
-
-
+#menu_test()
 st.title("📝 민원 응답 생성기")
 
 #도움말, 프로그램 개요 등 입력 파트
 st.markdown('''
-    ## 민원 팩토리 새올민원자동답변기 홈 화면 테스트
-            
+    #### 팀장: 김수빈 
+    #### 팀원: 김도현       송상훈      조중현      천재혁
+    ---
     ### 1. 홈 화면, 입력, 히스토리 열람 등 페이지 구현
         
         1-1 홈 화면에는 최초 접속 시 기본적인 인적사항(LLM 모델, 패치 노트나 가이드 같은 부분)
@@ -68,40 +44,6 @@ st.markdown('''
             - https://github.com/BugzTheBunny/streamlit_custom_gui/blob/main/frontend/css/streamlit.css
 ''', unsafe_allow_html=True)
 
-if st.button("Dialog Test"):
-    st.session_state.current_dialog = "사용자를 입력해주세요."
-    setting()
-
-
-#현재 준비된 세팅이 없는 관계로 임시 처리
-setting_check = -1
-
-infor_list = ["department", "name", "tel"]
-for i in range(len(infor_list)):
-    if infor_list[i] not in st.session_state:
-        #st.session_state.infor_list[i] = ""
-        setting_check = 1
-if setting_check == 1:
-    setting()
-
-if "department" not in st.session_state:
-    st.session_state.department = ""
-if "name" not in st.session_state:
-    st.session_state.name = ""
-if "tel" not in st.session_state:
-    st.session_state.tel = ""
-if "llm_model" not in st.session_state:
-    st.session_state.llm_model = "llama3:latest"
-if "df" not in st.session_state:
-    st.session_state.df = run_query("SELECT * FROM example") #->데스크탑용("SELECT * FROM example")
-if "history" not in st.session_state:
-    st.session_state.history = run_query("SELECT * FROM history")
-if "userdata" not in st.session_state:
-    st.session_state.userdata = run_query("SELECT * FROM userdata")
-if "main" not in st.session_state:
-    st.session_state.main = None
-if "current_dialog" not in st.session_state:
-    st.session_state.current_dialog = True
-
+clear_state()
 load_css()
 menu()
