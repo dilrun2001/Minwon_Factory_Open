@@ -1,49 +1,109 @@
+import os
 import streamlit as st
-import pandas as pd
-from datetime import datetime
-from util.menu import *
-from util.setting import *
-from css.theme import load_css
-from util.database import *
-import pymysql
-from pymysql.cursors import DictCursor
-from util.state import *
-
-
 st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
+from streamlit_navigation_bar import st_navbar
+from util.state import *
+import my_pages as pg
+from css.theme import * 
+load_css()
+from util.menu import *
+import my_pages as pg
 
-#menu_test()
-st.title("📝 민원 응답 생성기")
+#page_names = ["Home"] + list(pg.my_pages.keys)
+#default = "Home"
+#page_config = pg.get_page_config(page_name = default)
+##st.set_page_config(
+#    page_title=page_config["title"],
+#    page_icon=page_config["icon"]
+#)
 
-#도움말, 프로그램 개요 등 입력 파트
-st.markdown('''
-    #### 팀장: 김수빈 
-    #### 팀원: 김도현       송상훈      조중현      천재혁
-    ---
-    ### 1. 홈 화면, 입력, 히스토리 열람 등 페이지 구현
-        
-        1-1 홈 화면에는 최초 접속 시 기본적인 인적사항(LLM 모델, 패치 노트나 가이드 같은 부분)
-        
-        1-2 민원 입력 및 출력 페이지
-            - 민원 내용, 제목, 답변 요지와 같은 부분을 입력 후 완성된 답변 내용이 출력되는 페이지
-
-        1-3 민원 히스토리 페이지
-            - 데이터베이스 or 사용자가 쓰면서 쌓인 민원 히스토리를 로드 하는 방식. 필터 기능을 만들 수 있으면 정렬, 검색 기능도 추가
-
-        1-4 설정 페이지
-            - LLM 모델, 답변 양식 등을 지정할 수 있는 페이지
-
-    ### 2. 이름(역할), 부서, 입력 부분
-    
-        2-1 임시로 사이드바에 설정창 구현 -> 이후 구현은 최초 실행한 사람에 한해 입력창을 띄우는 방식으로 진행 예정(ex) tkinter Toplevel )
-
-    ### 3. 스타일  및 테마 지정
-
-        3-1 css 폴더에 있는 util 테마를 베이스로 깔고 가는게 1차 방안
-            - 적용되어 있는 함수는 3개, 슬라이더 색상 변경, 우측 상단 툴바 삭제     
-            - https://github.com/BugzTheBunny/streamlit_custom_gui/blob/main/frontend/css/streamlit.css
-''', unsafe_allow_html=True)
 
 clear_state()
-load_css()
 menu()
+
+
+
+if st.session_state.name == "admin":
+    pages = ["홈", "민원 입력", "민원 히스토리", "설정", "관리자"]
+    #        st.Page(pg.show_home, title  = "홈"),
+    #        st.Page(pg.show_input, title = "민원 입력"),
+    #        st.Page(pg.show_history, title = "민원 히스토리"),
+    #        st.Page(pg.show_setting, title = "설정"),
+    #        st.Page(pg.show_admin, title = '관리자 페이지')
+    #]
+else:
+    pages = ["홈", "민원 입력", "민원 히스토리", "설정"]
+    #        st.Page(pg.show_home, title  = "홈"),
+    #        st.Page(pg.show_input, title = "민원 입력"),
+    #        st.Page(pg.show_history, title = "민원 히스토리"),
+    #        st.Page(pg.show_setting, title = "설정")
+    #]
+
+nav_style = {
+    "nav": {
+        "background-color": "#262730",
+    },
+    "div": {
+        "max-width": "50rem",
+    },
+    "span": {
+        "border-radius": "0.4rem",
+        "color": "#dfe5ee",
+        "margin": "0 0.125rem",
+        "padding": "0.3rem 0.8rem",
+    },
+    "active": {
+        "background-color": "rgba(255, 255, 255, 0.25)",
+    },
+    "hover": {
+        "background-color": "rgba(255, 255, 255, 0.35)",
+    },
+}
+
+options = {
+    "show_menu" : False,
+    "show_sidebar": True,
+}
+
+icons = {"홈": ":material/home:",
+                "민원 입력": ":material/input:",
+                "민원 히스토리" : ":material/history",
+                "설정" : ":material/settings",
+                "관리자": ":material/admin_panel_settings"}
+
+page = st_navbar(
+    pages,
+    styles = nav_style,
+    options=options,
+    icons=icons
+)
+
+##st.Page(pg.show_home, title  = "홈"),
+ #           st.Page(pg.show_input, title = "민원 입력"),
+ #           st.Page(pg.show_history, title = "민원 히스토리"),
+ #           st.Page(pg.show_setting, title = "설정"),
+ #           st.Page(pg.show_admin, title = '관리자 페이지')
+
+fuctions = {
+    "홈": pg.show_home,
+    "민원 입력": pg.show_input,
+    "민원 히스토리": pg.show_history,
+    "설정": pg.show_setting,
+    "관리자": pg.show_admin,
+}
+
+#go_to = fuctions.get(page)
+#i#f go_to:
+ #   go_to()
+if page == "홈":
+    
+    pg.show_home()
+elif page == "민원 입력":
+    pg.show_input()
+elif page == "민원 히스토리":
+    pg.show_history()
+elif page == "설정":
+    pg.show_setting()
+elif page == "관리자":
+    pg.show_admin()
+    #page.run()

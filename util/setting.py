@@ -45,6 +45,7 @@ def setting():
           st.session_state.name = name
           st.session_state.department = department
           st.session_state.tel = tel
+          
           #st.session_state.llm_model = llm_model
           run_query("INSERT INTO userdata (id, password,이름, 부서명, 전화번호) VALUES (%s, %s, %s, %s, %s)", (id, password,name, department, tel), fetch = False)
           st.rerun()
@@ -70,10 +71,11 @@ def login():
                     if  not result.empty:
                          if password == result.iloc[0]['password']:
                          #print(result)
-                         
+                              st.session_state.id = id
                               st.session_state.name = result.iloc[0]['이름']
                               st.session_state.department = result.iloc[0]['부서명']
                               st.session_state.tel = result.iloc[0]['전화번호']
+                             #st.session_state.answer = default_answer
                               st.session_state.log_in = True
                               st.rerun()
                               return True
@@ -88,16 +90,27 @@ def select_format():
      col1, col2, col3 = st.columns(3)
      with col1:
           if st.button("양식 1"):
+               st.session_state.answer_format = "양식 1"
                st.rerun()
-               return "양식 1"
+               #return True
+               
+          
      with col2:
           if st.button("양식 2"):
+               st.session_state.answer_format = "양식 2"
                st.rerun()
-               return "양식 2"
+               #return True
+          
      with col3:
            if st.button("양식 3"):
+               st.session_state.answer_format = "양식 3"
                st.rerun()
-               return "양식 3"
+               #return True
+           
+
+def replace_format(ment, format):
+     run_query(f"INSERT INTO userdata {format} VALUES {ment}", ment, fetch = False)
+
 
 
 def setting_erase():

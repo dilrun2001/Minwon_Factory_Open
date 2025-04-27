@@ -8,15 +8,17 @@ from util.menu import menu
 from css.theme import load_css
 from util.database import *
 from st_aggrid import AgGrid, GridOptionsBuilder
-st.set_page_config(page_title = "민원히스토리", layout = "wide")
+from util.state import *
+#st.set_page_config(page_title = "민원히스토리", layout = "wide")
+#clear_state()
 load_css()
-menu()
+#menu()
 def show_history():
-    pass
-#col1 = st.columns(1)
-#with col1:
-if st.session_state.log_in:
-    if st.button("민원 답변 내역"):
+
+    #col1 = st.columns(1)
+    #with col1:
+    if st.session_state.log_in:
+        #if st.button("민원 답변 내역"):
         history = st.session_state.history#run_query("SELECT * FROM history")
         #st.write(history)
         #st.dataframe(run_query("SELECT * FROM history"))
@@ -31,6 +33,6 @@ if st.session_state.log_in:
         #if st.button("가입된 유저 내역"):
         #    if not st.session_state.history.empty:
         #        pass
-else:
-    st.error("로그인 후 이용 가능한 서비스입니다.")
+    else:
+        st.error("로그인 후 이용 가능한 서비스입니다.")
 

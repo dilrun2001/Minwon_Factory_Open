@@ -6,6 +6,9 @@ bool_list = ["log_in"]
 infor_list = ["department", "name", "tel"]
 
 def clear_state():
+    
+    if "id" not in st.session_state:
+        st.session_state.id = ""
     if "department" not in st.session_state:
         st.session_state.department = ""
     if "name" not in st.session_state:
@@ -28,3 +31,16 @@ def clear_state():
         st.session_state.current_dialog = True
     if "log_in" not in st.session_state:
           st.session_state.log_in = False
+    if "answer" not in st.session_state:
+          st.session_state.answer = ""
+    if "answer_format" not in st.session_state:
+        st.session_state.answer_format = "None"
+
+def logout_state():
+    st.session_state.log_in = False
+    st.session_state.answer = ""
+    st.session_state.answer_format = "None"
+    st.session_state.departname = ""
+    st.session_state.tel = ""
+    st.session_state.name =""
+    st.session_state.id = ""

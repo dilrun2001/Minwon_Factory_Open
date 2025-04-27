@@ -1,11 +1,12 @@
 import streamlit as st
 from util.setting import *
 from streamlit_option_menu import option_menu
-
+from util.state import *
+#st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
 def login_menu():
     pass
 
-
+clear_state()
 
 #사이드바 페이지 이동 버튼 함수
 def menu():
@@ -17,7 +18,7 @@ def menu():
                 st.session_state.current_dialog = "아이디(이름)을 입력해주세요."
                 login()
         with col2:
-            if st.button("회원가입"):
+            if st.button("회원가입", key = "회원가입"):
                 st.session_state.current_dialog = "사용자를 입력해주세요."
                 setting()    
         st.sidebar.markdown("---")
@@ -25,24 +26,16 @@ def menu():
         st.sidebar.subheader(f"{st.session_state.name}님 반갑습니다.")
         col1, col2 = st.sidebar.columns(2)
         with col1:
-            if st.button("로그아웃"):
-                st.session_state.name = ""
-                st.session_state.department = ""
-                st.session_state.tel = ""
-                st.session_state.log_in = False
+            if st.button("로그아웃", key = "로그아웃"):
+                logout_state()
                 st.rerun()
         with col2:
             if st.button("답변 양식"):
                 select_format()
-    st.sidebar.subheader("페이지 이동")
-    st.sidebar.page_link("app.py", label = "🏠 홈")
-    if st.session_state.log_in:
-        st.sidebar.page_link("pages/input.py", label = "📓 민원 입력 및 출력")
-        st.sidebar.page_link("pages/history.py", label = "🕛 민원 히스토리")
-        st.sidebar.page_link("pages/settingpage.py", label = "⚙️ 설정")
-        if st.session_state.name == "admin":
-            st.sidebar.page_link("pages/adminpage.py", label = "👨‍💼 관리자 페이지")
-    st.sidebar.markdown("---") 
+
+
+
+
 
 def menu_test():
     selected3 = option_menu(None, ["Home", "Upload",  "Tasks", 'Settings'], 

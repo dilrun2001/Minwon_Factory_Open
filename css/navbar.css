@@ -1,11 +1,14 @@
 .nav {
     background-color: #262730;
-    justify-content: left;
+    
 }
 
 .span {
     color : #dfe5ee;
+    border-radius: 0.5rem;
     padding: 14px;
+    margin: 0 0.125rem;
+    padding: 0.4375rem 0.625rem;
 }
 
 .active {

@@ -20,7 +20,7 @@ def run_query(query, params = None, fetch = True):
     conn = get_connection()
     try:
         with conn.cursor() as cursor:
-            cursor.execute(query, params)
+            cursor.execute(query, params or ())
             #result = cursor.fetchall()
             if fetch:
                 result = cursor.fetchall()

@@ -7,11 +7,12 @@ from css.theme import load_css
 from util.database import *
 import pymysql
 from pymysql.cursors import DictCursor
-from util.state import *
-clear_state()
-load_css()
+from util.state import * 
+
+#clear_state()
+#load_css()
 def show_home():
-    st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
+    #st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
 
     #menu_test()
     st.title("📝 민원 응답 생성기")

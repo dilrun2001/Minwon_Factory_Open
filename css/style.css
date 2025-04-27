@@ -2,63 +2,39 @@
 
 /*st 베이스 스타일링*/
 .stApp{
+    max-width: 100% !important;
     background-color: #0C0A09;
     color : #DFE5EE;
-    padding:20px;
+}
+
+
+.stMainBlockContainer {
+    max-width: 1400px !important;
+    width: 100% !important;
+}
+
+.stVerticalBlock {
+    width: auto;
 }
 
 
 .stDialog{
     background-color: transparent; 
 }
-header.stAppHeader{
-    background-color: #0C0A09;
-    display: none;
-    visibility: hidden;
-    height:  0;
-}
 
-.main {
-    padding-top: 0rem !important;
-}
+
 
 [data-testid="stSidebar"]{
     background-color: #262730;
     color: #DFE5EE;
 }
 
-.nav {
-    background-color: #262730;
-    justify-content: left;
+[data-testid = "stSidebarHeader"]{
+    padding : 0%;
 }
 
-.span {
-    color : #dfe5ee;
-    padding: 14px;
-}
-
-.active {
-    background-color: #dfe5ee;
-    color: black;
-    font-weight: normal;
-    padding: 14px;
-}
-
-
-.navbar-text {
-    color : #dfe5ee;
-    display :  black;
-    text-align: center;
-}
-
-.navbar-span {
-    padding: 14px
-}
-
-span.active > .navbar-text {
-    background-color: #dfe5ee;
-    color: black;
-    font-weight: normal;
+[data-testid = "stSidebarCollapseButton"]{
+    display : None;
 }
 
 
@@ -159,6 +135,7 @@ span.active > .navbar-text {
 [data-testid = 'stSliderTickBarMax']{
     display: none !important; 
 }
+
 
 
 .stSelectbox {
