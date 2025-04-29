@@ -1,0 +1,164 @@
+/*새올민원자동답변기 스타일링*/
+
+/*st 베이스 스타일링*/
+.stApp{
+    max-width: 100% !important;
+    background-color: #0C0A09;
+    color : #DFE5EE;
+}
+
+
+.stMainBlockContainer {
+    max-width: 1400px !important;
+    width: 100% !important;
+}
+
+.stVerticalBlock {
+    width: auto;
+}
+
+
+.stDialog{
+    background-color: transparent; 
+}
+
+
+
+[data-testid="stSidebar"]{
+    background-color: #262730;
+    color: #DFE5EE;
+}
+
+[data-testid = "stSidebarHeader"]{
+    padding : 0%;
+}
+
+[data-testid = "stSidebarCollapseButton"]{
+    display : None;
+}
+
+
+/*슬라이더*/
+[role = "slider"]{
+    background-color: #DFE5EE !important;
+}
+
+/*슬라이더 핸들 색상*/
+[data-testid = "stSliderThumbValue"]{
+    color: #DFE5EE !important;
+    animation: fadeOut 1s forwards;
+    animation-delay: 1s;
+    transition: opacity 0.5s ease-out;
+}
+
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+
+/*Header 링크*/
+[data-testid = "stHeaderActionElements"]{
+    display: none !important;
+}
+
+
+/*버튼 자체 스타일링*/
+.stButton button{
+    background-color: #3b3c47;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+/*버튼 마우스 포커스*/
+.stButton button:hover{
+    background-color: #626477;
+    color:#DFE5EE;
+}
+
+/*stTextInput 스타일링*/
+.stTextInput input {
+    border: 1px solid#262730;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background-color: #262730;
+    color: #dfe5ee;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: border-color 0.6s ease, box-shadow 0.6s ease;
+}
+
+[data-testid = "stTextInput"] > div:focus-within {
+    border: 1px solid #dfe5ee;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+/*stTextArea 스타일링*/
+.stTextArea input {
+    border: 1px solid #262730;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background-color: #262730;
+    transition: border-color 0.6s ease, box-shadow 0.6s ease;
+}
+
+[data-testid  = "stTextArea"] > div:focus-within {
+    border: 1px solid #dfe5ee;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.stSlider {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background-color: #3b3c47;
+    color: #dfe5ee;
+    transition: border-color 0.6s ease, box-shadow 0.6s ease;
+}
+
+.stSliderTickBar  {
+    font-family: "Source Code Pro", monospace !important;
+    color: #dfe5ee;
+}
+
+[data-testid = 'stSliderTickBarMin']{
+    display: none !important; 
+}
+
+[data-testid = 'stSliderTickBarMax']{
+    display: none !important; 
+}
+
+
+
+.stSelectbox {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background-color: #3b3c47;
+    color:#dfe5ee;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: border-color 0.6s ease, box-shadow 0.6s ease;
+}
+
+
+[data-baseweb = "select"] > div:focus-within{
+    border: none !important;
+}
+
+[data-testid = "stSelectbox"] > div:focus-within  {
+    border: 1px solid #dfe5ee;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+
+

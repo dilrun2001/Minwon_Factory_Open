@@ -1,0 +1,10 @@
+[theme]
+base="dark"
+primaryColor = "#DFE5EE"
+
+
+[server]
+runOnSave = true
+
+[client]
+showSidebarNavigation = false
