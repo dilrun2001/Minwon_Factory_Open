@@ -11,15 +11,16 @@ from st_aggrid import AgGrid, GridOptionsBuilder
 from util.state import *
 #st.set_page_config(page_title = "민원히스토리", layout = "wide")
 #clear_state()
-load_css()
+#load_css()
 #menu()
 def show_history():
-
+    st.session_state['page'] = '민원 히스토리'
     #col1 = st.columns(1)
     #with col1:
     if st.session_state.log_in:
+
         #if st.button("민원 답변 내역"):
-        history = st.session_state.history#run_query("SELECT * FROM history")
+        history = run_query("SELECT * FROM history")
         #st.write(history)
         #st.dataframe(run_query("SELECT * FROM history"))
         if not history.empty:

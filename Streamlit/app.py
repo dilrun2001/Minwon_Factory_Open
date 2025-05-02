@@ -19,7 +19,7 @@ import my_pages as pg
 
 
 clear_state()
-menu()
+menu_mk2()
 
 
 
@@ -41,23 +41,25 @@ else:
 
 nav_style = {
     "nav": {
-        "background-color": "#262730",
-    },
-    "div": {
-        "max-width": "50rem",
-    },
-    "span": {
-        "border-radius": "0.4rem",
-        "color": "#dfe5ee",
-        "margin": "0 0.125rem",
-        "padding": "0.3rem 0.8rem",
+        "justify-content" : "left",
     },
     "active": {
-        "background-color": "rgba(255, 255, 255, 0.25)",
+        "color" : "#2766C2",
     },
     "hover": {
-        "background-color": "rgba(255, 255, 255, 0.35)",
+        "color" : "lightblue",
     },
+#    "div": {
+#        "max-width": "50rem",
+#    },
+#    "span": {
+#        "border-radius": "0.4rem",
+#        "color": "#dfe5ee",
+#        "margin": "0 0.125rem",
+#        "padding": "0.3rem 0.8rem",
+#    },
+#    
+
 }
 
 options = {
@@ -75,7 +77,7 @@ page = st_navbar(
     pages,
     styles = nav_style,
     options=options,
-    #icons=icons
+    icons=icons
 )
 
 ##st.Page(pg.show_home, title  = "홈"),
@@ -92,18 +94,17 @@ fuctions = {
     "관리자": pg.show_admin,
 }
 
-#go_to = fuctions.get(page)
-#i#f go_to:
- #   go_to()
-if page == "홈":
+
+if page != st.session_state['page']:
+    st.session_state['page'] = page
     
+if st.session_state['page'] == "홈" :
     pg.show_home()
-elif page == "민원 입력":
+elif st.session_state['page'] == "민원 입력" :
     pg.show_input()
-elif page == "민원 히스토리":
+elif st.session_state['page'] == "민원 히스토리" :
     pg.show_history()
-elif page == "설정":
+elif st.session_state['page'] == "설정":
     pg.show_setting()
-elif page == "관리자":
+elif st.session_state['page'] == "관리자":
     pg.show_admin()
-    #page.run()

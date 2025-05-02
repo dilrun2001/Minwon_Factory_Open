@@ -85,28 +85,6 @@ def login():
                     else:
                          st.error("사용자 아이디가 존재하지 않습니다.")
 
-@st.dialog("양식을 선택해주세요.")
-def select_format():
-     col1, col2, col3 = st.columns(3)
-     with col1:
-          if st.button("양식 1"):
-               st.session_state.answer_format = "양식 1"
-               st.rerun()
-               #return True
-               
-          
-     with col2:
-          if st.button("양식 2"):
-               st.session_state.answer_format = "양식 2"
-               st.rerun()
-               #return True
-          
-     with col3:
-           if st.button("양식 3"):
-               st.session_state.answer_format = "양식 3"
-               st.rerun()
-               #return True
-           
 
 def replace_format(ment, format):
      run_query(f"INSERT INTO userdata {format} VALUES {ment}", ment, fetch = False)

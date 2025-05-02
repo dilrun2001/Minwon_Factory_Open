@@ -1,17 +1,19 @@
 import streamlit as st
 from util.menu import menu
-from css.theme import load_css
+
 from util.database import *
 from util.state import *
 from util.setting import *
+
+#설정 화면 페이지
 #st.set_page_config(page_title = "설정 화면 테스트", layout = "wide")
 #clear_state()
-load_css()
-select = select_format()
+#load_css()
 #menu()
 format_list = ["양식", "양식2", "양식3"]
 
 def show_setting():
+
         if st.session_state.log_in:
                 llm_model = st.selectbox(
                 "LLM 모델 선택", ("gemma3:latest", "llama3:latest"), index = 0
@@ -42,12 +44,12 @@ def show_setting():
                 # 임시 텍스트 변환 함수
                 # [부서명] [이름] [전화번호]를 user id에 맞춘 이름으로 자동 변환 후 저장
                 def Change_Text(text):
-                        check_list = {
-                                '[부서명]' : '[부서명]' in text,
-                                '[이름]' : '[이름]' in text,
-                                '[전화번호]' : '[전화번호]' in text
-                        }
-                        print(check_list)
+                        #check_list = {
+                        #        '[부서명]' : '[부서명]' in text,
+                        #        '[이름]' : '[이름]' in text,
+                        #        '[전화번호]' : '[전화번호]' in text
+                        #}
+                        #print(check_list)
                         text = text.replace('[부서명]', st.session_state.department)
                         text = text.replace('[이름]', st.session_state.name)
                         text = text.replace('[전화번호]', st.session_state.tel)

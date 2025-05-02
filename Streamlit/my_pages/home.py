@@ -13,7 +13,7 @@ from util.state import *
 #load_css()
 def show_home():
     #st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
-
+    st.session_state['page'] = '홈'   
     #menu_test()
     st.title("📝 민원 응답 생성기")
 
