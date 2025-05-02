@@ -178,17 +178,6 @@ def genereate_response():
 #데이버베이스 입력
 def input_db():
     def insert_data():
-        st.session_state.df._append(
-                            {
-                                "timestamp" : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                "name": st.session_state.name,
-                                "category" : st.session_state.category,
-                                "urgency" : st.session_state.urgency,
-                                "minwon" : minwon,
-                                "response" : st.session_state.response,
-                            },
-                            ignore_index = True
-                        )
         run_query("INSERT INTO history (timestamp, name, category, urgency, minwon, response) VALUES (%s, %s, %s, %s, %s, %s)", 
                 (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, minwon, st.session_state.response),
                     fetch = False
