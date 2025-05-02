@@ -19,8 +19,8 @@ def clear_state():
         st.session_state.format = ""
     if "llm_model" not in st.session_state:
         st.session_state.llm_model = "llama3:latest"
-    if "df" not in st.session_state:
-        st.session_state.df = run_query("SELECT * FROM example") #->데스크탑용("SELECT * FROM example")
+    #if "df" not in st.session_state:
+     #   st.session_state.df = run_query("SELECT * FROM example") #->데스크탑용("SELECT * FROM example")  # 여기를 그냥 주석처리함 이거 봤으면 history 테이블 생성문도 보내주셈 이정도 길면 눈에띄겠지
     if "history" not in st.session_state:
         st.session_state.history = run_query("SELECT * FROM history")
     if "userdata" not in st.session_state:
