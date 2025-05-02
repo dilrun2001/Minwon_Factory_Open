@@ -35,6 +35,10 @@ def clear_state():
           st.session_state.answer = ""
     if "answer_format" not in st.session_state:
         st.session_state.answer_format = "None"
+    if "response" not in st.session_state:
+        st.session_state.response = "답변이 생성되지 않았습니다."
+    if "page" not in st.session_state:
+        st.session_state['page'] = "home"
 
 def logout_state():
     st.session_state.log_in = False
