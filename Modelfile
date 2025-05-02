@@ -4,4 +4,4 @@ ADAPTER ./adapters/final-lora-instruct
 
 PARAMETER dataset "E:/study/Minwon_factory/workspace/data_collecting/final_lora_dataset.jsonl"
 PARAMETER format "jsonl"
-PARAMETER type "instruction"
+PARAMETER type "instruction"d
