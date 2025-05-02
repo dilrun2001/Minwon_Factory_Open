@@ -75,7 +75,7 @@ page = st_navbar(
     pages,
     styles = nav_style,
     options=options,
-    icons=icons
+    #icons=icons
 )
 
 ##st.Page(pg.show_home, title  = "홈"),
