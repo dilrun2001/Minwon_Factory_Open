@@ -13,7 +13,7 @@ from st_aggrid import AgGrid, GridOptionsBuilder
 #menu()
 
 def show_admin():
-    
+    st.session_state['page'] = '관리자'
     if st.session_state.log_in and st.session_state.name == "admin":
         st.subheader("관리자 페이지")
 

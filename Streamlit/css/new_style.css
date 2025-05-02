@@ -1,0 +1,43 @@
+[data-testid = "stSidebarCollapseButton"]{
+    display : None;
+}
+[data-testid = "stSidebarHeader"]{
+    padding : 5%;
+}
+
+[role = "slider"]{
+    background-color: #2766C2 !important;
+}
+
+/*stslider 튜닝*/
+[data-testid = "stSliderThumbValue"]{
+    color: #2766C2 !important;
+    animation: fadeOut 1s forwards;
+    animation-delay: 1s;
+    transition: opacity 0.5s ease-out;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+.stSlider {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    /*padding: 8px 12px;*/
+    /*background-color: #3b3c47;*/
+    /*olor: #dfe5ee;*/
+    transition: border-color 0.6s ease, box-shadow 0.6s ease;
+}
+
+
+[data-testid = 'stSliderTickBarMin']{
+    display: none !important; 
+}
+
+[data-testid = 'stSliderTickBarMax']{
+    display: none !important; 
+}
