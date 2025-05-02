@@ -1,0 +1,35 @@
+.nav {
+    background-color: #262730;
+    
+}
+
+.span {
+    color : #dfe5ee;
+    border-radius: 0.5rem;
+    padding: 14px;
+    margin: 0 0.125rem;
+    padding: 0.4375rem 0.625rem;
+}
+
+.active {
+    background-color: #dfe5ee;
+    color: black;
+    font-weight: normal;
+    padding: 14px;
+}
+
+
+
+.navbar-text {
+    color: white;
+    display: block;
+    text-align: center;
+  }
+  .navbar-span {
+      padding: 14px;
+  }
+  span.active > .navbar-text {
+      background-color: white;
+      color: black;
+      font-weight: normal;
+  }
