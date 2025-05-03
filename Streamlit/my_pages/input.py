@@ -26,9 +26,9 @@ def sidebar_set():
     with st.sidebar.expander("민원 카테고리 및 긴급도 설정", icon = ":material/checklist:", expanded=True):
             category_tab, urgency_tab, format_tab = st.tabs(
                 [
-                    "민원 카테고리",
-                    "민원 긴급도",
-                    "답변 양식"
+                    ":material/checklist: 민원 카테고리",
+                    ":material/emergency: 민원 긴급도",
+                    ":material/edit: 답변 양식"
                 ]
             )
             with category_tab:
