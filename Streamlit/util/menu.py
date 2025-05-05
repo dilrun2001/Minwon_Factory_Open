@@ -66,9 +66,11 @@ def signup_form():
         department = st.text_input("부서명을 입력해주세요.",placeholder = "부서명")
         tel = st.text_input("전화번호를 입력해주세요.", placeholder = "전화번호", help = "다음과 같은 형식을 지켜주세요 ex) 000-0000-0000")
         if st.form_submit_button(label = "회원가입", type = "secondary", use_container_width=True, icon = ":material/person:"):
-            #pa
-            run_query("INSERT INTO userdata (id, password, 이름, 부서명, 전화번호) VALUES(%s,%s,%s,%s,%s)", (id, password_hash(password), name, department, tel), fetch = False)
-            st.toast(f"{name}님의 회원가입이 완료되었습니다.", icon = ":material/done:")  
+            if id and password and name and department and tel:
+                run_query("INSERT INTO userdata (id, password, 이름, 부서명, 전화번호) VALUES(%s,%s,%s,%s,%s)", (id, password_hash(password), name, department, tel), fetch = False)
+                st.toast(f"{name}님의 회원가입이 완료되었습니다.", icon = ":material/done:")
+            else:
+                st.toast("모든 필드를 입력해주세요.", icon= ":material/close:")  
 
 #로그아웃 폼
 def logout_form():
@@ -101,8 +103,8 @@ def menu_mk2():
             with st.sidebar.expander("로그인 및 회원가입",icon = ":material/login:",expanded = False):
                 login_tab, create_tab = st.tabs(
                     [
-                        "로그인",
-                        "회원가입",
+                        ":material/login: 로그인",
+                        ":material/person: 회원가입",
                     ]
                 )
                 with login_tab:
@@ -116,8 +118,8 @@ def menu_mk2():
             with st.sidebar.expander("로그아웃 및 회원 정보 수정", icon = ":material/logout:", expanded = True):
                 logout_tab, format_tab = st.tabs(
                     (
-                        "로그아웃",
-                        "회원 정보 수정"
+                        ":material/logout: 로그아웃",
+                        ":material/person: 회원 정보 수정"
                     )
                 )
                 with logout_tab :
