@@ -8,6 +8,7 @@ from util.menu import *
 from util.setting import *
 from util.database import *
 from util.state import *
+from util.llama3_korea_bllossomQ8 import useAi
 
 result_check = False
 #민원 입력 및 출력 페이지
@@ -139,7 +140,8 @@ def input_answer():
 def genereate_response():
         global result_check, response
         if minwon and answer_format and answer and st.session_state.name:
-                #with st.spinner("답변을 생성 중입니다..."):
+                with st.spinner("답변을 생성 중입니다..."):
+                     st.session_state.answer = useAi(answer=answer,answer_format=answer_format)
                 response  = st.session_state.answer
                 #chain.invoke({
                 #        "minwon" : minwon,
