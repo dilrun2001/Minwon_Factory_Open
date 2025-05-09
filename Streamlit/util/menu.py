@@ -3,37 +3,13 @@ from util.setting import *
 from streamlit_option_menu import option_menu
 from util.state import *
 from util.convert import *
+from util.database import *
+from util.convert import *
 import time
 #st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
 def login_menu():
     pass
 
-#clear_state()
-
-#사이드바 페이지 이동 버튼 함수
-def menu():
-    if not st.session_state.log_in:
-        st.sidebar.subheader("로그인 및 회원가입") 
-        col1, col2 = st.sidebar.columns(2)
-        with col1:
-            if st.button("로그인", key = "로그인", disabled= st.session_state.log_in):
-                st.session_state.current_dialog = "아이디(이름)을 입력해주세요."
-                login()
-        with col2:
-            if st.button("회원가입", key = "회원가입"):
-                st.session_state.current_dialog = "사용자를 입력해주세요."
-                setting()    
-        st.sidebar.markdown("---")
-    else:
-        st.sidebar.subheader(f"{st.session_state.name}님 반갑습니다.")
-        col1, col2 = st.sidebar.columns(2)
-        with col1:
-            if st.button("로그아웃", key = "로그아웃"):
-                logout_state()
-                st.rerun()
-        with col2:
-            if st.button("답변 양식"):
-                pass
 
 #로그인 폼
 def login_form():
@@ -96,6 +72,47 @@ def format_form():
                 st.session_state.answer_format = "양식 3"
                 st.rerun()
 
+#회원 정보 수정 폼
+def edit_form():
+    password_tab, user_tab = st.tabs(
+        [
+            "비밀번호 변경",
+            "개인 정보 수정",
+        ]
+    )
+
+    with password_tab:
+        with st.form(key = "비밀번호 변경"):
+            st.subheader("비밀번호 변경")
+            old = st.text_input("기존 비밀번호를 입력해주세요.", type = "password")
+            new = st.text_input("신규 비밀번호를 입력해주세요.", type = "password")
+            new_rep = st.text_input("비밀번호를 한번 더 입력해주세요.", type = "password")
+            if st.form_submit_button(label = "비밀 번호 변경", type="secondary", use_container_width=True, icon=":material/key:"):
+                if check_password(old, run_query("SELECT * FROM userdata WHERE id = %s",(st.session_state.id)).iloc[0]['password']):
+                    if new == new_rep:
+                        run_query("UPDATE userdata SET password = %s WHERE id = %s", (password_hash(new), st.session_state.id), fetch = False)
+                        st.toast("비밀번호 변경이 완료되었습니다.", icon = ":material/check:")
+                        logout_state()
+                        time.sleep(1)
+                        st.toast("비밀번호 변경 후 다시 로그인해주세요.")
+                        time.sleep(1)
+                        st.rerun()
+                    else:
+                        st.toast("신규 비밀번호가 서로 일치하지 않습니다.", icon = ":material/close:")
+                else:
+                    st.toast("기존 비밀번호가 일치하지 않습니다.", icon = ":material/close:")
+
+    with user_tab:
+        with st.form(key="회원 정보 수정"):
+            st.subheader("회원 정보 수정")
+            name = st.text_input("이름을 입력해주세요.", placeholder = "이름",help="공백 없이 이름을 입력해주세요.", value = st.session_state.name)
+            department = st.text_input("부서명을 입력해주세요.",placeholder = "부서명", value = st.session_state.department)
+            tel = st.text_input("전화번호를 입력해주세요.", placeholder = "전화번호", value = st.session_state.tel,help = "다음과 같은 형식을 지켜주세요 ex) 000-0000-0000")
+            password = st.text_input("비밀번호를 입력해주세요.", placeholder="비밀번호", help = "비밀 번호 변경은 비밀 번호 변경 탭에서 할 수 있습니다.")
+            if st.form_submit_button(label = "회원 정보 수정", type = "secondary", use_container_width=True, icon= ":material/person:"):
+                pass
+
+
 #신규 사이드바 메뉴
 def menu_mk2():
     if not st.session_state.log_in:
@@ -125,7 +142,7 @@ def menu_mk2():
                 with logout_tab :
                     logout_form()
                 with format_tab:
-                    st.write("추후 지원 예정입니다.")
+                    edit_form()
                 
         
 
