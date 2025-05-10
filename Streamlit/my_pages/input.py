@@ -139,40 +139,12 @@ def input_answer():
 
 def genereate_response():
         global result_check, response
-        if minwon and answer_format and answer and st.session_state.name:
-                with st.spinner("답변을 생성 중입니다..."):
-                     st.session_state.answer = useAi(answer=answer,answer_format=answer_format)
-                response  = st.session_state.answer
-                #chain.invoke({
-                #        "minwon" : minwon,
-                #        "answer_format" : answer_format,
-                #        "minwon_sub" : minwon_sub,
-                #        "answer" : answer,
-                #        "name" : st.session_state.name,
-                #        "category" : st.session_state.category,
-                #        "urgency" : urgency,
-                #    }
-                #)
-                result_check = True
-                #st.text_area("답변 결과", value = st.session_state.response, height = 200)
+        
+        with st.spinner("답변을 생성 중입니다..."):
+            st.session_state.answer = useAi(minwon=minwon, answer=answer,answer_format=answer_format)
 
-                #st.session_state.df._append(
-                #    {
-                #        "timestamp" : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                #        "name": st.session_state.name,
-                #        "category" : st.session_state.category,
-                #        "urgency" : st.session_state.urgency,
-                #        "minwon" : minwon,
-                #        "response" : response,
-                #    },
-                #    ignore_index = True
-                #)
-                #run_query("INSERT INTO history (timestamp, name, category, urgency, minwon, response) VALUES (%s, %s, %s, %s, %s, %s)", 
-                #        (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, minwon, response),
-                #            fetch = False
-                #        )
-        else:
-            st.error("모든 필드를 입력해주세요.")
+        response  = st.session_state.answer
+        result_check = True
 
 
      
