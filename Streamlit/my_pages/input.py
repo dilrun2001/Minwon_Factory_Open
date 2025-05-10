@@ -181,7 +181,7 @@ def genereate_response():
 def input_db():
     def insert_data():
         run_query("INSERT INTO history (timestamp, name, category, urgency, minwon, response) VALUES (%s, %s, %s, %s, %s, %s)", 
-                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, minwon, st.session_state.response),
+                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, minwon, response),
                     fetch = False
                 )
         return True

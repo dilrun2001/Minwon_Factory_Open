@@ -4,7 +4,6 @@ from util.menu import *
 from util.state import *
 from css.theme import load_css
 from util.database import *
-from st_aggrid import AgGrid, GridOptionsBuilder
 
 #st.set_page_config(page_title = "관리자 페이지", layout = "wide")
 
@@ -18,12 +17,12 @@ def show_admin():
         st.subheader("관리자 페이지")
 
         if st.button("유저 조회"):
-            userdata = st.session_state.userdata
+            userdata = run_query("SELECT id, `이름`, `부서명`, `전화번호` FROM userdata")#st.session_state.userdata
             if not userdata.empty:
-                gb = GridOptionsBuilder.from_dataframe(userdata)
-                gb.configure_default_column(editable=False, filter = True, resizeable = True)
-                grid_options = gb.build()
-                AgGrid(userdata, gridOptions=grid_options, theme="balham")
+                st.dataframe(
+                    userdata,
+                    hide_index = False,
+                )
         
     else:
         st.error("접근이 거부되었습니다.")
