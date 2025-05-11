@@ -116,9 +116,9 @@ def input_set():
                     height=200,
                 )
                 # 2) 사용자가 수정할 답변
-                st.session_state.fix_response = st.text_area(
+                st.session_state.response = st.text_area(
                     "답변 결과 (수정본)",
-                    value=st.session_state.get("fix_response", response),
+                    value=st.session_state.response,
                     height=200,
                 )
 
@@ -162,8 +162,8 @@ def genereate_response():
 #데이버베이스 입력
 def input_db():
     def insert_data():
-        run_query("INSERT INTO history (timestamp, name, category, urgency, minwon, response,fix_response) VALUES (%s, %s, %s, %s, %s, %s,%s)",
-                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, minwon, response,st.session_state.fix_response),
+        run_query("INSERT INTO history (timestamp, name, category, urgency, minwon, response) VALUES (%s, %s, %s, %s, %s, %s)",
+                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, minwon,st.session_state.response),
                     fetch = False
                 )
         return True
