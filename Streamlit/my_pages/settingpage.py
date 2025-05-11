@@ -56,29 +56,52 @@ def show_setting():
                         print(text)
                         return text                        
                                       
+                col4,col5 = st.columns([1,1])
 
-                if st.button("양식 등록"):
-                        if answer_format != "":
-                                answer_format = Change_Text(answer_format)
-                                #select_format()
-                                match (st.session_state.answer_format):
-                                        case "None":
-                                                st.error("양식 포맷을 선택해주세요.")
-                                        case "양식 1":
-                                                #Change_Text(answer_format)
-                                                run_query("UPDATE userdata SET `양식` = %s WHERE id = %s", (answer_format, st.session_state.id,), fetch = False)
-                                                st.success(f"{st.session_state.name}님의 답변 양식이 등록되었습니다. 등록된 {st.session_state.answer_format}")
-                                                st.session_state.answer_format = "None"
-                                        case "양식 2":
-                                                run_query("UPDATE userdata SET `양식2` = %s WHERE id = %s", (answer_format, st.session_state.id,), fetch = False)
-                                                st.success(f"{st.session_state.name}님의 답변 양식이 등록되었습니다. 등록된 {st.session_state.answer_format}")
-                                                st.session_state.answer_format = "None"
-                                        case "양식 3":
-                                                run_query("UPDATE userdata SET `양식3` = %s WHERE id = %s", (answer_format, st.session_state.id,), fetch = False)
-                                                st.success(f"{st.session_state.name}님의 답변 양식이 등록되었습니다. 등록된 {st.session_state.answer_format}")
-                                                st.session_state.answer_format = "None"
+                with col4:
+
+                        if st.button("수정"):
+                                if answer_format !="":
+                                        answer_Format = Change_Text(answer_format)
+                                        #select_format()
+                                        match (st.session_state.anser_format):
+                                                case "None":
+                                                        st.error("양식  포맷을 선택해주세요.")
+                                                case "양식 1":
+                                                        run_query("UPDATE userdata SET '양식' = %s WHERE id = %s", (answer_format, st.session_state.id,), fetch=False)
+                                                        st.success("양식 1 수정 완료")
+                                                case "양식 2":
+                                                        run_query("UPDATE userdata SET '양식' = %s WHERE id = %s", (answer_format, st.session_state.id,), fetch=False)
+                                                        st.success("양식 2 수정 완료")
+                                                case "양식 3":
+                                                        run_query("UPDATE userdata SET '양식' = %s WHERE id = %s", (answer_format, st.session_state.id,), fetch=False)
+                                                        st.success("양식 3 수정 완료")
                         else:
                                 st.error("양식을 입력해주세요.")
+                                                
+                with col5:                                
+                        if st.button("양식 등록"):
+                                if answer_format != "":
+                                        answer_format = Change_Text(answer_format)
+                                        #select_format()
+                                        match (st.session_state.answer_format):
+                                                case "None":
+                                                        st.error("양식 포맷을 선택해주세요.")
+                                                case "양식 1":
+                                                        #Change_Text(answer_format)
+                                                        run_query("UPDATE userdata SET `양식` = %s WHERE id = %s", (answer_format, st.session_state.id,), fetch = False)
+                                                        st.success(f"{st.session_state.name}님의 답변 양식이 등록되었습니다. 등록된 {st.session_state.answer_format}")
+                                                        st.session_state.answer_format = "None"
+                                                case "양식 2":
+                                                        run_query("UPDATE userdata SET `양식2` = %s WHERE id = %s", (answer_format, st.session_state.id,), fetch = False)
+                                                        st.success(f"{st.session_state.name}님의 답변 양식이 등록되었습니다. 등록된 {st.session_state.answer_format}")
+                                                        st.session_state.answer_format = "None"
+                                                case "양식 3":
+                                                        run_query("UPDATE userdata SET `양식3` = %s WHERE id = %s", (answer_format, st.session_state.id,), fetch = False)
+                                                        st.success(f"{st.session_state.name}님의 답변 양식이 등록되었습니다. 등록된 {st.session_state.answer_format}")
+                                                        st.session_state.answer_format = "None"
+                                else:
+                                        st.error("양식을 입력해주세요.")
 
 
 
@@ -87,4 +110,3 @@ def show_setting():
 
         else:
                 st.error("로그인 후 이용 가능한 서비스입니다.")
-
