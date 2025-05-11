@@ -108,29 +108,19 @@ def input_set():
             st.button("답변 생성", key = "input minwon", icon=":material/edit:", on_click=input_answer)
                 #st.rerun()
         with result_tab:
-            if result_check:
-                # 1) 라마가 생성한 원본 답변 (읽기 전용)
-                st.text_area(
-                    "라마 생성 답변",
-                    value=response,
-                    height=200,
-                )
-                # 2) 사용자가 수정할 답변
-                st.session_state.response = st.text_area(
-                    "답변 결과 (수정본)",
-                    value=st.session_state.response,
-                    height=200,
-                )
-
-                # 3) DB 등록 및 세션 초기화
-                with st.expander("db 등록 및 입력 데이터 초기화", icon=":material/login:", expanded=False):
-                    db_col, clear_col = st.columns(2)
-                    with db_col:
-                        st.button("db 등록", on_click=input_db)
-                    with clear_col:
-                        st.button("세션 초기화", on_click=clear)
-            else:
-                st.error("답변 생성을 완료해주세요.")
+                if result_check:
+                    result = st.text_area("답변 결과", value = response, height = 200)
+                    with st.expander("db 등록 및 입력 데이터 초기화", icon = ":material/login:", expanded = False):
+                        db_col, clear_col = st.columns(2)
+                        with db_col:
+                            st.button("db 등록", on_click=input_db)
+                            #st.write("데이터베이스에 등록이 완료되었습니다.")
+                        with clear_col:
+                            st.button("세션 초기화", on_click = clear)
+                                
+                                #st.rerun()
+                else:
+                    st.error("답변 생성을 완료해주세요.")
             
 
 
@@ -162,8 +152,8 @@ def genereate_response():
 #데이버베이스 입력
 def input_db():
     def insert_data():
-        run_query("INSERT INTO history (timestamp, name, category, urgency, minwon, response) VALUES (%s, %s, %s, %s, %s, %s)",
-                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, minwon,st.session_state.response),
+        run_query("INSERT INTO history (timestamp, name, category, urgency, minwon, response) VALUES (%s, %s, %s, %s, %s, %s)", 
+                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, minwon, response),
                     fetch = False
                 )
         return True
