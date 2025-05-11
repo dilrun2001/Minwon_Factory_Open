@@ -25,6 +25,7 @@ def useAi(minwon,answer,answer_format):
          
          답변은 **아래 템플릿 형식을 정확히 지켜서** 작성해주세요.
          템플릿을 벗어나는 내용은 작성하지 마세요.
+         출력 시작 부분에 공백이나 들여쓰기를 넣지 말고, 문장 맨 앞에서 바로 시작해 주세요.
 
          ※ [민원 내용]를 요약하여 정중한 행정 문서 문체로, [답변 템플릿]을 참고하여 [민원 요지]가 들어간 항목을 [민원요지]와 함께 부드럽게 이어지도록 수정해주세요.
          ※ [답변 요지]를 파악하여 정중한 행정 문서 문체로, [답변 템플릿]을 참고하여 [답변 요지]를 작성해주세요.
@@ -48,7 +49,7 @@ def useAi(minwon,answer,answer_format):
 
     output = llm.create_chat_completion(
         messages=messages,
-        temperature=0.7,
+        temperature=0.6,
         top_p=0.9,
         max_tokens=512,
     )
