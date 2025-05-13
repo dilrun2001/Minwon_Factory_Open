@@ -5,7 +5,7 @@ from streamlit_navigation_bar import st_navbar
 from util.state import *
 import my_pages as pg
 from css.theme import * 
-load_css()
+
 from util.menu import *
 import my_pages as pg
 
@@ -49,16 +49,16 @@ nav_style = {
     "hover": {
         "color" : "lightblue",
     },
-#    "div": {
-#        "max-width": "50rem",
-#    },
-#    "span": {
-#        "border-radius": "0.4rem",
-#        "color": "#dfe5ee",
-#        "margin": "0 0.125rem",
-#        "padding": "0.3rem 0.8rem",
-#    },
-#    
+    
+    "div": {
+        "max-width": "36rem",
+    },
+    #"span": {
+    #    "border-radius": "0.4rem",
+    #   "margin": "0 0.125rem",
+    #    #"padding": "0.3rem 0.8rem",
+    #},
+    
 
 }
 
@@ -79,12 +79,10 @@ page = st_navbar(
     options=options,
     icons=icons
 )
+load_css()
 
-##st.Page(pg.show_home, title  = "홈"),
- #           st.Page(pg.show_input, title = "민원 입력"),
- #           st.Page(pg.show_history, title = "민원 히스토리"),
- #           st.Page(pg.show_setting, title = "설정"),
- #           st.Page(pg.show_admin, title = '관리자 페이지')
+
+
 
 fuctions = {
     "홈": pg.show_home,
