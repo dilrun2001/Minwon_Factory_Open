@@ -51,6 +51,12 @@ def clear_state():
     #현재 페이지 위치 체크
     if "page" not in st.session_state:
         st.session_state['page'] = "home"
+    #다이얼로그 버그 임시 체크용
+    if "dialog" not in st.session_state:
+        st.session_state.dialog_check = False
+    #데이터프레임 선택
+    if "selected_row" not in st.session_state:
+        st.session_state.selected_row = None
 
 
 def logout_state():

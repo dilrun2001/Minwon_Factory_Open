@@ -1,3 +1,111 @@
+.stApp{
+    background-color: #faffff;
+    color : #292929
+}
+
+iframe[title="streamlit_navigation_bar.st_navbar"] {
+    width: 55%;
+}
+
+.stButton{
+    background-color: transparent;
+    border: transparent;
+}
+/*로그아웃 버튼 css 적용*/
+.element-container:has(#logout-button) + div button{
+    width: 120px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    top: 0.35%;
+    right: 1%;
+    background-color: transparent;
+    border: transparent;
+    margin-left: 2.5625rem;
+    font-weight: bold;
+}
+
+.element-container:has(#logout-button) + div button span:nth-of-type(2) {
+    display: none;
+}
+
+.element-container:has(#logout-button) + div button:hover{
+
+    width: 120px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    top: 0.35%;
+    right: 1%;
+    border: transparent;
+    color: lightblue;
+    font-weight: bold;
+}
+
+.element-container:has(#logout-button) + div button:hover span:nth-of-type(2) {
+    display: inline;
+}
+
+/*회원 정보 수정 버튼 css 적용*/
+.element-container:has(#edit-button) + div button{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    top: 0.35%;
+    right: 8%;
+
+    background-color: transparent;
+    border: transparent;
+    font-weight: bold;
+}
+
+.element-container:has(#edit-button) + div button:hover{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    top: 0.35%;
+    right: 8%;
+    color: lightblue;
+    border: transparent;
+    font-weight: bold;
+}
+
+
+
+div[class = "stAppDeployButton"]{
+    display: none;
+}
+
+/*.logout-button-container {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.logout-button-container button {
+    padding: 6px 12px;
+    background-color: #e64336;
+    color: #f7f7f7;
+    font-weight: 1000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logout-button-container button:hover {
+            color: #2766C2;
+}*/
+[data-testid = "stMainBlockContainer"]{
+    padding-top: 3%;
+    padding-left: 8%;
+    padding-right: 8%;
+
+}
+
+
 [data-testid = "stSidebarCollapseButton"]{
     display : None;
 }
