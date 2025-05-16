@@ -136,10 +136,12 @@ def menu_mk2():
                     signup_form()
                     
     else:
+        pass
+        """
         logout_form()       
         with st.container():
             with st.sidebar.expander("로그아웃 및 회원 정보 수정", icon = ":material/logout:", expanded = False):
-                """logout_tab, format_tab = st.tabs(
+                logout_tab, format_tab = st.tabs(
                     (
                         ":material/logout: 로그아웃",
                         ":material/person: 회원 정보 수정"
@@ -147,10 +149,10 @@ def menu_mk2():
                 )
                 with logout_tab :
                     pass#logout_form()
-                with format_tab:"""
+                with format_tab:
                 edit_form()
 
-                
+           """     
         
 
 
