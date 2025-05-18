@@ -12,6 +12,7 @@ from my_pages.input import *
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 #import streamlit_shadcn_ui as ui
 from util.dataframe import *
+import util.llama3_korea_bllossomQ8 as useAi #우리가 만든 ai를 사용하기위한 임포트
 
 #from input import *
 placeholder_minwon = """민원제목
@@ -112,7 +113,7 @@ def input_set():
                             "민원 내용을 입력해주세요.", placeholder = placeholder_minwon, height = 350, value = st.session_state.minwon,
             )
             st.session_state.minwon_sub = st.text_area(
-                "민원 요지를 입력해주세요.", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height = 70 #추후 자체 판단해서 작성될 예정
+                "민원 요지를 입력해주세요.", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height = 70  , value=st.session_state.minwon_sub #추후 자체 판단해서 작성될 예정
             ) 
         with answer_tab:
             st.session_state.answer_sub  = st.text_area(
@@ -293,7 +294,7 @@ def show_select():
             if st.session_state['btn_show']:
                 st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
                 with ur:
-                    st.button("다음 단계", key = "select_after_button", on_click = page_convert, icon = ':material/chevron_right:')
+                    st.button("다음 단계", key = "select_after_button", on_click = print_minwon_sub, icon = ':material/chevron_right:')
 
 
 #페이지 표시
@@ -423,4 +424,10 @@ def page_before():
     st.session_state.before = True
     page_convert()
 
-
+def print_minwon_sub():
+    print('minwon_sub start')
+    with st.spinner("답변을 생성 중입니다..."):
+        st.session_state.minwon_sub = useAi.AI_print_minwon_sub(st.session_state.minwon)
+        page_convert()
+    print('good')
+        
