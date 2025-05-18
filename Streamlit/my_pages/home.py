@@ -17,6 +17,11 @@ from util.dataframe import *
 placeholder_minwon = """민원제목
 민원내용
 """
+#민원 입력 파트 및 데이터 방식 변경
+#민원 요지 : minwon_sub
+#답변 요지: answer_sub
+#답변 양식 : answer_format
+
 
 #민원 입력 부분 사이드바
 def sidebar_set():
@@ -54,16 +59,6 @@ def sidebar_set():
                     st.session_state['show_style'] = 'side-by-side'
                 elif check_bool == "프레임 아래":
                     st.session_state['show_style'] = "main"
-
-        '''#민원 결과창 사이드바
-        elif st.session_state['minwon_check'] == 'result':
-            with st.sidebar.expander("db 등록 및 입력 데이터 초기화", icon = ":material/login:", expanded = False):
-                db_col,clear_col = st.columns(2)
-                with db_col:
-                    st.button("db 등록", on_click=input_db)
-                    #st.write("데이터베이스에 등록이 완료되었습니다.")
-                with clear_col:
-                    st.button("세션 초기화", on_click = minwon_clear, key = "clear_2")'''
         
         with st.sidebar.expander("데이터 초기화", icon = ":material/clear_all:", expanded = False):
                 db_col, center, clear_col = st.columns((1, 1.7, 1))
@@ -113,25 +108,26 @@ def input_set():
             ]
         )
         with minwon_tab:
-            minwon = st.text_area(
+            st.session_state.minwon = st.text_area(
                             "민원 내용을 입력해주세요.", placeholder = placeholder_minwon, height = 350, value = st.session_state.minwon,
             )
-            minwon_sub = st.text_area(
+            st.session_state.minwon_sub = st.text_area(
                 "민원 요지를 입력해주세요.", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height = 70 #추후 자체 판단해서 작성될 예정
             ) 
         with answer_tab:
-            answer  = st.text_area(
-                        "답변 요지를 입력해주세요." , placeholder = "답변요지 : 현장확인 후 조속히 처리하겠음.", height = 200
+            st.session_state.answer_sub  = st.text_area(
+                        "답변 요지를 입력해주세요." , placeholder = "답변요지 : 현장확인 후 조속히 처리하겠음.", height = 200, value = st.session_state.answer_sub
                     )
-            answer_format = st.text_area(
-                "답변 양식을 입력하세요.", value = f"{st.session_state.answer}" , height = 220
+            st.session_state.answer_format = st.text_area(
+                "답변 양식을 입력하세요.", value = st.session_state.answer_format , height = 220
                 )
             st.button("답변 생성", key = "input minwon", icon=":material/edit:", on_click=input_answer)
-    if st.session_state['btn_show']:
+        st.markdown('''---''')
         #st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
         ul, us, ur = st.columns ((1.4, 11.6, 1.4))
         with ul:
             st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
+    if st.session_state['btn_show']:
         with ur:
             st.button("다음 단계", key = "input_after_button", on_click = page_convert, icon = ':material/chevron_right:')
             
@@ -143,7 +139,7 @@ def clear():
 
 
 def input_answer():
-    if minwon and answer_format and answer and st.session_state.name:
+    if st.session_state.minwon and st.session_state.answer_format and st.session_state.answer_sub and st.session_state.name:
         genereate_response()
     else:
          st.toast("모든 필드를 입력해주세요.", icon = ":material/block:")
@@ -153,7 +149,7 @@ def genereate_response():
         global result_check, response
         
         with st.spinner("답변을 생성 중입니다...", show_time = True):
-            st.session_state.answer = useAi(minwon=minwon, answer=answer,answer_format=answer_format)
+            st.session_state.answer = useAi(minwon=st.session_state.minwon, answer=st.session_state.answer_sub,answer_format=st.session_state.answer_format)
 
             response  = st.session_state.answer
             st.session_state['minwon_check'] = 'result'
@@ -195,11 +191,13 @@ def show_home():
                     st.session_state.df = pd.read_excel(upload_files, keep_default_na=False)
             
                 st.session_state['btn_show'] = True
+                
     # 수동 입력 칸
     with manual_tab:
         st.markdown("")
         st.subheader("수동 입력")
-        
+        st.markdown('''
+                    ##### 이름, 부서명, 전화번호를 입력해주세요.''')
         with st.form(key = "manual_input"):
             name = st.text_input("이름", placeholder="이름")
             department = st.text_input("부서명", placeholder="사하구청")
@@ -241,20 +239,34 @@ def input_db():
     return_value()
     #st.success("데이터베이스에 등록이 완료되었습니다.")
 
+
+def select_side(df):
+    left, spacer, right = st.columns((4.5, 1.5, 5))
+    with left:
+        pass
+    with right:
+        pass
+
+def select_main(df):
+    pass
+
 #민원 선택창 출력
 def show_select():
     st.subheader("답변을 사용할 민원 데이터를 선택해주세요.")
+    st.markdown('''---''')
     filtered_df = filtering_frame(st.session_state.df, key_prefix= "select_minwon")
     gb = GridOptionsBuilder.from_dataframe(filtered_df)
     gb.configure_selection("single", use_checkbox=False)
     grid_options = gb.build()
-    minwon_data = AgGrid(
-        filtered_df,
-        gridOptions=grid_options,
-        update_mode = GridUpdateMode.SELECTION_CHANGED,
-        height = 400,
-        fit_columns_on_grid_load=True,
-    )
+    left, spacer, right = st.columns((6, 1.5, 6))
+    with left:
+        minwon_data = AgGrid(
+            filtered_df,
+            gridOptions=grid_options,
+            update_mode = GridUpdateMode.SELECTION_CHANGED,
+            height = 400,
+            fit_columns_on_grid_load=True,
+        )
     selected = minwon_data.get('selected_rows', None)
     if isinstance(selected, pd.DataFrame) and not selected.empty:
         st.session_state.selected_row = selected.iloc[0]
@@ -264,27 +276,42 @@ def show_select():
         st.session_state.minwon = st.session_state.selected_row['민원내용']
         st.session_state['btn_show'] = True
 
-        st.markdown('---')
-        st.caption(
-            f":gray-background[:material/person: 선택된 민원 데이터]",
-        )
-        st.markdown(f"#### 이름: {st.session_state.name}, 부서명: {st.session_state.department}, 전화번호: {st.session_state.tel}")
-        st.markdown(f"#### 민원 내용\n{st.session_state.minwon}")
-        st.markdown("---")
+        with right:
+            st.caption(
+                f":gray-background[:material/person: 선택된 민원 데이터]",
+            )
+            st.markdown(f"#### 이름: {st.session_state.name}, 부서명: {st.session_state.department}, 전화번호: {st.session_state.tel}")
+            st.markdown(f"#### 민원 내용\n{st.session_state.minwon}")
 
-    with st.container(key = "select button"):
-        if st.session_state['btn_show']:
+    with st.container(key = "select button", border=True):
+        
             st.markdown('''---''')
-            st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
-            ul, us, ur = st.columns ((4, 12, 4))
+            
+            ul, us, ur = st.columns ((7, 20, 7), border = True, vertical_alignment="bottom")
             with ul:
                 st.button("이전 단계", key = "select_before_button", on_click=page_before, icon = ':material/chevron_left:')
-            with ur:
-                st.button("다음 단계", key = "select_after_button", on_click = page_convert, icon = ':material/chevron_right:')
+            if st.session_state['btn_show']:
+                st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
+                with ur:
+                    st.button("다음 단계", key = "select_after_button", on_click = page_convert, icon = ':material/chevron_right:')
+
 
 #페이지 표시
 def show_input():
-    format_set()
+    #format_set()
+    #양식 선택 기능 임시 비활성화
+    st.session_state.answer_format =\
+f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
+
+2. 귀하의 민원내용은 [민원요지]에 관한 것으로 이해(또는 판단) 됩니다.
+
+3. 귀하의 질의사항에 대해 검토한 의견은 다음과 같습니다.
+
+가. [답변내용]
+
+4. 귀하의 질문에 만족스러운 답변이 되었기를 바라며, 답변 내용에 대한 추가 설명이 필요한 경우에는 사하구 {st.session_state.department}({st.session_state.name}, ☎{st.session_state.tel})에게 연락주시면 친절히 안내해 드리도록 하겠습니다.
+아울러 귀하의 민원처리에 대한 만족도 참여를 부탁드립니다. 
+감사합니다."""
     input_set()
     with st.container(key = "input button"):
         if st.session_state['btn_show']:
@@ -297,43 +324,45 @@ def show_input():
 
 # 결과창 표시
 def show_result():
-    st.subheader("생성된 답변 결과")
-    st.toast("답변이 생성되었습니다. 결과를 확인해주세요.", icon = ":material/done:")
-    st.markdown('''''')
-    st.markdown(f'''##### {st.session_state.name}님이 신청하신 (민원 들어갈 자리)에 관한 답변이 생성되었습니다.''')
-    st.text_area("답변 결과", value = st.session_state.answer, height = 330, key="result")
-    st.markdown('''''')
-    db_col,down_col, clear_col = st.columns((7, 3, 7))
-    with db_col:
-        with st.expander("db 등록 및 다운로드", icon = ":material/database:", expanded=True):        
-            st.markdown("""""")
-            #left, spacer,  right= st.columns((6,1, 6))
-            #with left:
-            st.markdown('''#####  데이터베이스 등록''')
-            st.markdown('''###### 아래 버튼을 클릭 시 데이터베이스에 민원 데이터가 등록됩니다.''')
-            st.button("db 등록", on_click=input_db, icon = ":material/database:")
-            st.markdown('''---''')
-        #with right:
-            st.markdown('''##### 답변 다운로드''')
-            st.markdown('''###### 형식을 선택 후 아래 다운로드 버튼을 눌러주세요.''')
-            format = st.selectbox("다운받을 파일 형식", options= ( "Excel", "CSV"))
-            download = st.button("다운로드", key = "DownLoad", icon = ":material/download:")
-            if download:
-                if format == "CSV":
-                    pass
-                else:
-                    pass
-                        #st.write("데이터베이스에 등록이 완료되었습니다.")
-    with clear_col:
-        with st.expander("세션 초기화 및 이어서 답변하기", icon = ":material/delete_forever:", expanded=True):
-            st.markdown('''''')
-            st.markdown('''##### 다른 민원 선택''')
-            st.markdown('''###### 아래 버튼을 클릭 시 민원 데이터 선택화면으로 넘어가고 다른 민원을 생성할 수 있습니다. 단, 수동 입력은 지원하지 않습니다.''')
-            st.button("다른 민원 선택", on_click = minwon_clear, key = "go_to_select")
-            st.markdown('''---''')
-            st.markdown('''##### 세션 초기화''')
-            st.markdown('''###### 아래 버튼을 클릭 시 처음 화면으로 넘어가고 입력값들이 초기화됩니다.''')
-            st.button("세션 초기화", on_click = minwon_clear, key = "clear_2")
+    with st.container(key = "result_response_container"):
+        st.subheader("생성된 답변 결과")
+        st.toast("답변이 생성되었습니다. 결과를 확인해주세요.", icon = ":material/done:")
+        st.markdown('''''')
+        st.markdown(f'''##### {st.session_state.name}님이 신청하신 (민원 들어갈 자리)에 관한 답변이 생성되었습니다.''')
+        st.text_area("답변 결과", value = st.session_state.answer, height = 330, key="result")
+        st.markdown('''''')
+    with st.container(key = "result_btn_container"):
+        db_col,down_col, clear_col = st.columns((7, 3, 7))
+        with db_col:
+            with st.expander("db 등록 및 다운로드", icon = ":material/database:", expanded=True):        
+                st.markdown("""""")
+                #left, spacer,  right= st.columns((6,1, 6))
+                #with left:
+                st.markdown('''#####  데이터베이스 등록''')
+                st.markdown('''###### 아래 버튼을 클릭 시 데이터베이스에 민원 데이터가 등록됩니다.''')
+                st.button("db 등록", on_click=input_db, icon = ":material/database:")
+                st.markdown('''---''')
+            #with right:
+                st.markdown('''##### 답변 다운로드''')
+                st.markdown('''###### 형식을 선택 후 아래 다운로드 버튼을 눌러주세요.''')
+                format = st.selectbox("다운받을 파일 형식", options= ( "Excel", "CSV"))
+                download = st.button("다운로드", key = "DownLoad", icon = ":material/download:")
+                if download:
+                    if format == "CSV":
+                        pass
+                    else:
+                        pass
+                            #st.write("데이터베이스에 등록이 완료되었습니다.")
+        with clear_col:
+            with st.expander("세션 초기화 및 이어서 답변하기", icon = ":material/delete_forever:", expanded=True):
+                st.markdown('''''')
+                st.markdown('''##### 다른 민원 선택''')
+                st.markdown('''###### 아래 버튼을 클릭 시 민원 데이터 선택화면으로 넘어가고 다른 민원을 생성할 수 있습니다. 단, 수동 입력은 지원하지 않습니다.''')
+                st.button("다른 민원 선택", on_click = minwon_clear, key = "go_to_select")
+                st.markdown('''---''')
+                st.markdown('''##### 세션 초기화''')
+                st.markdown('''###### 아래 버튼을 클릭 시 처음 화면으로 넘어가고 입력값들이 초기화됩니다.''')
+                st.button("세션 초기화", on_click = minwon_clear, key = "clear_2")
 
     with st.container(key = "result button"):
         st.markdown('''---''')

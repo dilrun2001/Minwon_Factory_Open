@@ -23,20 +23,19 @@ import my_pages as pg
 
 load_css()
 clear_state()
-menu_mk2()
 
 
 
-if st.session_state.name == "admin":
-    pages = ["홈", "민원 입력", "민원 히스토리", "설정", "관리자"]
+#if st.session_state.name == "admin":
+#    pages = ["홈", "민원 입력", "민원 히스토리", "설정", "관리자"]
     #        st.Page(pg.show_home, title  = "홈"),
     #        st.Page(pg.show_input, title = "민원 입력"),
     #        st.Page(pg.show_history, title = "민원 히스토리"),
     #        st.Page(pg.show_setting, title = "설정"),
     #        st.Page(pg.show_admin, title = '관리자 페이지')
     #]
-else:
-    pages = ["홈", "민원 입력", "민원 히스토리", "설정"]
+#else:
+pages = ["홈", "민원 히스토리", "설정"]
     #        st.Page(pg.show_home, title  = "홈"),
     #        st.Page(pg.show_input, title = "민원 입력"),
     #        st.Page(pg.show_history, title = "민원 히스토리"),
@@ -54,9 +53,9 @@ nav_style = {
         "color" : "lightblue",
     },
     
-    #"div": {
-    #    "max-width": "45%",
-    #},
+    "div": {
+        "max-width": "30%",
+    },
     #"span": {
     #    "border-radius": "0.4rem",
     #   "margin": "0 0.125rem",
@@ -72,10 +71,11 @@ options = {
 }
 
 icons = {"홈": ":material/home:",
-                "민원 입력": ":material/input:",
+            #    "민원 입력": ":material/input:",
                 "민원 히스토리" : ":material/history",
                 "설정" : ":material/settings",
-                "관리자": ":material/admin_panel_settings"}
+            #    "관리자": ":material/admin_panel_settings"
+            }
 
 page = st_navbar(
     pages,

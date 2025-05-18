@@ -22,8 +22,24 @@ def clear_state():
     if "tel" not in st.session_state:
         st.session_state.tel = ""
 
+    #민원 내용
     if "minwon" not in st.session_state:
         st.session_state.minwon = ""
+
+    #민원 양식, 최종 민원
+    if "answer" not in st.session_state:
+          st.session_state.answer = ""
+
+    #민원 양식 선택 함수
+    if "answer_format" not in st.session_state:
+        st.session_state.answer_format = "None"
+    #민원 요지
+    if "minwon_sub" not in st.session_state:
+        st.session_state.minwon_sub = ""
+    
+    #답변 요지
+    if "answer_sub" not in st.session_state:
+        st.session_state.answer_sub = ""
 
     #포맷
     if "format" not in st.session_state:
@@ -43,15 +59,7 @@ def clear_state():
 
     #로그인 체크
     if "log_in" not in st.session_state:
-          st.session_state.log_in = False
-
-    #민원 양식, 최종 민원
-    if "answer" not in st.session_state:
-          st.session_state.answer = ""
-
-    #민원 양식 선택 함수
-    if "answer_format" not in st.session_state:
-        st.session_state.answer_format = "None"
+          st.session_state.log_in = False    
 
     #답변
     if "response" not in st.session_state:
@@ -114,8 +122,10 @@ def minwon_clear():
     st.session_state['minwon_check'] = 'file_select'
     st.session_state.file_check = False
     st.session_state.manual = False
+    st.session_state.answer_sub = ""
     st.session_state.answer = ""
     st.session_state.answer_format = "None"
+    st.session_state.minwon_sub = ""
     st.session_state.department = ""
     st.session_state.tel = ""
     st.session_state.name =""

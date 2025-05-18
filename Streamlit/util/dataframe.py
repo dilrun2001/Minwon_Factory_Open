@@ -161,5 +161,5 @@ def filtering_frame(df: pd.DataFrame, key_prefix: str = "filter") -> pd.DataFram
                 )
                 if user_text_input:
                     df = df[df[column].astype(str).str.contains(user_text_input)]
-
+            
     return df
