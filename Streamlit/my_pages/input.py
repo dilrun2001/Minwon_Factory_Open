@@ -8,7 +8,7 @@ from util.menu import *
 from util.setting import *
 from util.database import *
 from util.state import *
-from util.llama3_korea_bllossomQ8 import useAi
+import util.llama3_korea_bllossomQ8 as useAi
 
 result_check = False
 #민원 입력 및 출력 페이지
@@ -141,7 +141,7 @@ def genereate_response():
         global result_check, response
         
         with st.spinner("답변을 생성 중입니다..."):
-            st.session_state.answer = useAi(minwon=minwon, answer=answer,answer_format=answer_format)
+            st.session_state.answer = useAi.AI_print_minwon_sub(minwon=minwon, answer=answer,answer_format=answer_format)
 
         response  = st.session_state.answer
         result_check = True

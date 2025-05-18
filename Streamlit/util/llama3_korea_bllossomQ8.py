@@ -1,7 +1,7 @@
 # (이미 설치하셨으니 생략 가능)
 
 # HF 허브에서 GGUF 파일만 내려받기
-def useAi(minwon,answer,answer_format):
+def AI_print_minwon_sub(minwon,answer,answer_format):
     from huggingface_hub import hf_hub_download
 
     model_path = hf_hub_download(
@@ -57,3 +57,54 @@ def useAi(minwon,answer,answer_format):
     print(output['choices'][0]['message']['content'])
     return output['choices'][0]['message']['content']  #output['choices'][0]['message']['content']
 
+
+def AI_print_minwon_sub(minwon):
+    from huggingface_hub import hf_hub_download
+
+    model_path = hf_hub_download(
+        repo_id="MLP-KTLim/llama-3-Korean-Bllossom-8B-gguf-Q4_K_M",
+        filename="llama-3-Korean-Bllossom-8B-Q4_K_M.gguf"
+    )
+
+    # llama-cpp-python 으로 모델 로드 및 생성 함수 정의
+    from llama_cpp import Llama
+
+    llm = Llama(
+        model_path=model_path,
+        n_gpu_layers=-1,  # GPU 전체 사용
+        n_ctx=4096,
+        chat_format="chatml",  # 또는 "llama-3" 등 모델에 맞게 설정
+    )
+
+    messages = [
+        {"role": "system", "content": """당신은 주어진 민원내용의 민원요지를 요약하여 공무원에게 전해주는 요약봇입니다.
+         
+          
+         
+         [민원내용]을 보고 핵심내용을 읽는 사람들이 요지를 파악하기 쉽게 숫자로 구분하여 요약해주세요.
+         (예시: 
+         1. 첫번째 민원요지
+         2. 두번째 민원요지
+         3. 세번째 민원요지
+         )
+
+         """},
+
+        {"role": "user", "content": """
+     
+         다음은 [민원내용]입니다.
+
+         [민원 내용]
+         """+minwon
+         }
+    ]
+
+    output = llm.create_chat_completion(
+        messages=messages,
+        temperature=0.6,
+        top_p=0.9,
+        max_tokens=512,
+    )
+
+    print(output['choices'][0]['message']['content'])
+    return output['choices'][0]['message']['content']  #output['choices'][0]['message']['content']
