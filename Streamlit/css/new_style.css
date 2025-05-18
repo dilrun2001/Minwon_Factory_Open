@@ -4,14 +4,15 @@
 }
 
 iframe[title="streamlit_navigation_bar.st_navbar"] {
-    width: 55%;
+    width: 45%;
 }
 
 .stButton{
     background-color: transparent;
     border: transparent;
 }
-/*로그아웃 버튼 css 적용*/
+
+/*로그아웃 버튼 css 적용
 .element-container:has(#logout-button) + div button{
     width: 120px;
     height: 15px;
@@ -46,7 +47,7 @@ iframe[title="streamlit_navigation_bar.st_navbar"] {
     display: inline;
 }
 
-/*회원 정보 수정 버튼 css 적용*/
+/*회원 정보 수정 버튼 css 적용
 .element-container:has(#edit-button) + div button{
     width: 150px;
     height: 15px;
@@ -73,7 +74,7 @@ iframe[title="streamlit_navigation_bar.st_navbar"] {
 }
 
 
-
+*/
 div[class = "stAppDeployButton"]{
     display: none;
 }
@@ -99,7 +100,7 @@ div[class = "stAppDeployButton"]{
             color: #2766C2;
 }*/
 [data-testid = "stMainBlockContainer"]{
-    padding-top: 3%;
+    padding-top: auto;
     padding-left: 8%;
     padding-right: 8%;
 
