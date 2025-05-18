@@ -150,7 +150,7 @@ def genereate_response():
         global result_check, response
         
         with st.spinner("답변을 생성 중입니다...", show_time = True):
-            st.session_state.answer = useAi(minwon=st.session_state.minwon, answer=st.session_state.answer_sub,answer_format=st.session_state.answer_format)
+            st.session_state.answer = useAi.AI_print_answer(minwon=st.session_state.minwon, answer=st.session_state.answer_sub,answer_format=st.session_state.answer_format)
 
             response  = st.session_state.answer
             st.session_state['minwon_check'] = 'result'
