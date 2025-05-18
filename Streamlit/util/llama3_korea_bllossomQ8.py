@@ -1,7 +1,7 @@
 # (이미 설치하셨으니 생략 가능)
 
 # HF 허브에서 GGUF 파일만 내려받기
-def AI_print_minwon_sub(minwon,answer,answer_format):
+def AI_print_answer(minwon,answer,answer_format):
     from huggingface_hub import hf_hub_download
 
     model_path = hf_hub_download(
