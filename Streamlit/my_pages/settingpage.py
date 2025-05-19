@@ -1,8 +1,4 @@
 import streamlit as st
-<<<<<<< HEAD
-from util.menu import menu
-=======
->>>>>>> e587b37964b7df9b8c0068d106b7c1a091af79b8
 from util.database import *
 from util.state import *
 from util.setting import *
