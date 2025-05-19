@@ -48,12 +48,17 @@ def signup_form():
             else:
                 st.toast("모든 필드를 입력해주세요.", icon= ":material/close:")  
 
-#로그아웃 폼
 def logout_form():
     #with st.form(key="로그아웃"):
-    st.subheader(f"{st.session_state.name}님 반갑습니다.")
-    st.button(label="로그아웃", type = "secondary", use_container_width=True, icon = ":material/logout:", on_click = logout_state)
-        #logout_state()
+    st.sidebar.title(f"{st.session_state.name}님 반갑습니다.")
+    #st.markdown('<div class = "logout-button-container">', unsafe_allow_html=True)  
+    st.markdown('<span id = "edit-button"></span>', unsafe_allow_html=True)
+    st.button(label = "회원 정보 수정", key = "edit-button", use_container_width=True, icon = ":material/person:")
+    st.markdown('<span id = "logout-button"></span>', unsafe_allow_html=True)
+#로그아웃 폼
+    st.button(label="로그아웃", key = "logout-button", use_container_width=True, icon = ":material/logout:", on_click = logout_state)
+    #st.markdown('</div>', unsafe_allow_html=True)
+  #logout_state()
         #st.rerun()
 
 #양식 선택 폼
@@ -130,9 +135,12 @@ def menu_mk2():
                 with create_tab:
                     signup_form()
                     
-    else:       
+    else:
+        pass
+        """
+        logout_form()       
         with st.container():
-            with st.sidebar.expander("로그아웃 및 회원 정보 수정", icon = ":material/logout:", expanded = True):
+            with st.sidebar.expander("로그아웃 및 회원 정보 수정", icon = ":material/logout:", expanded = False):
                 logout_tab, format_tab = st.tabs(
                     (
                         ":material/logout: 로그아웃",
@@ -140,10 +148,16 @@ def menu_mk2():
                     )
                 )
                 with logout_tab :
-                    logout_form()
+                    pass#logout_form()
                 with format_tab:
+<<<<<<< HEAD
                     edit_form()
                 
+=======
+                edit_form()
+
+           """     
+>>>>>>> e587b37964b7df9b8c0068d106b7c1a091af79b8
         
 
 
