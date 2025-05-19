@@ -4,7 +4,6 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
 import pandas as pd
-# import mysql.connector
 from sqlalchemy import create_engine
 import os
 import shutil
