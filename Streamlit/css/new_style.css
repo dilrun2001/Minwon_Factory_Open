@@ -12,6 +12,47 @@ iframe[title="streamlit_navigation_bar.st_navbar"] {
     border: transparent;
 }
 
+.element-container:has(#before-button) + div button{
+    width: 140px;
+    height: 15px;
+    padding: 5px;
+    position: fixed;
+    left:155px;
+    bottom:60px;
+    z-index: 9999;
+}
+
+.element-container:has(#before-button) + div button:hover{
+    width: 140px;
+    height: 15px;
+    padding: 5px;
+    position: fixed;
+    left:155px;
+    bottom:60px;
+    z-index: 9999;
+}
+
+
+.element-container:has(#next-button) + div button{
+    width: 140px;
+    height: 15px;
+    padding: 5px;
+    position: fixed;
+    right:155px;
+    bottom:60px;
+    z-index: 9999;
+}
+
+.element-container:has(#next-button) + div button:hover{
+    width: 140px;
+    height: 15px;
+    padding: 5px;
+    position: fixed;
+    right:155px;
+    bottom:60px;
+    z-index: 9999;
+}
+
 /*로그아웃 버튼 css 적용
 .element-container:has(#logout-button) + div button{
     width: 120px;

@@ -220,9 +220,8 @@ def show_home():
             else:
                 st.toast("엑셀 파일이 선택되었습니다. 아래 버튼을 눌러 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
             st.session_state.file_check = True
-            ul, us, ur = st.columns((4, 12, 4),vertical_alignment = "center")
-            with ur:
-                st.button("다음 단계", key = "input_page_show", on_click  = page_convert, icon = ':material/chevron_right:')
+            st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
+            st.button("##### 다음 단계", key = "input_page_show", on_click  = page_convert, icon = ':material/chevron_right:')
 
      
 
@@ -284,17 +283,22 @@ def show_select():
             st.markdown(f"#### 이름: {st.session_state.name}, 부서명: {st.session_state.department}, 전화번호: {st.session_state.tel}")
             st.markdown(f"#### 민원 내용\n{st.session_state.minwon}")
 
-    with st.container(key = "select button", border=True):
+    with st.container(key = "select button"):
         
             st.markdown('''---''')
+        
             
-            ul, us, ur = st.columns ((7, 20, 7), border = True, vertical_alignment="bottom")
-            with ul:
-                st.button("이전 단계", key = "select_before_button", on_click=page_before, icon = ':material/chevron_left:')
+            #ul, us, ur = st.columns ((7, 20, 7), border = True, vertical_alignment="bottom")
+            #with ul:
+            st.markdown('''''')
+
+            st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True)
+            st.button("이전 단계", key = "select_before_button", on_click=page_before, icon = ':material/chevron_left:')
             if st.session_state['btn_show']:
                 st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
-                with ur:
-                    st.button("다음 단계", key = "select_after_button", on_click = print_minwon_sub, icon = ':material/chevron_right:')
+            #    with ur:
+                st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
+                st.button("다음 단계", key = "select_after_button", on_click = print_minwon_sub, icon = ':material/chevron_right:')
 
 
 #페이지 표시
@@ -317,11 +321,13 @@ f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
     with st.container(key = "input button"):
         if st.session_state['btn_show']:
             st.markdown('''---''')
-            ul, us, ur = st.columns ((4, 12, 4))
-            with ul:
-                st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
-            with ur:
-                st.button("다음 단계", key = "input_after_button", on_click = page_convert, icon = ':material/chevron_right:')
+            #ul, us, ur = st.columns ((4, 12, 4))
+            #with ul:
+            st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True)
+            st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
+            #with ur:
+            st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
+            st.button("다음 단계", key = "input_after_button", on_click = page_convert, icon = ':material/chevron_right:')
 
 # 결과창 표시
 def show_result():
@@ -426,7 +432,7 @@ def page_before():
 
 def print_minwon_sub():
     print('minwon_sub start')
-    with st.spinner("답변을 생성 중입니다..."):
+    with st.spinner("민원 내용을 바탕으로 민원 요지를 생성 중입니다..."):
         st.session_state.minwon_sub = useAi.AI_print_minwon_sub(st.session_state.minwon)
         page_convert()
     print('good')
