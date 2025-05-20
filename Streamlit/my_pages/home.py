@@ -147,16 +147,14 @@ def input_answer():
          #time.sleep(500)
 
 def genereate_response():
-        global result_check, response
+        global result_check
         
         with st.spinner("답변을 생성 중입니다...", show_time = True):
             st.session_state.answer = useAi.AI_print_answer(minwon=st.session_state.minwon, answer=st.session_state.answer_sub,answer_format=st.session_state.answer_format)
 
-            response  = st.session_state.answer
             st.session_state['minwon_check'] = 'result'
             #st.session_state.minwon_check = True
             result_check = True
-
 
 
 #메인 화면
@@ -230,7 +228,7 @@ def show_home():
 def input_db():
     def insert_data():
         run_query("INSERT INTO history (timestamp, name, category, urgency, minwon, response) VALUES (%s, %s, %s, %s, %s, %s)", 
-                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, minwon, response),
+                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, st.session_state.minwon, st.session_state.answer),
                     fetch = False
                 )
         return True
