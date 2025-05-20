@@ -157,7 +157,6 @@ def genereate_response():
             result_check = True
 
 
-
 #메인 화면
 def show_home():
     #st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
