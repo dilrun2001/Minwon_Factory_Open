@@ -88,12 +88,12 @@ f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
             st.session_state.answer = answer
         #st.rerun()
     elif st.session_state.answer_format == "양식 2":
-        st.session_state.answer = f"{run_query("SELECT * FROM userdata WHERE id = %s", (st.session_state.id)).iloc[0]['양식2']}"
+        st.session_state.answer = f"{run_query('SELECT * FROM userdata WHERE id = %s', (st.session_state.id)).iloc[0]['양식2']}"
         if st.session_state.answer == "None":
                 st.session_state.answer = "저장된 양식이 없습니다."
         #st.rerun()
     elif st.session_state.answer_format == "양식 3":
-        st.session_state.answer = f"{run_query("SELECT * FROM userdata WHERE id = %s", (st.session_state.id)).iloc[0]['양식3']}"
+        st.session_state.answer = f"{run_query('SELECT * FROM userdata WHERE id = %s', (st.session_state.id)).iloc[0]['양식3']}"
         if st.session_state.answer == "None":
                 st.session_state.answer = "저장된 양식이 없습니다."
 
