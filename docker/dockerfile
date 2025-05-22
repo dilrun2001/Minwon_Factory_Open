@@ -1,0 +1,33 @@
+# 쿠다 이미지
+FROM nvidia/cuda:12.4.0-runtime-ubuntu22.04
+
+#pip python 설치
+RUN apt update && apt install -y python3 python3-pip
+
+#pip 업글
+RUN python3 -m pip install --upgrade pip
+
+# 필요한 모듈 안에있음
+COPY requirements.txt .
+
+# llama-cpp-python gpu사용버전+ requirements 인스톨
+RUN pip install --no-cache-dir llama-cpp-python==0.3.4 --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124 \
+ && pip install -r requirements.txt
+
+#깃설치
+RUN apt update && apt install -y git
+
+#깃 클론
+RUN git clone https://github.com/dilrun2001/Minwon_Factory.git
+
+WORKDIR /Minwon_Factory/Streamlit/.streamlit
+
+#컨피그 ip랑 mysql시크릿 카피
+COPY config.toml .
+COPY secrets.toml .
+
+#경로설정
+WORKDIR /Minwon_Factory/Streamlit
+
+#실행
+CMD ["python3","-m","streamlit","run","app.py"]
