@@ -91,8 +91,7 @@ def AI_print_minwon_sub(minwon):
     },
     {
         "role": "user",
-        "content": f"""[민원내용]
-        {minwon}
+        "content": f"""[민원내용]{minwon}
         """
     }
 ]
