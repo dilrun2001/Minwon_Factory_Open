@@ -109,6 +109,10 @@ def clear_state():
     if "manual" not in st.session_state:
         st.session_state.manual = False
 
+    #버튼 비활성화
+    if "btn_deactive" not in st.session_state:
+        st.session_state.btn_deactive = False
+
 def logout_state():
     st.session_state.log_in = False
     st.session_state.answer = ""

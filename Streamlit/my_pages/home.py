@@ -100,36 +100,41 @@ f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
 
 def input_set():
     global minwon, minwon_sub, answer, answer_format, result, result_check
-    st.subheader("민원 입력 및 응답 생성")
+    st.subheader("민원 입력 및 응답 생성")    
     with st.container():
-        minwon_tab, answer_tab = st.tabs(
+        #임시 UI 체크용
+        minwon_column, spacer, answer_column = st.columns((8,0.5,8)) 
+        '''minwon_tab, answer_tab = st.tabs(
             [
                 "민원 입력",
                 "답변 요지 및 양식 확인"
             ]
         )
-        with minwon_tab:
+        with minwon_tab:'''
+        with minwon_column:
             st.session_state.minwon = st.text_area(
                             "민원 내용을 입력해주세요.", placeholder = placeholder_minwon, height = 350, value = st.session_state.minwon,
             )
             st.session_state.minwon_sub = st.text_area(
                 "민원 요지를 입력해주세요.", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height = 70  , value=st.session_state.minwon_sub #추후 자체 판단해서 작성될 예정
             ) 
-        with answer_tab:
+        with answer_column:
             st.session_state.answer_sub  = st.text_area(
                         "답변 요지를 입력해주세요." , placeholder = "답변요지 : 현장확인 후 조속히 처리하겠음.", height = 200, value = st.session_state.answer_sub
                     )
             st.session_state.answer_format = st.text_area(
                 "답변 양식을 입력하세요.", value = st.session_state.answer_format , height = 220
                 )
-            st.button("답변 생성", key = "input minwon", icon=":material/edit:", on_click=input_answer)
+            st.button("답변 생성", key = "input minwon", icon=":material/edit:", on_click=input_answer, disabled = st.session_state.btn_deactive)
         st.markdown('''---''')
         #st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
         ul, us, ur = st.columns ((1.4, 11.6, 1.4))
         with ul:
-            st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
+            st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True )
+            st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:', disabled=st.session_state.btn_deactive)
     if st.session_state['btn_show']:
         with ur:
+            st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True )
             st.button("다음 단계", key = "input_after_button", on_click = page_convert, icon = ':material/chevron_right:')
             
 
@@ -202,13 +207,17 @@ def show_home():
             department = st.text_input("부서명", placeholder="사하구청")
             tel = st.text_input("전화번호", placeholder="000-000-0000")
             manual_btn = st.form_submit_button("수동 입력", icon = ':material/edit_note:')
+            
 
         if manual_btn:
-            st.session_state.name = name
-            st.session_state.department = department
-            st.session_state.tel = tel
-            st.session_state.manual = True
-            st.session_state['btn_show'] = True
+            if name != '' and department != '' and tel != '':
+                st.session_state.name = name
+                st.session_state.department = department
+                st.session_state.tel = tel
+                st.session_state.manual = True
+                st.session_state['btn_show'] = True
+            else:
+                st.toast("입력 필드를 확인해주세요.", icon = ":material/block:")
         
     with st.container(key = "result button"):
         if st.session_state['btn_show']:
@@ -291,12 +300,12 @@ def show_select():
             st.markdown('''''')
 
             st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True)
-            st.button("이전 단계", key = "select_before_button", on_click=page_before, icon = ':material/chevron_left:')
+            st.button("이전 단계", key = "select_before_button", on_click=page_before, icon = ':material/chevron_left:', disabled=st.session_state.btn_deactive)
             if st.session_state['btn_show']:
                 st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
             #    with ur:
                 st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
-                st.button("다음 단계", key = "select_after_button", on_click = print_minwon_sub, icon = ':material/chevron_right:')
+                st.button("다음 단계", key = "select_after_button", on_click = print_minwon_sub, icon = ':material/chevron_right:', disabled=st.session_state.btn_deactive)
 
 
 #페이지 표시
@@ -410,7 +419,10 @@ def page_convert():
     #민원 입력 창
     elif st.session_state['minwon_check'] == 'minwon_input':
         if st.session_state.before:
-            st.session_state['minwon_check'] = 'minwon_select'
+            if st.session_state.manual:
+                st.session_state['minwon_check'] = 'file_select'
+            else:
+                st.session_state['minwon_check'] = 'minwon_select'
             st.session_state.before = False
         else:
             st.session_state['minwon_check'] = 'result'
