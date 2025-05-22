@@ -16,7 +16,7 @@ def AI_print_answer(minwon,answer,answer_format):
         model_path=model_path,
         n_gpu_layers=-1,  # GPU 전체 사용
         n_ctx=4096,
-        chat_format="chatml",  # 또는 "llama-3" 등 모델에 맞게 설정
+        chat_format="llama-3",  # 또는 "llama-3" 등 모델에 맞게 설정
     )
 
     messages = [
