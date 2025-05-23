@@ -11,7 +11,7 @@ import shutil
 # 1) MySQL에서 민원 데이터 가져와서 Chroma DB 만들기 ========================
 # (한 번만 실행하면 됨)
 engine = create_engine("mysql+pymysql://root:1234@localhost/minwon")
-query = "SELECT minwon, response, category FROM history"
+query = "SELECT answer_yogi,response FROM history"
 df = pd.read_sql(query, engine)
 
 # 기존 DB 폴더가 있으면 깨끗하게 삭제
@@ -27,19 +27,17 @@ embedding_model = HuggingFaceEmbeddings(
 docs = []
 for _, row in df.iterrows():
     content = f"""
-[민원 내용]
+[답변 요지 ]
 
-{row["minwon"]}
+{row["answer_yogi"]}
 
-[답변 내용]
-{row["response"]}
+
 """
     docs.append(Document(
         page_content=content.strip(),
         metadata={
-            "minwon": row["minwon"],
+
             "response": row["response"],
-            "category": row["category"] or "기타"
         }
     ))
 # Chroma DB 생성 및 저장
@@ -63,34 +61,39 @@ llm = Llama(
 )
 
 
-def llama_generate(prompt: str, max_tokens: int = 200) -> str:
+def llama_generate(prompt: str, max_tokens: int = 500) -> str:
     res = llm(prompt=prompt, max_tokens=max_tokens, stop=["<|eot_id|>"])
     return res["choices"][0]["text"]
 
 
 # 3) 유사 민원 검색 + LLaMA 회신문 생성 함수 =================================
-def respond_with_memory(answer_gist: str, k: int = 1):
-    # 0) LLaMA 단독 호출 (Chroma 미참조)
+def respond_with_memory(innput_answer_yogi: str, k: int = 1):
+    # 0) chroma 미 참조하고 그냥 출력 하는 프롬트트 버전 입니다.
     naive_prompt = f"""
 You are a 전문 공무원 AI 어시스턴트입니다.
-기관 이름: 사하구청
 
-템플릿 형식에 맞추구 답변 요지를 참고해서 공무원의 입장으로 정중하세 입력해주세요. 
+다음 [템플릿]의 ‘3. 가. 나. 다.’ 부분을  
+정중한 행정 문체로 작성하고,  
+나머지 형식(1·2·4)은 그대로 유지해 주세요.
+
 [템플릿]
-1.안녕하십니까? 귀하께서 국민신문고를 통해 신청하신 민원
-대한 검토 결과를 다음과 같이 알려드립니다.
+1. 안녕하십니까? 귀하께서 국민신문고를 통해 신청하신 민원에 대한 검토 결과를 다음과 같이 알려드립니다.
 
-2.귀하께서 제출 하신 민원의 내용은 [답변요지] 에 관한 것으로 이해(또는 판단) 됩니다.
-가.{answer_gist}
+2. 귀하께서 제출하신 민원의 내용은 특정 내용에 관한 것으로 이해(또는 판단)됩니다.
 
-4. 답변 내용에 대한 추가 설명이 필요한 경우  연락 주치면 안내해 드리도록 하세습니다 
+3. 
+가. {innput_answer_yogi}  
+나.  
+다.  
 
-[새 민원 답변 요지]
+4. 답변 내용에 대한 추가 설명이 필요한 경우 △△△부 ○○○과 홀길동 사무관(☎044-200-0000)에게 연락주시면 친절히 안내해 드리겠습니다. 감사합니다.
 
-
-
+[회신문] 
 """
-    naive_reply = llama_generate(naive_prompt, max_tokens=300)
+    print('1단계 출력 중입니다')
+    naive_reply = llama_generate(naive_prompt, max_tokens=300) # 위의 프롬포트를 활용해서 반환을 한다.
+
+    ### 위의 naive_reply 부분을 반환하다.
 
     # Chroma DB 로드 (persist된)
     db = Chroma(
@@ -98,38 +101,34 @@ You are a 전문 공무원 AI 어시스턴트입니다.
         embedding_function=embedding_model
     )
     # 1) 유사 민원 검색
-    similar_docs = db.similarity_search(answer_gist, k=k)
+    similar_docs = db.similarity_search(innput_answer_yogi, k=k)
 
-    # 디버깅: 어떤 유사 민원이 선택되었는지 출력
-    print(f"🔍 입력 요지: {answer_gist}")
-    print(f"🔍 유사 민원 {len(similar_docs)}건 발견:")
-    for idx, doc in enumerate(similar_docs, start=1):
-        print(f"[{idx}] 예시 답변: {doc.page_content}")
 
-    # 2) 프롬프트에 예시로 추가
-    example_blocks = ""
+    # 2) 프롬프트에 예시로 추가 어떤 것을 [답변 요지를 example_block 에 넣는다.
+    vector_db_fixed_answer = ""
     for doc in similar_docs:
-        example_blocks += f"""
-[예시 답변]
-{doc.page_content}
+        vector_db_fixed_answer += f"""
+    [예시 답변]
+    {doc.metadata["response"]}
 
 
 """
-    # 3) 본 프롬프트 구성
+    # 3) 본 프롬프트 구성 벡터 db 참고해서 답변을 생성한다. .... ㅋ
     prompt = f"""
-You are a 전문 공무원 AI 어시스턴트입니다.
-기관 이름: 사하구청
+You are a 공무원 AI 어시스턴트 입니다. 
 
-아래 예시를 참고하여, 주어진 답변 요지로 정중하고 행정 문서 어투의 회신문을 작성해주세요. 이떄 템플릿 부분은 참고하지 말고,
-답변요지만을 참고하세요.
+아래 ‘현재 입력한 답변요지’와 ‘기존의 답변 내용’을 참고하여,
+정중한 행정 문체로 회신문을 작성해 주세요.
 
-{example_blocks}
-[새 민원 답변 요지]
-{answer_gist}
 
-[회신문]
+[현재 입력한 답변요지]
+{innput_answer_yogi}
+
+[기존의 답변 내용]
+{vector_db_fixed_answer}
 """
     # 4) LLaMA 호출
+    print('2단계 출력 중입니다')
     mem_reply = llama_generate(prompt, max_tokens=300)
     return naive_reply, mem_reply
 
@@ -142,9 +141,11 @@ if __name__ == "__main__":
         if gist.lower() == "exit":
             print("🛑 종료합니다!")
             break
+        print('출력 중입니다. 기다려 주세요.')
         naive_reply, mem_reply = respond_with_memory(gist, k=1)# k 조정하여 참고 민원 답변 내용  참고
         print("\n✨ [Chroma 미참조 회신문]:\n")
         print(naive_reply)
+
         print("\n✨ [Chroma 참조 회신문]:\n")
         print(mem_reply)
         print("\n" + "=" * 60 + "\n")
