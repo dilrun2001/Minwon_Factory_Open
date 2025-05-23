@@ -1,0 +1,10 @@
+[theme]
+base="light"
+primaryColor = "#2766C2"
+
+
+[server]
+runOnSave = true
+port=15031
+[client]
+showSidebarNavigation = false
