@@ -372,7 +372,7 @@ def show_result():
                 st.markdown('''''')
                 st.markdown('''##### 다른 민원 선택''')
                 st.markdown('''###### 아래 버튼을 클릭 시 민원 데이터 선택화면으로 넘어가고 다른 민원을 생성할 수 있습니다. 단, 수동 입력은 지원하지 않습니다.''')
-                st.button("다른 민원 선택", on_click = minwon_clear, key = "go_to_select")
+                st.button("다른 민원 선택", on_click = minwon_next, key = "go_to_select")
                 st.markdown('''---''')
                 st.markdown('''##### 세션 초기화''')
                 st.markdown('''###### 아래 버튼을 클릭 시 처음 화면으로 넘어가고 입력값들이 초기화됩니다.''')
