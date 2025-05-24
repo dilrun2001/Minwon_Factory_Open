@@ -1,6 +1,8 @@
 import streamlit as st
 from contextlib import contextmanager
 
+
+
 def load_css():
     with open('./css/new_style.css', encoding = "UTF-8") as f:
         css = f.read()
@@ -8,6 +10,11 @@ def load_css():
     st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
     #st.markdown('<div class="top-fixed-menu custom-option-menu">', unsafe_allow_html=True)
 
+
+def slider_css():
+    with open ('./css/slider.css', encoding = 'UTF-8') as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    
 
 #spinner
 @contextmanager

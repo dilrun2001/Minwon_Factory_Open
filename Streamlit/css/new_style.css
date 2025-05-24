@@ -27,14 +27,13 @@ iframe[title="streamlit_navigation_bar.st_navbar"] {
 
 .stToast {
     position: fixed !important;
-    top:70px;
+    top: 70px;
     left: 50%;
     transform: translate(-50%, -50%) !important;
-    animation: fadeSlideIn 0.5s ease-out !important;
+    animation: fadeSlideIn 0.3s ease-out !important;
     bottom: auto;
-    padding: 10px;
     width: 600px;
-
+    font-size: 20px;
     font-weight: bold !important;
     z-index: 9999;
     
@@ -155,62 +154,4 @@ div[class = "stAppDeployButton"]{
 }
 [data-testid = "stSidebarHeader"]{
     padding : 5%;
-}
-
-[role = "slider"]{
-    background-color: #2766C2 !important;
-}
-
-/*stslider 튜닝*/
-[data-testid = "stSliderThumbValue"]{
-    color: #2766C2 !important;
-    animation: fadeOut 1s forwards;
-    animation-delay: 1s;
-    transition: opacity 0.5s ease-out;
-}
-
-@keyframes fadeOut {
-    to {
-        opacity: 0;
-        visibility: hidden;
-    }
-}
-
-.stSlider {
-    border: 1px solid transparent;
-    border-radius: 8px;
-    /*padding: 8px 12px;*/
-    /*background-color: #3b3c47;*/
-    /*olor: #dfe5ee;*/
-    transition: border-color 0.6s ease, box-shadow 0.6s ease;
-}
-
-
-[data-testid = 'stSliderTickBarMin']{
-    display: none !important; 
-}
-
-[data-testid = 'stSliderTickBarMax']{
-    display: none !important; 
-}
-
-
-/*spinner css*/
-.block-screen-spinner::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5); /* 어두운 반투명 배경 */
-    z-index: 9998;
-}
-
-/* 스피너 자체 위치 중앙 고정 */
-.block-screen-spinner {
-    position: fixed !important;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999 !important;
 }

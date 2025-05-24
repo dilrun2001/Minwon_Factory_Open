@@ -280,7 +280,7 @@ def show_main(data, key):
 
 #유저 개인 민원 데이터 호출
 def show_personal():
-    user_history = run_query("SELECT timestamp, name, category, urgency,minwon, response FROM history where name = %s", (st.session_state.name))
+    user_history = st.session_state.save_df#run_query("SELECT timestamp, name, category, urgency,minwon, response FROM history where name = %s", (st.session_state.name))
             #iltered_user = filtering_frame(user_history) #if modify else user_history
     if not user_history.empty:
         if check_bool == "side-by-side":
