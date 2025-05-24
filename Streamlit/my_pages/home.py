@@ -282,11 +282,11 @@ def show_select():
             st.markdown(f"#### 이름: {st.session_state.name}, 부서명: {st.session_state.department}, 전화번호: {st.session_state.tel}")
             st.markdown(f"#### 민원 내용\n{st.session_state.minwon}")
 
-    with st.container(key = "select button", border=True):
-        
+    with st.container(key = "select button"):  
+            
             st.markdown('''---''')
             
-            ul, us, ur = st.columns ((7, 20, 7), border = True, vertical_alignment="bottom")
+            ul, us, ur = st.columns ((7, 20, 7), vertical_alignment="bottom")
             with ul:
                 st.button("이전 단계", key = "select_before_button", on_click=page_before, icon = ':material/chevron_left:')
             if st.session_state['btn_show']:
