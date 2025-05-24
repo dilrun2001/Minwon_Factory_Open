@@ -9,6 +9,13 @@ import os
 import shutil
 from Streamlit.util.llama3_korea_bllossomQ8 import AI_print_answer, AI_print_minwon_sub
 
+# Cosine similarity imports
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# for cosine-similarity debugging and filtering
+sim_model = SentenceTransformer('snunlp/KR-SBERT-V40K-klueNLI-augSTS')
+
 # 1) MySQL에서 민원 데이터 가져와서 Chroma DB 만들기 ========================
 engine = create_engine("mysql+pymysql://root:1234@localhost/minwon")
 query = "SELECT answer_yogi,response FROM history"
@@ -62,12 +69,18 @@ def respond_with_memory(minwon_text: str, innput_answer_yogi: str, k: int = 1):
     )
 
     results = db.similarity_search_with_score(innput_answer_yogi, k=10)
+    # encode the query for cosine similarity
+    query_emb = sim_model.encode(innput_answer_yogi)
+    # debug both Euclidean distance and cosine similarity, then filter by cosine
+    cos_threshold = 0.7
+    similar_docs = []
     for doc, dist in results:
-        print(f"DEBUG 유사도측정: {dist:.6f} → {doc.page_content[:40]}...")
-
-
-    threshold = 160.0
-    similar_docs = [doc for doc, dist in results if dist <= threshold]
+        # compute cosine similarity against the query
+        doc_emb = sim_model.encode(doc.page_content)
+        cos = cosine_similarity([query_emb], [doc_emb])[0][0]
+        print(f"DEBUG 거리: {dist:.6f}, 코사인 유사도: {cos:.6f} → {doc.page_content[:40]}...")
+        if cos >= cos_threshold:
+            similar_docs.append(doc)
 
     # 디버그 출력
     print(f"DEBUG [민원의 핵심 요점]: {minwon_summary}")
