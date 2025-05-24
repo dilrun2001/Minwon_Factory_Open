@@ -1,66 +1,80 @@
-# (이미 설치하셨으니 생략 가능)
 
-# HF 허브에서 GGUF 파일만 내려받기
-def useAi():
-    from huggingface_hub import hf_hub_download
+import os
+import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
-    model_path = hf_hub_download(
-        repo_id="MLP-KTLim/llama-3-Korean-Bllossom-8B",
-        filename="MLP-KTLim/llama-3-Korean-Bllossom-8B"
-    )
+minwon ="""당리동 포스코 공사 현장 소음 및 먼지
+당리동 포스코 공사 현장 소음과 먼지로 인해 고통 받고 있습니다.
+어제 오늘 먼지가 눈에 보이고 영상에 보일 정도로 심하게 나고 있는데
+살수를 한다고 하는데 먼지가 이렇게 많이 날릴 수가 있습니까?
+어제 포스코측 관리자와 연락을 하여 조치 하겠다고 하였는데
+오늘도 같은곳에 먼지가 날리고 있습니다."""
+answer ="""현장관계자에게 전달, 작업시간 준수, 고소음 작업 시 장비분산 사용, 작업자 교육 등 공사장 관리 철저토록 행정지도,해당 지역 지속적인 순찰을 통해 주민 불편 사항 최소화"""
+answer_format="""1. 안녕하십니까? 귀하께서 신청하신 민원에 대한 검토결과를 다음과 같이 알려드립니다.
 
-    # llama-cpp-python 으로 모델 로드 및 생성 함수 정의
-    from llama_cpp import Llama
+2. 귀하의 민원 내용은 [민원요지]에 관한 것으로 이해됩니다.
 
-    llm = Llama(
-        model_path=model_path,
-        n_gpu_layers=-1,  # GPU 전체 사용
-        n_ctx=4096,
-        chat_format="llama-3",  # 또는 "llama-3" 등 모델에 맞게 설정
-    )
+3. 귀하의 민원사항에 대해 검토한 결과는 다음과 같습니다.
+가. [답변요지]
 
-    messages = [
-        {"role": "system", "content": """당신은 공공기관의 민원 응답을 담당하는 전문 공무원입니다.
-         기관 이름은 '사하구청'입니다.
-         
-         이 요지를 바탕으로 **아래 템플릿 형식을 정확히 지켜서** [답변내용]을 작성해주세요.
+4. 귀하의 민원에 만족스러운 답변이 되었기를 바라며, 답변 내용에 대한 추가 설명이 필요한 경우 [부서명]([이름], [전화번호])으로 연락주시면 친절히 안내해 드리도록 하겠습니다. 감사합니다. """
 
-         ※ 특히 [답변요지]를 파악하여 정중하고 행정 문서 문체를 [답변 템플릿] 을 참고하여 작성해주세요. 
-         (예: '~로 확인되어 조치 중입니다.', '~한 점 양해 부탁드립니다.' 등)"""},
 
-        {"role": "user", "content": """
-     
-         다음은 민원에 대한 [답변 요지]입니다.
-         
-         [답변 요지]
-         ○ 정기적으로 청소를 진행하여 청소 유지  
-         ○ 또한 예산을 편성해서 더 나은 청소환경 제공
+model_id = 'MLP-KTLim/llama-3-Korean-Bllossom-8B'
 
-         [답변 템플릿]
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    torch_dtype=torch.bfloat16,
+    device_map="auto",
+)
 
-         1. 귀하의 가정에 행복이 가득하시길 바랍니다.
+model.eval()
 
-         2. 귀하의 민원내용은 [민원요지]에 관한 것으로 이해(또는 판단) 됩니다.
+PROMPT = '''당신은 공공기관의 민원 응답을 담당하는 전문 공무원입니다.
+기관 이름은 '사하구청'입니다.
 
-         3. 귀하의 질의사항에 대해 검토한 의견은 다음과 같습니다.
+다음의 **[답변 템플릿] 형식을 정확히 지켜서** 작성하십시오. 
+⚠️ [답변 템플릿]의 형식을 **그대로 유지하고**, 출력 시작 부분이나 끝에 어떠한 추가 설명도 하지 마십시오.
 
-         가. [답변내용]
+※ 반드시 출력은 [답변 템플릿] 안에 있는 형식을 따르며, 템플릿 외 문장은 추가하지 마십시오.
+※ 템플릿 내 `[민원요지]` 부분은 민원 내용을 행정 문서 문체로 정중하게 요약하여 대체하되, `[민원요지]`라는 단어는 최종 출력에 **표시되지 않아야 합니다**.
+※ 템플릿 내 `[답변요지]` 부분은 답변 요지를 정중하고 행정적인 문체로 바꾸어 넣되, `[답변요지]`라는 단어는 최종 출력에 **표시되지 않아야 합니다**.
+※ 출력에는 들여쓰기, 불필요한 줄바꿈, 공백 없이 문장 맨 앞에서 바로 시작하십시오.'''
+instruction = f"""다음은 민원에 대한 [답변 요지]와 [민원 내용]입니다.
 
-         4. 귀하의 질문에 만족스러운 답변이 되었기를 바라며, 답변 내용에 대한 추가 설명이 필요한 경우에는 사하구 교통(김수빈, ☎123-1234-1234)에게 연락주시면 친절히 안내해 드리도록 하겠습니다.
-         아울러 귀하의 민원처리에 대한 만족도 참여를 부탁드립니다. 
-          감사합니다.
+[민원 내용]
+{minwon}
 
-    """}
+[답변 요지]
+{answer} 
+
+[답변 템플릿]
+{answer_format}"""
+
+messages = [
+    {"role": "system", "content": f"{PROMPT}"},
+    {"role": "user", "content": f"{instruction}"}
     ]
 
-    output = llm.create_chat_completion(
-        messages=messages,
-        temperature=0.7,
-        top_p=0.9,
-        max_tokens=512,
-    )
+input_ids = tokenizer.apply_chat_template(
+    messages,
+    add_generation_prompt=True,
+    return_tensors="pt"
+).to(model.device)
 
-    print(output['choices'][0]['message']['content'])  #output['choices'][0]['message']['content']
+terminators = [
+    tokenizer.eos_token_id,
+    tokenizer.convert_tokens_to_ids("<|eot_id|>")
+]
 
-useAi()
+outputs = model.generate(
+    input_ids,
+    max_new_tokens=2048,
+    eos_token_id=terminators,
+    do_sample=True,
+    temperature=0.6,
+    top_p=0.9
+)
 
+print(tokenizer.decode(outputs[0][input_ids.shape[-1]:], skip_special_tokens=True))
