@@ -115,7 +115,7 @@ def sidebar_set():
         )
         with data_tab:
             data_option = st.selectbox(
-                "표시할 히스토리 데이터를 선택해주세요.", options = (f"{st.session_state.name} 개인 데이터", "전체 데이터")
+                "표시할 히스토리 데이터를 선택해주세요.", options = ( "전체 데이터","개인 데이터")
             )
         with option_tab:
             if st.session_state.name == "admin":
@@ -280,7 +280,7 @@ def show_main(data, key):
 
 #유저 개인 민원 데이터 호출
 def show_personal():
-    user_history = run_query("SELECT timestamp, name, category, urgency,minwon, response FROM history where name = %s", (st.session_state.name))
+    user_history = st.session_state.save_df#run_query("SELECT timestamp, name, category, urgency,minwon, response FROM history where name = %s", (st.session_state.name))
             #iltered_user = filtering_frame(user_history) #if modify else user_history
     if not user_history.empty:
         if check_bool == "side-by-side":
@@ -316,21 +316,22 @@ def show_history():
     #col1 = st.columns(1)
     #with col1:
     with st.container(key = "history_container"):
-        if st.session_state.log_in:
-            st.markdown('<div class = "history-container">', unsafe_allow_html=True)
-            
-            st.subheader("민원 히스토리")
-            sidebar_set()
-            """user_tab, total_tab = st.tabs([
-                f"{st.session_state.name}님의 내역",
-                "전체 내역"
-            ]
-            )"""
-            #with user_tab:
-            if data_option == f"{st.session_state.name} 개인 데이터":
-                show_personal()
-            elif data_option == "전체 데이터" :
-                    show_total()
-        else:
-            st.error(":material/close: 로그인 후 이용 가능한 서비스입니다.")
+        #if st.session_state.log_in:
+        st.markdown('<div class = "history-container">', unsafe_allow_html=True)
+        
+        st.subheader("민원 히스토리")
+        sidebar_set()
+        """user_tab, total_tab = st.tabs([
+            f"{st.session_state.name}님의 내역",
+            "전체 내역"
+        ]
+        )"""
+        #with user_tab:
+        #if data_option == f"{st.session_state.name} 개인 데이터":
+        #    show_personal()
+        #el
+        if data_option == "전체 데이터" :
+                show_total()
+        #else:
+        #    st.error(":material/close: 로그인 후 이용 가능한 서비스입니다.")
 

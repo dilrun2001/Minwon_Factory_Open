@@ -1,5 +1,6 @@
 from sentence_transformers import SentenceTransformer, InputExample, losses
 from torch.utils.data import DataLoader
+from sklearn.metrics.pairwise import cosine_similarity
 # 해당 과정은 snunlp/KR-SBERT-V40K-klueNLI-augSTS 해당 모델을 사용하여 파인튜닝을 할수 있는 예제 입니다.
 
 # 모델 로드
@@ -34,3 +35,15 @@ sim_02 = cosine_similarity([embeddings[0]], [embeddings[2]])[0][0]
 
 print(f"문장 0 vs 1 유사도: {sim_01:.4f}")
 print(f"문장 0 vs 2 유사도: {sim_02:.4f}")
+
+
+# 추가: 두 문장 유사도 비교
+sent1 = "빠른시일안에 처리 할수 있도록 하겠습니다"
+sent2 = "현장 작업을 진행중입니다. 빠른시일안에 처리 할수 있도록 하겠습니다"
+
+# 두 문장 임베딩을 한 번에 계산
+emb_pair = model.encode([sent1, sent2])
+
+# sklearn의 cosine_similarity로 유사도 계산
+sim_pair = cosine_similarity([emb_pair[0]], [emb_pair[1]])[0][0]
+print(f"문장 sent1 vs sent2 유사도: {sim_pair:.4f}")
