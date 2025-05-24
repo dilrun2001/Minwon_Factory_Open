@@ -4,7 +4,7 @@
 }
 
 iframe[title="streamlit_navigation_bar.st_navbar"] {
-    width: 45%;
+    width: 30%;
 }
 
 .stButton{
@@ -12,93 +12,135 @@ iframe[title="streamlit_navigation_bar.st_navbar"] {
     border: transparent;
 }
 
-/*로그아웃 버튼 css 적용
-.element-container:has(#logout-button) + div button{
-    width: 120px;
-    height: 15px;
-    padding: 5px;
-    position:fixed;
-    top: 0.35%;
-    right: 1%;
-    background-color: transparent;
-    border: transparent;
-    margin-left: 2.5625rem;
-    font-weight: bold;
+
+/*우측 팝업창 css */
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translate(120%, -50%);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
 }
 
-.element-container:has(#logout-button) + div button span:nth-of-type(2) {
+.stToast {
+    position: fixed !important;
+    top: 70px;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+    animation: fadeSlideIn 0.3s ease-out !important;
+    bottom: auto;
+    width: 600px;
+    font-size: 20px;
+    font-weight: bold !important;
+    z-index: 9999;
+    
+}
+
+.stToast svg, .stToast i {
+    width: 20px !important;
+    height: 20px !important;
+    padding-bottom: 2%;
+    flex-shrink: 0;
+}
+.stToast button {
     display: none;
 }
 
-.element-container:has(#logout-button) + div button:hover{
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+.fade-in {
+    animation: fadeIn 0.6s ease-in;
+}
 
-    width: 120px;
-    height: 15px;
-    padding: 5px;
-    position:fixed;
-    top: 0.35%;
-    right: 1%;
+
+/*파일 업로더 임시 css*/
+div[data-testid="stFileUploader"] > label {
+    display: none;
+}
+
+/* 기본 텍스트 숨김 */
+div[data-testid="stFileUploader"] span {
+    font-size: 16px;        /* 글자 크기 */
+    font-weight: bold; 
+}
+
+div[data-testid="stFileUploader"] small {
+    display: none;
+}
+
+div[data-testid="stFileUploader"] button {
     border: transparent;
-    color: lightblue;
+    background-color: #f0f2f6;
     font-weight: bold;
 }
 
-.element-container:has(#logout-button) + div button:hover span:nth-of-type(2) {
-    display: inline;
+/*이전 단계, 다음 단계 버튼 css *
+
+/* 공통 높이로 조정 */
+.element-container:has(#before-button),
+.element-container:has(#next-button) {
+    position: relative;
+    height: 90px;
+
 }
 
-/*회원 정보 수정 버튼 css 적용
-.element-container:has(#edit-button) + div button{
-    width: 150px;
-    height: 15px;
+/* 이전 버튼 */
+.element-container:has(#before-button) + div:has(button) {
+    left: -5px;
+    position: absolute;
+    bottom: 60px; 
+    z-index: 9999;
     padding: 5px;
-    position:fixed;
-    top: 0.35%;
-    right: 8%;
-
-    background-color: transparent;
-    border: transparent;
-    font-weight: bold;
+    display: flex;
+    justify-content: flex-start;
 }
 
-.element-container:has(#edit-button) + div button:hover{
-    width: 150px;
-    height: 15px;
+/* 다음 버튼 */
+.element-container:has(#next-button) + div:has(button) {
+    right: -5px;
+    position: absolute;
+    bottom: 60px; 
+    z-index: 9999;
     padding: 5px;
-    position:fixed;
-    top: 0.35%;
-    right: 8%;
-    color: lightblue;
-    border: transparent;
-    font-weight: bold;
+    display: flex;
+    justify-content: flex-end;
 }
 
 
-*/
+.element-container:has(#input-button) {
+    position: relative;
+    height: 50px;
+}
+.element-container:has(#input-button) + div:has(button){
+    position: absolute;
+    bottom: 0;
+    right: -5px;
+    width:140px;
+    padding: 5px;
+    z-index:9999;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.element-container:has(#input-button) + div:has(button):hover{
+    position: absolute;
+    bottom: 0;
+    right: -10px;
+    width:140px;
+    padding: 5px;
+    z-index:9999;
+    display: flex;
+    justify-content: flex-end;
+}
 div[class = "stAppDeployButton"]{
     display: none;
 }
 
-/*.logout-button-container {
-    position: fixed;
-    top: 10px;
-    right: 20px;
-    z-index: 9999;
-}
-
-.logout-button-container button {
-    padding: 6px 12px;
-    background-color: #e64336;
-    color: #f7f7f7;
-    font-weight: 1000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.logout-button-container button:hover {
-            color: #2766C2;
-}*/
 [data-testid = "stMainBlockContainer"]{
     padding-top: auto;
     padding-left: 8%;
@@ -112,41 +154,4 @@ div[class = "stAppDeployButton"]{
 }
 [data-testid = "stSidebarHeader"]{
     padding : 5%;
-}
-
-[role = "slider"]{
-    background-color: #2766C2 !important;
-}
-
-/*stslider 튜닝*/
-[data-testid = "stSliderThumbValue"]{
-    color: #2766C2 !important;
-    animation: fadeOut 1s forwards;
-    animation-delay: 1s;
-    transition: opacity 0.5s ease-out;
-}
-
-@keyframes fadeOut {
-    to {
-        opacity: 0;
-        visibility: hidden;
-    }
-}
-
-.stSlider {
-    border: 1px solid transparent;
-    border-radius: 8px;
-    /*padding: 8px 12px;*/
-    /*background-color: #3b3c47;*/
-    /*olor: #dfe5ee;*/
-    transition: border-color 0.6s ease, box-shadow 0.6s ease;
-}
-
-
-[data-testid = 'stSliderTickBarMin']{
-    display: none !important; 
-}
-
-[data-testid = 'stSliderTickBarMax']{
-    display: none !important; 
 }
