@@ -125,7 +125,7 @@ def input_set():
             st.button("답변 생성", key = "input minwon", icon=":material/edit:", on_click=input_answer)
         st.markdown('''---''')
         #st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
-        ul, us, ur = st.columns ((1.4, 11.6, 1.4))
+        ul, us, ur = st.columns ((2, 10, 2))
         with ul:
             st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
     if st.session_state['btn_show']:
