@@ -88,12 +88,12 @@ f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
             st.session_state.answer = answer
         #st.rerun()
     elif st.session_state.answer_format == "양식 2":
-        st.session_state.answer = f"{run_query("SELECT * FROM userdata WHERE id = %s", (st.session_state.id)).iloc[0]['양식2']}"
+        st.session_state.answer = f"{run_query('SELECT * FROM userdata WHERE id = %s', (st.session_state.id)).iloc[0]['양식2']}"
         if st.session_state.answer == "None":
                 st.session_state.answer = "저장된 양식이 없습니다."
         #st.rerun()
     elif st.session_state.answer_format == "양식 3":
-        st.session_state.answer = f"{run_query("SELECT * FROM userdata WHERE id = %s", (st.session_state.id)).iloc[0]['양식3']}"
+        st.session_state.answer = f"{run_query('SELECT * FROM userdata WHERE id = %s', (st.session_state.id)).iloc[0]['양식3']}"
         if st.session_state.answer == "None":
                 st.session_state.answer = "저장된 양식이 없습니다."
 
@@ -147,16 +147,14 @@ def input_answer():
          #time.sleep(500)
 
 def genereate_response():
-        global result_check, response
+        global result_check
         
         with st.spinner("답변을 생성 중입니다...", show_time = True):
             st.session_state.answer = useAi.AI_print_answer(minwon=st.session_state.minwon, answer=st.session_state.answer_sub,answer_format=st.session_state.answer_format)
 
-            response  = st.session_state.answer
             st.session_state['minwon_check'] = 'result'
             #st.session_state.minwon_check = True
             result_check = True
-
 
 
 #메인 화면
@@ -230,7 +228,7 @@ def show_home():
 def input_db():
     def insert_data():
         run_query("INSERT INTO history (timestamp, name, category, urgency, minwon, response) VALUES (%s, %s, %s, %s, %s, %s)", 
-                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, minwon, response),
+                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, st.session_state.minwon, st.session_state.answer),
                     fetch = False
                 )
         return True
