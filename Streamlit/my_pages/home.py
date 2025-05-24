@@ -214,9 +214,9 @@ def show_home():
         if st.session_state['btn_show']:
             st.markdown('''---''')
             if st.session_state.manual:
-                st.success("수동 입력이 완료되었습니다. 아래 버튼을 눌러 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
+                st.toast("수동 입력이 완료되었습니다. 아래 버튼을 눌러 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
             else:
-                st.success("엑셀 파일이 선택되었습니다. 아래 버튼을 눌러 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
+                st.toast("엑셀 파일이 선택되었습니다. 아래 버튼을 눌러 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
             st.session_state.file_check = True
             ul, us, ur = st.columns((4, 12, 4),vertical_alignment = "center")
             with ur:
