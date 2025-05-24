@@ -5,7 +5,7 @@ import torch
 
 # === 설정 ===
 model_name = "MLP-KTLim/llama-3-Korean-Bllossom-8B"
-data_path = "dataset.jsonl"
+data_path = "realdata.jsonl"
 output_dir = "./llama3-ko-munwon-finetuned"
 
 # === 데이터 불러오기 ===
