@@ -94,7 +94,7 @@ You are a 전문 공무원 AI 어시스턴트입니다.
 
 """
     print('1단계 출력 중입니다')
-    naive_reply = llama_generate(naive_prompt, max_tokens=300) # 위의 프롬포트를 활용해서 반환을 한다.
+    #naive_reply = llama_generate(naive_prompt, max_tokens=300) # 위의 프롬포트를 활용해서 반환을 한다.
 
     ### 위의 naive_reply 부분을 반환하다.
 
@@ -111,7 +111,7 @@ You are a 전문 공무원 AI 어시스턴트입니다.
         print(f'유사도측정{dist}')
 
 
-    threshold = 100.0  # 거리 기준 50 까지 유사 답변으로 상ㅇ
+    threshold = 160.0  # 거리 기준 50 까지 유사 닫변요
     similar_docs = [doc for doc, distance in results if distance <= threshold]
 
 
@@ -129,19 +129,16 @@ You are a 전문 공무원 AI 어시스턴트입니다.
     print(f"DEBUG [기존의 답변 내용]: {vector_db_fixed_answer}")
 
     # 3) 본 프롬프트 구성 벡터 db 참고해서 답변을 생성한다. 그게 없으면 원본 라마만 답변
+    system_msg = """\
+당신은 전문 공무원 AI 어시스턴트입니다.
+다음 **[답변 템플릿]** 형식을 **정확히** 지켜서, **추가 설명 없이 템플릿 부분만** 출력해 주세요.
+탬플릿 부분의 문장 끝에는 반드시 '~하였습니다.' 또는 '~되었습니다.' 형태의 종결어미를 사용해야 합니다.
+"""
     if vector_db_fixed_answer.strip():
-        prompt = f"""
-
-민원의 핵심 요점과, 현재 입력한 답변 요지 항목은 기존의 답변내용을 수정하는데 참고만 하고,
-출력에는 참고된 기존의 답변 내용만 출력이 되어야 한다. 
-항목(1~4) 및 하위 항목(가., 나., 다.)의 문장은 모두 ‘~하였습니다.’ 또는 ‘~되었습니다.’ 형태의 공손한 종결어미로 마무리해야 합니다.
-1~4번 항목 외에는 절대로 출력하지 마십시오.
-답변 템플릿의 으로 이해 (또는 판단) 됩니다. 는 무조건 출력 되어야합니다.
-
-
-
+        # build user message with END sentinel
+        user_msg = f"""\
 [민원의 핵심 요점]
- {minwon_summary}
+{minwon_summary}
 
 [현재 입력한 답변요지]
 {innput_answer_yogi}
@@ -150,21 +147,28 @@ You are a 전문 공무원 AI 어시스턴트입니다.
 {vector_db_fixed_answer}
 
 [답변 템플릿]
-1. 안녕하십니까? 귀하께서 국민신문고를 통해 신청하신 민원 에 대한 검토 결과를 다음과 같이 알려드립니다.
-2. 귀하께서 제출하신 민원의 내용은 [민원의 핵심 요점] 으로 이해 (또는 판단) 됩니다. 
-3. 귀하의 민원에 대한 검토 결과는 다음과 같습니다. 
-가.{innput_answer_yogi}
+1. 안녕하십니까? 귀하께서 국민신문고를 통해 신청하신 민원에 대한 검토 결과를 다음과 같이 알려드립니다.
+2. 귀하께서 제출하신 민원의 내용은 [민원의 핵심 요점] 으로 이해 (또는 판단) 됩니다.
+3. 귀하의 민원에 대한 검토 결과는 다음과 같습니다.
+가. {innput_answer_yogi}
 4. 답변 내용에 대한 추가 설명이 필요하신 경우 △△△부 ○○○과 홍길동 사무관(☎044-200-0000)에게 연락 주시면 안내해 드리겠습니다. 감사합니다.
-
-
-
+END
 """
-        print('2단계 출력 중입니다')
-        mem_reply = llama_generate(prompt, max_tokens=300)
+
+        # perform chat completion
+        res = llm.create_chat_completion(
+            messages=[
+                {"role": "system", "content": system_msg},
+                {"role": "user", "content": user_msg},
+            ],
+            max_tokens=300,
+            stop=["END"],
+        )
+        mem_reply = res["choices"][0]["message"]["content"].strip()
     else:
         print("유사 답변 없음")
         mem_reply = "유사 답변 없음"
-    return naive_reply, mem_reply
+    return  mem_reply
 
 
 
@@ -189,7 +193,7 @@ if __name__ == "__main__":
     # 단일 행 답변 요지 입력
     innput_answer_yogi = input("💬 답변 요지를 입력하세요: ").strip()
     print('출력 중입니다. 기다려 주세요.')
-    naive_reply, mem_reply = respond_with_memory(
+    mem_reply = respond_with_memory(
         minwon_text=minwon_text,
         innput_answer_yogi=innput_answer_yogi,
         k=1
