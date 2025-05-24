@@ -310,8 +310,7 @@ def show_select():
             st.text_area("민원 내용", value = st.session_state.minwon, height = 200)
  
     with st.container(key = "select button"):
-        
-            st.markdown('''---''')        
+              
             st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True)
             st.button("이전 단계", key = "select_before_button", on_click=page_before, icon = ':material/chevron_left:', disabled=st.session_state.btn_deactive)
             if st.session_state['btn_show']:
