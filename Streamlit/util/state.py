@@ -109,6 +109,13 @@ def clear_state():
     if "manual" not in st.session_state:
         st.session_state.manual = False
 
+    #버튼 비활성화
+    if "btn_deactive" not in st.session_state:
+        st.session_state.btn_deactive = False
+    
+    if "save_df" not in st.session_state:
+        st.session_state.save_df = pd.DataFrame(columns = ["이름", "부서명", "전화번호","민원 카테고리", "민원내용", "답변내용"])
+
 def logout_state():
     st.session_state.log_in = False
     st.session_state.answer = ""
@@ -118,10 +125,11 @@ def logout_state():
     st.session_state.name =""
     st.session_state.id = ""
 
-def minwon_clear():
-    st.session_state['minwon_check'] = 'file_select'
-    st.session_state.file_check = False
-    st.session_state.manual = False
+
+#이어서 답변하기
+def minwon_next():
+    st.session_state['minwon_check'] = 'minwon_select'
+    st.session_state.minwon = ""
     st.session_state.answer_sub = ""
     st.session_state.answer = ""
     st.session_state.answer_format = "None"
@@ -129,4 +137,19 @@ def minwon_clear():
     st.session_state.department = ""
     st.session_state.tel = ""
     st.session_state.name =""
+
+#세션 초기화
+def minwon_clear():
+    st.session_state['minwon_check'] = 'file_select'
+    st.session_state.file_check = False
+    st.session_state.manual = False
+    st.session_state.minwon = ""
+    st.session_state.answer_sub = ""
+    st.session_state.answer = ""
+    st.session_state.answer_format = "None"
+    st.session_state.minwon_sub = ""
+    st.session_state.department = ""
+    st.session_state.tel = ""
+    st.session_state.name =""
+    st.session_state.save_df = pd.DataFrame(columns = ["이름", "부서명", "전화번호","민원 카테고리", "민원내용", "답변내용"])
     st.rerun()

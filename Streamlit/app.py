@@ -23,6 +23,7 @@ import my_pages as pg
 
 load_css()
 clear_state()
+slider_css()
 
 
 
@@ -101,7 +102,8 @@ if page != st.session_state['page']:
     st.session_state['page'] = page
     
 if st.session_state['page'] == "홈" :
-    pg.show_page()
+   pg.show_page()
+    
 elif st.session_state['page'] == "민원 입력" :
     pg.show_input()
 elif st.session_state['page'] == "민원 히스토리" :

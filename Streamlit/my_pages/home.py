@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 from util.menu import *
 from util.setting import *
-from css.theme import load_css
+from css.theme import *
 from util.database import *
 import pymysql
 from pymysql.cursors import DictCursor
@@ -13,6 +13,7 @@ from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 #import streamlit_shadcn_ui as ui
 from util.dataframe import *
 import util.llama3_korea_bllossomQ8 as useAi #우리가 만든 ai를 사용하기위한 임포트
+import streamlit.components.v1 as components
 
 #from input import *
 placeholder_minwon = """민원제목
@@ -88,50 +89,54 @@ f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
             st.session_state.answer = answer
         #st.rerun()
     elif st.session_state.answer_format == "양식 2":
-        st.session_state.answer = f"{run_query("SELECT * FROM userdata WHERE id = %s", (st.session_state.id)).iloc[0]['양식2']}"
+        st.session_state.answer = f"{run_query('SELECT * FROM userdata WHERE id = %s', (st.session_state.id)).iloc[0]['양식2']}"
         if st.session_state.answer == "None":
                 st.session_state.answer = "저장된 양식이 없습니다."
         #st.rerun()
     elif st.session_state.answer_format == "양식 3":
-        st.session_state.answer = f"{run_query("SELECT * FROM userdata WHERE id = %s", (st.session_state.id)).iloc[0]['양식3']}"
+        st.session_state.answer = f"{run_query('SELECT * FROM userdata WHERE id = %s', (st.session_state.id)).iloc[0]['양식3']}"
         if st.session_state.answer == "None":
                 st.session_state.answer = "저장된 양식이 없습니다."
 
-
+#민원 데이터 최종 입력 화면면
 def input_set():
     global minwon, minwon_sub, answer, answer_format, result, result_check
-    st.subheader("민원 입력 및 응답 생성")
-    with st.container():
-        minwon_tab, answer_tab = st.tabs(
-            [
-                "민원 입력",
-                "답변 요지 및 양식 확인"
-            ]
-        )
-        with minwon_tab:
-            st.session_state.minwon = st.text_area(
-                            "민원 내용을 입력해주세요.", placeholder = placeholder_minwon, height = 350, value = st.session_state.minwon,
+    st.subheader("민원 입력 및 응답 생성")    
+    with st.container(key = 'main_container'):
+        with st.form(key = "response_generate"):
+        #임시 UI 체크용
+            minwon_column, spacer, answer_column = st.columns((8,1,8)) 
+            '''minwon_tab, answer_tab = st.tabs(
+                [
+                    "민원 입력",
+                    "답변 요지 및 양식 확인"
+                ]
             )
-            st.session_state.minwon_sub = st.text_area(
-                "민원 요지를 입력해주세요.", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height = 70  , value=st.session_state.minwon_sub #추후 자체 판단해서 작성될 예정
-            ) 
-        with answer_tab:
-            st.session_state.answer_sub  = st.text_area(
-                        "답변 요지를 입력해주세요." , placeholder = "답변요지 : 현장확인 후 조속히 처리하겠음.", height = 200, value = st.session_state.answer_sub
-                    )
-            st.session_state.answer_format = st.text_area(
-                "답변 양식을 입력하세요.", value = st.session_state.answer_format , height = 220
+            with minwon_tab:'''
+            with minwon_column:
+                st.session_state.minwon = st.text_area(
+                                "민원 내용을 입력해주세요.", placeholder = placeholder_minwon, height = 350, value = st.session_state.minwon,
                 )
-            st.button("답변 생성", key = "input minwon", icon=":material/edit:", on_click=input_answer)
-        st.markdown('''---''')
-        #st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
-        ul, us, ur = st.columns ((1.4, 11.6, 1.4))
-        with ul:
-            st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
+                st.session_state.minwon_sub = st.text_area(
+                    "민원 요지를 입력해주세요.", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height = 70  , value=st.session_state.minwon_sub 
+                ) 
+            with answer_column:
+                st.session_state.answer_sub  = st.text_area(
+                            "답변 요지를 입력해주세요." , placeholder = "답변요지 : 현장확인 후 조속히 처리하겠음.", height = 200, value = st.session_state.answer_sub
+                        )
+                st.session_state.answer_format = st.text_area(
+                    "답변 양식을 입력하세요.", value = st.session_state.answer_format , height = 220
+                    )
+                st.markdown('<span id = "input-button"></span>', unsafe_allow_html = True)
+                st.form_submit_button("답변 생성", icon=":material/edit:", on_click=input_answer, disabled = st.session_state.btn_deactive)
+    st.markdown('''''')
+    #st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
+    st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True )
+    st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:', disabled=st.session_state.btn_deactive)
     if st.session_state['btn_show']:
-        with ur:
-            st.button("다음 단계", key = "input_after_button", on_click = page_convert, icon = ':material/chevron_right:')
-            
+        st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True )
+        st.button("다음 단계", key = "input_after_button", on_click = page_convert, icon = ':material/chevron_right:')
+                
 
 
 def clear():
@@ -147,16 +152,14 @@ def input_answer():
          #time.sleep(500)
 
 def genereate_response():
-        global result_check, response
+        global result_check
         
-        with st.spinner("답변을 생성 중입니다...", show_time = True):
+        with show_loading_overlay(message= "답변을 생성 중입니다. 잠시만 기다려주세요."):
             st.session_state.answer = useAi.AI_print_answer(minwon=st.session_state.minwon, answer=st.session_state.answer_sub,answer_format=st.session_state.answer_format)
 
-            response  = st.session_state.answer
             st.session_state['minwon_check'] = 'result'
             #st.session_state.minwon_check = True
             result_check = True
-
 
 
 #메인 화면
@@ -167,22 +170,26 @@ def show_home():
     st.markdown('''
     ##### 본 페이지는 지난 5월 14일, 사하구청 관계자분들과의 면담 이후 시스템 방향성이 대폭 수정된 버전입니다.      
     ''')
-    file_tab, manual_tab = st.tabs(
-        (
-            "파일 입력",
-            "수동 입력"
-        )
-    )
+    file_col, spacer, manual_col = st.columns((8,1,8))
+    #file_tab, manual_tab = st.tabs(
+    #    (
+    #        "파일 입력",
+    #        "수동 입력"
+    #    )
+    #)
     # 파일 입력 칸
-    with file_tab:
+    with file_col:
         st.markdown("")
         st.subheader("파일 입력")
         st.markdown('''
                     ##### 엑셀 파일을 통해 1개 이상의 민원 데이터들의 답변을 생성할 수 있습니다.''')
-        upload_files = st.file_uploader(
+        with st.container(key = "file_input", border = True):
+            
+            upload_files = st.file_uploader(
             "민원을 입력할 파일을 선택해주세요. (지원하는 파일 양식: csv, xlsx)",
             type = ['csv', 'xlsx'],
-            key = "file_uploader_1")
+            key = "file_uploader_1", label_visibility="collapsed")
+            #uploader_set()
         if upload_files:
                 data_filename = r"{}".format(upload_files.name)
         #st.write(data_filename)
@@ -194,7 +201,7 @@ def show_home():
                 st.session_state['btn_show'] = True
                 
     # 수동 입력 칸
-    with manual_tab:
+    with manual_col:
         st.markdown("")
         st.subheader("수동 입력")
         st.markdown('''
@@ -204,35 +211,53 @@ def show_home():
             department = st.text_input("부서명", placeholder="사하구청")
             tel = st.text_input("전화번호", placeholder="000-000-0000")
             manual_btn = st.form_submit_button("수동 입력", icon = ':material/edit_note:')
+            
 
         if manual_btn:
-            st.session_state.name = name
-            st.session_state.department = department
-            st.session_state.tel = tel
-            st.session_state.manual = True
-            st.session_state['btn_show'] = True
+            if name != '' and department != '' and tel != '':
+                st.session_state.name = name
+                st.session_state.department = department
+                st.session_state.tel = tel
+                st.session_state.manual = True
+                st.session_state['btn_show'] = True
+            else:
+                st.toast("입력 필드를 확인해주세요.", icon = ":material/block:")
         
     with st.container(key = "result button"):
         if st.session_state['btn_show']:
             st.markdown('''---''')
             if st.session_state.manual:
-                st.toast("수동 입력이 완료되었습니다. 아래 버튼을 눌러 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
+                st.toast("수동 입력이 완료되었습니다. 아래 버튼을 눌러 다음 단계로 이동해주세요.", icon = ":material/done:")
             else:
-                st.toast("엑셀 파일이 선택되었습니다. 아래 버튼을 눌러 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
+                st.toast("엑셀 파일이 선택되었습니다. 아래 버튼을 눌러 다음 단계로 이동해주세요.", icon = ":material/done:")
             st.session_state.file_check = True
-            ul, us, ur = st.columns((4, 12, 4),vertical_alignment = "center")
-            with ur:
-                st.button("다음 단계", key = "input_page_show", on_click  = page_convert, icon = ':material/chevron_right:')
+            st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
+            st.button("##### 다음 단계", key = "input_page_show", on_click  = page_convert, icon = ':material/chevron_right:')
 
      
 
 #데이버베이스 입력
+#데이터프레임 임시 입력 작업 추가
 def input_db():
     def insert_data():
         run_query("INSERT INTO history (timestamp, name, category, urgency, minwon, response) VALUES (%s, %s, %s, %s, %s, %s)", 
-                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, minwon, response),
+                (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, st.session_state.minwon, st.session_state.answer),
                     fetch = False
                 )
+        print(type(st.session_state.save_df))
+        new_data = pd.DataFrame([{
+            "이름": st.session_state.name,
+            "부서명": st.session_state.department,
+            "전화번호": st.session_state.tel,
+            "민원 카테고리" : st.session_state.category,
+            "민원내용": st.session_state.minwon,
+            "답변내용": st.session_state.answer,
+        }])
+        st.session_state.save_df = pd.concat(
+                [st.session_state.save_df, new_data],
+                ignore_index=True
+        )
+        print(st.session_state.save_df)
         return True
     def return_value():
          if insert_data():
@@ -254,18 +279,18 @@ def select_main(df):
 #민원 선택창 출력
 def show_select():
     st.subheader("답변을 사용할 민원 데이터를 선택해주세요.")
-    st.markdown('''---''')
-    filtered_df = filtering_frame(st.session_state.df, key_prefix= "select_minwon")
-    gb = GridOptionsBuilder.from_dataframe(filtered_df)
-    gb.configure_selection("single", use_checkbox=False)
-    grid_options = gb.build()
+   
     left, spacer, right = st.columns((6, 1.5, 6))
-    with left:
+    with left: 
+        filtered_df = filtering_frame(st.session_state.df, key_prefix= "select_minwon")
+        gb = GridOptionsBuilder.from_dataframe(filtered_df)
+        gb.configure_selection("single", use_checkbox=False)
+        grid_options = gb.build()
         minwon_data = AgGrid(
             filtered_df,
             gridOptions=grid_options,
             update_mode = GridUpdateMode.SELECTION_CHANGED,
-            height = 400,
+            height = 350,
             fit_columns_on_grid_load=True,
         )
     selected = minwon_data.get('selected_rows', None)
@@ -281,20 +306,18 @@ def show_select():
             st.caption(
                 f":gray-background[:material/person: 선택된 민원 데이터]",
             )
-            st.markdown(f"#### 이름: {st.session_state.name}, 부서명: {st.session_state.department}, 전화번호: {st.session_state.tel}")
-            st.markdown(f"#### 민원 내용\n{st.session_state.minwon}")
-
-    with st.container(key = "select button", border=True):
-        
-            st.markdown('''---''')
-            
-            ul, us, ur = st.columns ((7, 20, 7), border = True, vertical_alignment="bottom")
-            with ul:
-                st.button("이전 단계", key = "select_before_button", on_click=page_before, icon = ':material/chevron_left:')
+            st.markdown(f"#### 이름: {st.session_state.name}, 부서명: {st.session_state.department}, 전화번호: {st.session_state.tel}\n")
+            st.text_area("민원 내용", value = st.session_state.minwon, height = 200)
+ 
+    with st.container(key = "select button"):
+              
+            st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True)
+            st.button("이전 단계", key = "select_before_button", on_click=page_before, icon = ':material/chevron_left:', disabled=st.session_state.btn_deactive)
             if st.session_state['btn_show']:
-                st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
-                with ur:
-                    st.button("다음 단계", key = "select_after_button", on_click = print_minwon_sub, icon = ':material/chevron_right:')
+                st.toast("답변이 생성될 민원이 선택되었습니다. 아래 버튼을 눌러 다음 단계로 이동해주세요.", icon = ":material/done:")
+            #    with ur:
+                st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
+                st.button("다음 단계", key = "select_after_button", on_click = print_minwon_sub, icon = ':material/chevron_right:', disabled=st.session_state.btn_deactive)
 
 
 #페이지 표시
@@ -317,11 +340,13 @@ f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
     with st.container(key = "input button"):
         if st.session_state['btn_show']:
             st.markdown('''---''')
-            ul, us, ur = st.columns ((4, 12, 4))
-            with ul:
-                st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
-            with ur:
-                st.button("다음 단계", key = "input_after_button", on_click = page_convert, icon = ':material/chevron_right:')
+            #ul, us, ur = st.columns ((4, 12, 4))
+            #with ul:
+            st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True)
+            st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
+            #with ur:
+            st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
+            st.button("다음 단계", key = "input_after_button", on_click = page_convert, icon = ':material/chevron_right:')
 
 # 결과창 표시
 def show_result():
@@ -329,7 +354,7 @@ def show_result():
         st.subheader("생성된 답변 결과")
         st.toast("답변이 생성되었습니다. 결과를 확인해주세요.", icon = ":material/done:")
         st.markdown('''''')
-        st.markdown(f'''##### {st.session_state.name}님이 신청하신 (민원 들어갈 자리)에 관한 답변이 생성되었습니다.''')
+        st.markdown(f'''##### {st.session_state.name}님이 요청하신 민원에 관한 답변이 생성되었습니다.''')
         st.text_area("답변 결과", value = st.session_state.answer, height = 330, key="result")
         st.markdown('''''')
     with st.container(key = "result_btn_container"):
@@ -347,19 +372,34 @@ def show_result():
                 st.markdown('''##### 답변 다운로드''')
                 st.markdown('''###### 형식을 선택 후 아래 다운로드 버튼을 눌러주세요.''')
                 format = st.selectbox("다운받을 파일 형식", options= ( "Excel", "CSV"))
-                download = st.button("다운로드", key = "DownLoad", icon = ":material/download:")
+                download = st.button("형식 지정", key = "DownLoad", icon = ":material/view_list:")
                 if download:
                     if format == "CSV":
-                        pass
+                        csv = st.session_state.save_df.to_csv().encode("utf-8-sig")
+                        st.download_button(
+                            label = "파일 다운로드",
+                            data=csv,
+                            file_name = "result.csv",
+                            key = "download_csv",
+                            icon = ":material/download:"
+                        )
                     else:
                         pass
+                        '''excel = st.session_state.save_df.to_excel()
+                        st.download_button(
+                            label = "파일 다운로드",
+                            data = excel,
+                            file_name = "민원 결과.xlsx",
+                            key = "download_excel",
+                            icon = ":material/download:"
+                        )'''
                             #st.write("데이터베이스에 등록이 완료되었습니다.")
         with clear_col:
             with st.expander("세션 초기화 및 이어서 답변하기", icon = ":material/delete_forever:", expanded=True):
                 st.markdown('''''')
                 st.markdown('''##### 다른 민원 선택''')
                 st.markdown('''###### 아래 버튼을 클릭 시 민원 데이터 선택화면으로 넘어가고 다른 민원을 생성할 수 있습니다. 단, 수동 입력은 지원하지 않습니다.''')
-                st.button("다른 민원 선택", on_click = minwon_clear, key = "go_to_select")
+                st.button("다른 민원 선택", on_click = minwon_next, key = "go_to_select")
                 st.markdown('''---''')
                 st.markdown('''##### 세션 초기화''')
                 st.markdown('''###### 아래 버튼을 클릭 시 처음 화면으로 넘어가고 입력값들이 초기화됩니다.''')
@@ -367,14 +407,15 @@ def show_result():
 
     with st.container(key = "result button"):
         st.markdown('''---''')
-        ul, us, ur = st.columns ((4, 26, 4))
-        with ul:
-            st.button("이전 단계", key = "result_before_button", on_click=page_before, icon = ':material/chevron_left:')
+        '''ul, us, ur = st.columns ((4, 26, 4))
+        with ul:'''
+        st.button("이전 단계", key = "result_before_button", on_click=page_before, icon = ':material/chevron_left:')
 
 
 #각 페이지 호출
 def show_page():
     sidebar_set()
+    st.markdown('<div class = "fade-in">', unsafe_allow_html=True)
     if st.session_state['minwon_check'] == 'file_select':
          show_home()
     
@@ -386,6 +427,7 @@ def show_page():
     
     elif st.session_state['minwon_check'] == 'result':
         show_result()
+    st.markdown('</div>', unsafe_allow_html = True)
 
 #각 페이지 세션 전환 함수
 def page_convert():
@@ -406,7 +448,10 @@ def page_convert():
     #민원 입력 창
     elif st.session_state['minwon_check'] == 'minwon_input':
         if st.session_state.before:
-            st.session_state['minwon_check'] = 'minwon_select'
+            if st.session_state.manual:
+                st.session_state['minwon_check'] = 'file_select'
+            else:
+                st.session_state['minwon_check'] = 'minwon_select'
             st.session_state.before = False
         else:
             st.session_state['minwon_check'] = 'result'
@@ -426,7 +471,8 @@ def page_before():
 
 def print_minwon_sub():
     print('minwon_sub start')
-    with st.spinner("답변을 생성 중입니다..."):
+    with show_loading_overlay(message = "민원 내용을 바탕으로 민원 요지를 생성 중입니다. 잠시만 기다려주세요."):
+        #time.sleep(10)
         st.session_state.minwon_sub = useAi.AI_print_minwon_sub(st.session_state.minwon)
         page_convert()
     print('good')
