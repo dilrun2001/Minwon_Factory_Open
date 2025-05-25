@@ -25,10 +25,11 @@ def replace_phone_numbers(text: str) -> str:
 def clean_answer(answer_text: str) -> str:
     if "붙임" in answer_text:
         answer_text = answer_text.split("붙임")[0]
-    answer_text = re.sub(r'\b[1-7]\.\s*', '', answer_text)
+
+    #answer_text = re.sub(r'\b[1-7]\.\s*', '', answer_text)
     
     #한글 항목 문자 (가. 나. 다. 라.) 제거
-    answer_text = re.sub(r'\b[가-아]\.\s*', '', answer_text)
+    #answer_text = re.sub(r'\b[가-아]\.\s*', '', answer_text)
     
     #두 칸 이상 공백 → 하나의 공백으로 줄임
     answer_text = re.sub(r'\s{2,}', ' ', answer_text)
@@ -161,8 +162,8 @@ for page in range(1, 101):
 
             if question_text.strip() and answer_text.strip():
                 data_item = {
-                    #"instruction": question_text.strip(),
-                    "text": clean_answer(answer_text.strip())
+                    "instruction": question_text.strip(),
+                    "output": clean_answer(answer_text.strip())
                 }
                 tinyllama_data.append(data_item)
                 print(f"✅ 민원 수집: {detail_title} (작성일: {detail_date})")
@@ -170,7 +171,7 @@ for page in range(1, 101):
                 print("⚠️ 질문 또는 답변이 비어 있어 저장하지 않음")
 
 # ✅ JSONL 저장
-with open("realdata.jsonl", "w", encoding="utf-8") as f:
+with open("QAdata.jsonl", "w", encoding="utf-8") as f:
     for item in tinyllama_data:
         json_line = json.dumps(item, ensure_ascii=False)
         f.write(json_line + "\n")

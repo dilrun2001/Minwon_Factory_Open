@@ -1,12 +1,11 @@
 from datasets import load_dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, DataCollatorForLanguageModeling
-from peft import get_peft_model, LoraConfig, TaskType
 import torch
 
 # === 설정 ===
 model_name = "MLP-KTLim/llama-3-Korean-Bllossom-8B"
 data_path = "realdata.jsonl"
-output_dir = "./llama3-ko-munwon-finetuned"
+output_dir = "./llama3-ko-munwon-finetuned-full"
 
 # === 데이터 불러오기 ===
 dataset = load_dataset("json", data_files=data_path, split="train")
@@ -18,20 +17,8 @@ tokenizer.pad_token = tokenizer.eos_token  # padding 문제 방지
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
     torch_dtype=torch.float16,
-    device_map="auto"
+    device_map="auto"  # GPU 자동 할당
 )
-
-# === LoRA 설정 ===
-lora_config = LoraConfig(
-    r=8,
-    lora_alpha=32,
-    target_modules=["q_proj", "v_proj"],
-    lora_dropout=0.1,
-    bias="none",
-    task_type=TaskType.CAUSAL_LM
-)
-
-model = get_peft_model(model, lora_config)
 
 # === 전처리 ===
 def tokenize(example):
@@ -53,9 +40,9 @@ data_collator = DataCollatorForLanguageModeling(
 # === 학습 설정 ===
 training_args = TrainingArguments(
     output_dir=output_dir,
-    per_device_train_batch_size=4,
+    per_device_train_batch_size=10,
     gradient_accumulation_steps=4,
-    num_train_epochs=3,
+    num_train_epochs=5,
     learning_rate=5e-5,
     fp16=True,
     save_strategy="epoch",
