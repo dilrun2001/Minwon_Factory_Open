@@ -33,16 +33,22 @@ lora_config = LoraConfig(
 
 model = get_peft_model(model, lora_config)
 
-# === 전처리 ===
+# === 전처리 함수 ===
 def preprocess(example):
     prompt = f"민원 내용: {example['instruction']}\n답변: "
-    full_text = prompt + example['output'] + tokenizer.eos_token
-    return tokenizer(
-        full_text,
-        truncation=True,
-        padding="max_length",
-        max_length=512,
-    )
+    response = example["output"]
+    full_text = prompt + response + tokenizer.eos_token
+
+    tokenized = tokenizer(full_text, truncation=True, padding="max_length", max_length=512)
+    input_ids = tokenized["input_ids"]
+    labels = input_ids.copy()
+
+    # Prompt 길이만큼 -100으로 마스킹 (loss 계산 제외)
+    prompt_len = len(tokenizer(prompt)["input_ids"])
+    labels[:prompt_len] = [-100] * prompt_len
+
+    tokenized["labels"] = labels
+    return tokenized
 
 tokenized_dataset = dataset.map(preprocess, batched=False)
 
@@ -71,10 +77,11 @@ trainer = Trainer(
     model=model,
     args=training_args,
     train_dataset=tokenized_dataset,
-    tokenizer=tokenizer,
     data_collator=data_collator,
 )
 
 trainer.train()
+
+# === 저장 ===
 model.save_pretrained(output_dir)
 tokenizer.save_pretrained(output_dir)
