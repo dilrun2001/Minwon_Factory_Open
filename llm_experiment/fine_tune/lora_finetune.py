@@ -1,6 +1,6 @@
 from datasets import load_dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, DataCollatorForLanguageModeling
-from peft import get_peft_model, LoraConfig, TaskType
+from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, DataCollatorForLanguageModeling, default_data_collator
+from peft import get_peft_model, LoraConfig, TaskType 
 import torch
 
 # === 설정 ===
@@ -43,8 +43,9 @@ def preprocess(example):
     input_ids = tokenized["input_ids"]
     labels = input_ids.copy()
 
-    # Prompt 길이만큼 -100으로 마스킹 (loss 계산 제외)
-    prompt_len = len(tokenizer(prompt)["input_ids"])
+    prompt_ids = tokenizer(prompt, truncation=True)["input_ids"]
+    prompt_len = len(prompt_ids)
+
     labels[:prompt_len] = [-100] * prompt_len
 
     tokenized["labels"] = labels
@@ -52,11 +53,8 @@ def preprocess(example):
 
 tokenized_dataset = dataset.map(preprocess, batched=False)
 
-# === 데이터로더 ===
-data_collator = DataCollatorForLanguageModeling(
-    tokenizer=tokenizer,
-    mlm=False,
-)
+# data_collator는 기본 패딩만 처리하는 걸로 변경
+data_collator = default_data_collator
 
 # === 학습 설정 ===
 training_args = TrainingArguments(
