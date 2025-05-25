@@ -39,7 +39,7 @@ def preprocess(example):
     response = example["output"]
     full_text = prompt + response + tokenizer.eos_token
 
-    tokenized = tokenizer(full_text, truncation=True, padding="max_length", max_length=1536)
+    tokenized = tokenizer(full_text, truncation=True, padding="max_length", max_length=2048)
     input_ids = tokenized["input_ids"]
     labels = input_ids.copy()
 
@@ -59,11 +59,11 @@ data_collator = default_data_collator
 # === 학습 설정 ===
 training_args = TrainingArguments(
     output_dir=output_dir,
-    per_device_train_batch_size=4,
-    gradient_accumulation_steps=4,
+    per_device_train_batch_size=2,
+    gradient_accumulation_steps=8,
     num_train_epochs=10,
     learning_rate=5e-5,
-    fp16=True,
+    bf16=True,
     save_strategy="epoch",
     logging_steps=20,
     save_total_limit=2,
