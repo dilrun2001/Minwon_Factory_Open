@@ -39,7 +39,7 @@ def preprocess(example):
     response = example["output"]
     full_text = prompt + response + tokenizer.eos_token
 
-    tokenized = tokenizer(full_text, truncation=True, padding="max_length", max_length=2048)
+    tokenized = tokenizer(full_text, truncation=True, padding="max_length", max_length=1024)
     input_ids = tokenized["input_ids"]
     labels = input_ids.copy()
 
