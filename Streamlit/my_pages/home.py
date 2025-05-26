@@ -159,7 +159,7 @@ def genereate_response():
         global result_check
         
         with show_loading_overlay(message= "답변을 생성 중입니다. 잠시만 기다려주세요."):
-            st.session_state.answer = "test"#useAi.AI_print_answer(minwon=st.session_state.minwon, answer=st.session_state.answer_sub,answer_format=st.session_state.answer_format)
+            st.session_state.answer = useAi.AI_print_answer(minwon=st.session_state.minwon, answer=st.session_state.answer_sub,answer_format=st.session_state.answer_format)
 
             st.session_state['minwon_check'] = 'result'
             #st.session_state.minwon_check = True
@@ -475,7 +475,7 @@ def print_minwon_sub():
     print('minwon_sub start')
     with show_loading_overlay(message = "민원 내용을 바탕으로 민원 요지를 생성 중입니다. 잠시만 기다려주세요."):
         #time.sleep(10)
-        #st.session_state.minwon_sub = useAi.AI_print_minwon_sub(st.session_state.minwon)
+        st.session_state.minwon_sub = useAi.AI_print_minwon_sub(st.session_state.minwon)
         page_convert()
     print('good')
         
