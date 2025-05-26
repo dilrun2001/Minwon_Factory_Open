@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 import os
 import shutil
 from Streamlit.util.llama3_korea_bllossomQ8 import AI_print_answer, AI_print_minwon_sub
+from sentence_transformers import util
 
 
 # 1) MySQL에서 민원 데이터 가져와서 Chroma DB 만들기 ========================
@@ -22,7 +23,8 @@ if os.path.exists("minwon_chroma_db/chroma_db"):
 
 # 임베딩 모델 세팅
 embedding_model = HuggingFaceEmbeddings(
-    model_name="snunlp/KR-SBERT-V40K-klueNLI-augSTS" #서울쪽 모델
+    model_name="nlpai-lab/KURE-v1" #서울쪽 모델
+    #model_name="nunlp/KR-SBERT-V40K-klueNLI-augSTS" #서울쪽 모델
 )
 
 # 문서 리스트로 변환
@@ -78,15 +80,19 @@ def respond_with_memory(minwon_text: str, innput_answer_yogi: str, k: int = 1):
 
 
     # 1) 유사 민원 검색 (score 포함) 및 필터링
-    results = db.similarity_search_with_score(innput_answer_yogi, k=1)
+    results = db.similarity_search(innput_answer_yogi, k=k)
+    docs_list = [doc.page_content for doc in results]
 
-    for doc, dist in results:
-        print(f'유사도측정{dist}')
+    query_emb = embedding_model.embed_query(innput_answer_yogi)
+    doc_embs = embedding_model.embed_documents(docs_list)
 
+    sims = util.cos_sim(query_emb, doc_embs)[0]
 
-    threshold = 100.0
+    for doc, sim_val in zip(results, sims):
+        print(f'코사인 유사도: {sim_val:.4f}')
 
-    similar_docs = [doc for doc, distance in results if distance <= threshold]
+    cosine_threshold = 0.7
+    similar_docs = [doc for doc, sim_val in zip(results, sims) if sim_val >= cosine_threshold]
 
 
     # 2) 프롬프트에 예시로 추가 어떤 것을 [답변 요지를 example_block 에 넣는다].
