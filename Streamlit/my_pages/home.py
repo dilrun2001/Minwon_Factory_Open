@@ -311,18 +311,16 @@ def show_select():
         with right:
             st.markdown(f"##### 이름: {st.session_state.name}, 부서명: {st.session_state.department}, 전화번호: {st.session_state.tel}\n")
             st.text_area("민원 내용", value = st.session_state.minwon, height = 410)
- 
-    #with st.container(key = "select button"):
 
-    st.markdown('''---''')        
-    st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True)
-    st.button("이전 단계", key = "select_before_button", on_click=page_before, icon = ':material/chevron_left:', disabled=st.session_state.btn_deactive)
-    if st.session_state['btn_show']:
-        st.toast("답변이 생성될 민원이 선택되었습니다. 아래 버튼을 눌러 다음 단계로 이동해주세요.", icon = ":material/done:")
-    #    with ur:
-    st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
-    st.button("다음 단계", key = "select_after_button", on_click = print_minwon_sub, icon = ':material/chevron_right:', disabled=st.session_state.btn_deactive)
-
+    with st.container(key = "select button"):
+              
+            st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True)
+            st.button("이전 단계", key = "select_before_button", on_click=page_before, icon = ':material/chevron_left:', disabled=st.session_state.btn_deactive)
+            if st.session_state['btn_show']:
+                st.toast("답변이 생성될 민원이 선택되었습니다. 아래 버튼을 눌러 다음 단계로 이동해주세요.", icon = ":material/done:")
+            #    with ur:
+                st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
+                st.button("다음 단계", key = "select_after_button", on_click = print_minwon_sub, icon = ':material/chevron_right:', disabled=st.session_state.btn_deactive)
 
 #페이지 표시
 def show_input():
