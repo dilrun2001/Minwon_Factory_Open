@@ -150,10 +150,12 @@ def menu_mk2():
                 with logout_tab :
                     pass#logout_form()
                 with format_tab:
+
+                    edit_form()
+                
                 edit_form()
 
-           """     
-        
+           """   
 
 
 

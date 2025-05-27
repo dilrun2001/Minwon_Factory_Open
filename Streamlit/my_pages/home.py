@@ -101,34 +101,38 @@ f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
 #민원 데이터 최종 입력 화면면
 def input_set():
     global minwon, minwon_sub, answer, answer_format, result, result_check
-    st.subheader("민원 입력 및 응답 생성")    
+    st.subheader("민원 입력 및 응답 생성")  
+    print(f"민원 : {st.session_state.minwon}")
+    print(st.session_state.minwon_sub)
+    print(st.session_state.answer_sub)
+    print(st.session_state.answer_format)  
     with st.container(key = 'main_container'):
-        with st.form(key = "response_generate"):
+        #with st.form(key = "response_generate"):
         #임시 UI 체크용
-            minwon_column, spacer, answer_column = st.columns((8,1,8)) 
-            '''minwon_tab, answer_tab = st.tabs(
-                [
-                    "민원 입력",
-                    "답변 요지 및 양식 확인"
-                ]
+        minwon_column, spacer, answer_column = st.columns((8,1,8)) 
+        '''minwon_tab, answer_tab = st.tabs(
+            [
+                "민원 입력",
+                "답변 요지 및 양식 확인"
+            ]
+        )
+        with minwon_tab:'''
+        with minwon_column:
+            st.session_state.minwon = st.text_area(
+                            "민원 내용을 입력해주세요.", placeholder = placeholder_minwon, height = 350, value = st.session_state.minwon#, key = "minwon",
             )
-            with minwon_tab:'''
-            with minwon_column:
-                st.session_state.minwon = st.text_area(
-                                "민원 내용을 입력해주세요.", placeholder = placeholder_minwon, height = 350, value = st.session_state.minwon,
-                )
-                st.session_state.minwon_sub = st.text_area(
-                    "민원 요지를 입력해주세요.", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height = 70  , value=st.session_state.minwon_sub 
-                ) 
-            with answer_column:
-                st.session_state.answer_sub  = st.text_area(
-                            "답변 요지를 입력해주세요." , placeholder = "답변요지 : 현장확인 후 조속히 처리하겠음.", height = 200, value = st.session_state.answer_sub
-                        )
-                st.session_state.answer_format = st.text_area(
-                    "답변 양식을 입력하세요.", value = st.session_state.answer_format , height = 220
+            st.session_state.minwon_sub = st.text_area(
+                "민원 요지를 입력해주세요.", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height = 70  , value=st.session_state.minwon_sub#, key = "minwon_sub" 
+            ) 
+        with answer_column:
+            st.session_state.answer_sub  = st.text_area(
+                        "답변 요지를 입력해주세요." , placeholder = "답변요지 : 현장확인 후 조속히 처리하겠음.", height = 200, value = st.session_state.answer_sub#, key = "answer_sub"
                     )
-                st.markdown('<span id = "input-button"></span>', unsafe_allow_html = True)
-                st.form_submit_button("답변 생성", icon=":material/edit:", on_click=input_answer, disabled = st.session_state.btn_deactive)
+            st.session_state.answer_format = st.text_area(
+                "답변 양식을 입력하세요.", value = st.session_state.answer_format , height = 220#, key = "answer_format"
+                )
+            st.markdown('<span id = "input-button"></span>', unsafe_allow_html = True)
+            st.button("답변 생성", icon=":material/edit:", on_click=input_answer, disabled = st.session_state.btn_deactive)#, key = "input_minwon_generate")
     st.markdown('''''')
     #st.toast("답변이 생성될 민원이 선택되었습니다. 다음 단계로 이동할 수 있습니다.", icon = ":material/done:")
     st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True )
@@ -145,7 +149,7 @@ def clear():
 
 
 def input_answer():
-    if st.session_state.minwon and st.session_state.answer_format and st.session_state.answer_sub and st.session_state.name:
+    if st.session_state.minwon and st.session_state.answer_format and st.session_state.answer_sub and st.session_state.minwon_sub:
         genereate_response()
     else:
          st.toast("모든 필드를 입력해주세요.", icon = ":material/block:")
@@ -244,7 +248,7 @@ def input_db():
                 (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, st.session_state.minwon, st.session_state.answer),
                     fetch = False
                 )
-        print(type(st.session_state.save_df))
+        #print(type(st.session_state.save_df))
         new_data = pd.DataFrame([{
             "이름": st.session_state.name,
             "부서명": st.session_state.department,
@@ -257,7 +261,7 @@ def input_db():
                 [st.session_state.save_df, new_data],
                 ignore_index=True
         )
-        print(st.session_state.save_df)
+        #print(st.session_state.save_df)
         return True
     def return_value():
          if insert_data():
@@ -277,6 +281,8 @@ def select_main(df):
     pass
 
 #민원 선택창 출력
+
+
 def show_select():
     st.subheader("답변을 사용할 민원 데이터를 선택해주세요.")
    
@@ -290,7 +296,7 @@ def show_select():
             filtered_df,
             gridOptions=grid_options,
             update_mode = GridUpdateMode.SELECTION_CHANGED,
-            height = 350,
+            height = 400,
             fit_columns_on_grid_load=True,
         )
     selected = minwon_data.get('selected_rows', None)
@@ -303,12 +309,9 @@ def show_select():
         st.session_state['btn_show'] = True
 
         with right:
-            st.caption(
-                f":gray-background[:material/person: 선택된 민원 데이터]",
-            )
-            st.markdown(f"#### 이름: {st.session_state.name}, 부서명: {st.session_state.department}, 전화번호: {st.session_state.tel}\n")
-            st.text_area("민원 내용", value = st.session_state.minwon, height = 200)
- 
+            st.markdown(f"##### 이름: {st.session_state.name}, 부서명: {st.session_state.department}, 전화번호: {st.session_state.tel}\n")
+            st.text_area("민원 내용", value = st.session_state.minwon, height = 410)
+
     with st.container(key = "select button"):
               
             st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True)
@@ -318,7 +321,6 @@ def show_select():
             #    with ur:
                 st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
                 st.button("다음 단계", key = "select_after_button", on_click = print_minwon_sub, icon = ':material/chevron_right:', disabled=st.session_state.btn_deactive)
-
 
 #페이지 표시
 def show_input():
