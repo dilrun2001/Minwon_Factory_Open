@@ -7,47 +7,60 @@ import pandas as pd
 from sqlalchemy import create_engine
 import os
 import shutil
-from Streamlit.util.llama3_korea_bllossomQ8 import AI_print_answer, AI_print_minwon_sub
 from sentence_transformers import util
 
 
+### 참고 내용####
+#  reply = find_similar_respond(minwon_summary, answer_yogi, k)
+# 해당 함수 사용하면 유사도 가져와서 적절한 답변 출력 합니다
+# 념겨줘야 할 인자값 : 다른곳에서 생성된 (민원에대한요지)(공무원이작성한답변 요지)(k=1)로 지정
+# MY sql db 에 answer_yogi  TEXT 형삭으로 속성 필요 합니다
+# 해당 코드는 mysql 이 수정된후 자동으로 벡터 db 의 내용을 반영하지 않으므로 특정 주기에 따라
+# MySQL에서 민원 데이터 가져와서 Chroma DB 만들어 줘야 합니다. 해당 과정에서 기존 Chroma DB  삭제후 다시 생성 됩니다. rebuild_chroma_db 메서드 호출하여 사용
+#chroma 벡터 db 의 생성 위치는 os.path.exists("minwon_chroma_db/chroma_db"): 여기서 설정 가능 합니다.
+
+
+# 혹여나   Document is not defined 해당 에러뜨면 from langchain_core.schema import Document 로 수정
+
+
+
+EMBEDDING_MODEL_NAME = "nlpai-lab/KURE-v1"
+embedding_model = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+
+
 # 1) MySQL에서 민원 데이터 가져와서 Chroma DB 만들기 ========================
-# (한 번만 실행하면 됨)
-engine = create_engine("mysql+pymysql://root:1234@localhost/minwon")
-query = "SELECT answer_yogi,response FROM history"
-df = pd.read_sql(query, engine)
-
-# 기존 DB 폴더가 있으면 깨끗하게 삭제
-if os.path.exists("minwon_chroma_db/chroma_db"):
-    shutil.rmtree("minwon_chroma_db/chroma_db")
-
-# 임베딩 모델 세팅
-embedding_model = HuggingFaceEmbeddings(
-    model_name="nlpai-lab/KURE-v1" #서울쪽 모델
-    #model_name="nunlp/KR-SBERT-V40K-klueNLI-augSTS" #서울쪽 모델
-)
-
-# 문서 리스트로 변환
-docs = []
-for _, row in df.iterrows():
-    content = f"""
-{row["answer_yogi"]}
 
 
-"""
-    docs.append(Document(
-        page_content=content.strip(),
-        metadata={
-            "response": row["response"],
-        }
-    ))
-# Chroma DB 생성 및 저장
-chroma_db = Chroma.from_documents(
-    docs,
-    embedding_model,
-    persist_directory="minwon_chroma_db/chroma_db"
 
-)
+# 해당 부분은 mysql --> chroma db 로 만드는 과정 ( 주기적으로 실행 필요)
+def rebuild_chroma_db(
+        mysql_url: str = "mysql+pymysql://root:1234@localhost/minwon",
+        query= "SELECT answer_yogi, response FROM history",
+        persist_directory= "minwon_chroma_db/chroma_db",
+):
+    # 1) 데이터 로드
+    engine = create_engine(mysql_url)
+    df = pd.read_sql(query, engine)
+
+    # 2) 기존 DB 폴더 삭제
+    if os.path.exists(persist_directory):
+        shutil.rmtree(persist_directory)
+
+    # 4) Document 리스트 생성
+    docs = []
+    for _, row in df.iterrows():
+        docs.append(Document(
+            page_content=row["answer_yogi"].strip(),
+            metadata={"response": row["response"]}
+        ))
+
+    # 5) Chroma DB 생성 및 저장
+    chroma_db = Chroma.from_documents(
+        docs,
+        embedding_model,
+        persist_directory=persist_directory
+    )
+    return chroma_db
 
 # 2) LLaMA 양자화 모델 로딩 ===============================================
 model_path = hf_hub_download(
@@ -70,11 +83,11 @@ def llama_generate(prompt: str, max_tokens: int = 500) -> str:
 
 
 # 3) 유사 민원 검색 + LLaMA 회신문 생성 함수 =================================
-def respond_with_memory(minwon_text: str, innput_answer_yogi: str, k: int = 1):
-    # 0) chroma 미 참조하고 그냥 출력 하는 프롬트트 버전 입니다.
-    minwon_summary = AI_print_minwon_sub(minwon_text).strip()
+def RUNNING_RAG_CODE(minwon_summary: str, innput_answer_yogi: str, k: int = 1):
+
 
    #백터 db 에 저장 된거 가져옵니다.
+
     db = Chroma(persist_directory="minwon_chroma_db/chroma_db",embedding_function=embedding_model)
 
 
@@ -104,7 +117,7 @@ def respond_with_memory(minwon_text: str, innput_answer_yogi: str, k: int = 1):
 
 """
     # DEBUG: show injected prompt values
-    print(f"DEBUG [민원의 핵심 요점]: {minwon_summary}")
+    #print(f"DEBUG [민원의 핵심 요점]: {minwon_summary}")  
     print(f"DEBUG [현재 입력한 답변요지]: {innput_answer_yogi}")
     print(f"DEBUG [기존의 답변 내용]: {vector_db_fixed_answer}")
 
@@ -156,32 +169,56 @@ END
 
 
 
+# find_similar_respond -> respond함수 호출 (실제 스트림릿 사용시 해당 함수 호출 해서 사용 하면 됩니다) 굳이 사용안해도 될듯 합니다.
+
+def find_similar_respond(minwon_summary: str, answer_yogi: str, k=1):
+    """
+    minwon_summary: 외부에서 생성된 민원 요지
+    answer_yogi: 사용자 입력 답변 요지
+    """
+    return RUNNING_RAG_CODE(minwon_summary, answer_yogi, k)
 
 
-# 4) 인터랙티브 실행 예시 ================================================
-if __name__ == "__main__":
-    # 한 번만 실행: 다중행 민원 내용 입력
-    print("💬 민원 내용을 입력하세요. 입력을 마치려면 빈 줄에서 엔터를 누르세요:")
-    minwon_lines = []
-    while True:
-        line = input()
-        if line == "":
-            break
-        minwon_lines.append(line)
-    minwon_text = "\n".join(minwon_lines).strip()
-    if minwon_text.lower() == "exit":
-        print("🛑 종료합니다!")
-        exit()
 
-    # 단일 행 답변 요지 입력
-    innput_answer_yogi = input("💬 답변 요지를 입력하세요: ").strip()
-    print('출력 중입니다. 기다려 주세요.')
-    mem_reply = respond_with_memory(
-        minwon_text=minwon_text,
-        innput_answer_yogi=innput_answer_yogi,
-        k=1
-    )
 
-    print("\n✨ [Chroma 참조 회신문]:\n")
-    print(mem_reply)
-# 프로그램 끝
+
+
+
+
+
+
+
+
+
+
+
+# # 4) 인터랙티브 실행 예시 ================================================
+# if __name__ == "__main__":
+#     # 한 번만 실행: 다중행 민원 내용 입력
+#     print("💬 민원 내용을 입력하세요. 입력을 마치려면 빈 줄에서 엔터를 누르세요:")
+#     minwon_lines = []
+#     while True:
+#         line = input()
+#         if line == "":
+#             break
+#         minwon_lines.append(line)
+#     minwon_text = "\n".join(minwon_lines).strip()
+#     if minwon_text.lower() == "exit":
+#         print("🛑 종료합니다!")
+#         exit()
+#
+#     # 단일 행 답변 요지 입력
+#     innput_answer_yogi = input("💬 답변 요지를 입력하세요: ").strip()
+#     print('출력 중입니다. 기다려 주세요.')
+#     mem_reply = respond_with_memory(
+#         minwon_text=minwon_text,
+#         innput_answer_yogi=innput_answer_yogi,
+#         k=1
+#     )
+#
+#     print("\n✨ [Chroma 참조 회신문]:\n")
+#     print(mem_reply)
+# # 프로그램 끝
+
+
+
