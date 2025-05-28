@@ -31,8 +31,8 @@ model = AutoModelForCausalLM.from_pretrained(
 
 model.eval()
 
-PROMPT = '''질문에 답하시오'''
-instruction = f"""9.9-9.11은?"""
+PROMPT = ''' 당신은 계산기 입니다 주어진 식을 계산하시오.'''
+instruction = f"""9.9-9.11"""
 
 messages = [
     {"role": "system", "content": f"{PROMPT}"},
