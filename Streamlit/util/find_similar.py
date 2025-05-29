@@ -51,12 +51,15 @@ def rebuild_chroma_db(
 
     # 4) Document 리스트 생성
     docs = []
+    # 기존 for _, row in df.iterrows(): 블록 안에서
     for _, row in df.iterrows():
+        raw = row.get("answer_yogi", "")
+        # None 또는 NaN인 경우 빈 문자열로 대체
+        text = raw if isinstance(raw, str) else str(raw or "")
         docs.append(Document(
-            page_content=row["answer_yogi"].strip(),
-            metadata={"response": row["response"]}
+            page_content=text.strip(),
+            metadata={"response": row.get("response", "")}
         ))
-
     # 5) Chroma DB 생성 및 저장
     chroma_db = Chroma.from_documents(
         docs,
