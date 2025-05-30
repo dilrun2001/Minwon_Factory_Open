@@ -237,9 +237,6 @@ def show_home():
     with st.container(key = "result button"):
         if st.session_state['btn_show']:
             st.markdown('''---''')
-            if st.button("🔄 벡터 DB 재생성", key="rebuild_chroma_home"):
-                ragai.rebuild_chroma_db()
-                st.success("벡터 DB가 재생성되었어요! 💾")
             if st.session_state.manual:
                 st.toast("수동 입력이 완료되었습니다. 아래 버튼을 눌러 다음 단계로 이동해주세요.", icon = ":material/done:")
             else:
