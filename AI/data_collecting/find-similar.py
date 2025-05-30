@@ -21,8 +21,6 @@ import util.state as st
 #chroma 벡터 db 의 생성 위치는 os.path.exists("minwon_chroma_db/chroma_db"): 여기서 설정 가능 합니다.
 
 
-# 혹여나   Document is not defined 해당 에러뜨면 from langchain_core.schema import Document 로 수정
-
 
 
 EMBEDDING_MODEL_NAME = "nlpai-lab/KURE-v1"

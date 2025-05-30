@@ -173,7 +173,7 @@ def genereate_response():
 
 
 #메인 화면
-ragai.ensure_chroma_db()
+ragai.ensure_chroma_db()# 해당 부분 추가 함으로서 (벡터 db 를 생성후) home 을 출력 합니다
 def show_home():
     #st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
     st.session_state['page'] = '홈'
