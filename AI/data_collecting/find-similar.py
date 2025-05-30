@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 import os
 import shutil
 from sentence_transformers import util
+import util.state as st
 
 
 ### 참고 내용####
@@ -19,8 +20,6 @@ from sentence_transformers import util
 # MySQL에서 민원 데이터 가져와서 Chroma DB 만들어 줘야 합니다. 해당 과정에서 기존 Chroma DB  삭제후 다시 생성 됩니다. rebuild_chroma_db 메서드 호출하여 사용
 #chroma 벡터 db 의 생성 위치는 os.path.exists("minwon_chroma_db/chroma_db"): 여기서 설정 가능 합니다.
 
-
-# 혹여나   Document is not defined 해당 에러뜨면 from langchain_core.schema import Document 로 수정
 
 
 
@@ -38,6 +37,8 @@ def rebuild_chroma_db(
         query= "SELECT answer_yogi, response FROM history",
         persist_directory= "minwon_chroma_db/chroma_db",
 ):
+
+
     # 1) 데이터 로드
     engine = create_engine(mysql_url)
     df = pd.read_sql(query, engine)
@@ -76,6 +77,11 @@ llm = Llama(
 
 )
 
+def ensure_chroma_db():
+    persist_dir = "minwon_chroma_db/chroma_db"
+    if not os.path.exists(persist_dir) or not os.listdir(persist_dir):
+        rebuild_chroma_db()
+
 
 def llama_generate(prompt: str, max_tokens: int = 500) -> str:
     res = llm(prompt=prompt, max_tokens=max_tokens, stop=["<|eot_id|>"])
@@ -84,7 +90,7 @@ def llama_generate(prompt: str, max_tokens: int = 500) -> str:
 
 # 3) 유사 민원 검색 + LLaMA 회신문 생성 함수 =================================
 def RUNNING_RAG_CODE(minwon_summary: str, innput_answer_yogi: str, k: int = 1):
-
+    ensure_chroma_db()
 
    #백터 db 에 저장 된거 가져옵니다.
 
@@ -117,7 +123,7 @@ def RUNNING_RAG_CODE(minwon_summary: str, innput_answer_yogi: str, k: int = 1):
 
 """
     # DEBUG: show injected prompt values
-    #print(f"DEBUG [민원의 핵심 요점]: {minwon_summary}")  
+    #print(f"DEBUG [민원의 핵심 요점]: {minwon_summary}")
     print(f"DEBUG [현재 입력한 답변요지]: {innput_answer_yogi}")
     print(f"DEBUG [기존의 답변 내용]: {vector_db_fixed_answer}")
 
@@ -171,12 +177,17 @@ END
 
 # find_similar_respond -> respond함수 호출 (실제 스트림릿 사용시 해당 함수 호출 해서 사용 하면 됩니다) 굳이 사용안해도 될듯 합니다.
 
-def find_similar_respond(minwon_summary: str, answer_yogi: str, k=1):
-    """
-    minwon_summary: 외부에서 생성된 민원 요지
-    answer_yogi: 사용자 입력 답변 요지
-    """
+def find_similar_respond(minwon_summary: str | None = None,
+                         answer_yogi: str | None = None,
+                         k: int = 1) -> str:
+    # 기본값이 없으면 세션에서 꺼내고
+    if minwon_summary is None:
+        minwon_summary = st.session_state.minwon_sub
+    if answer_yogi is None:
+        answer_yogi = st.session_state.answer_sub
+
     return RUNNING_RAG_CODE(minwon_summary, answer_yogi, k)
+
 
 
 

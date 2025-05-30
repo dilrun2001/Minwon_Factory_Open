@@ -41,6 +41,10 @@ def clear_state():
     if "answer_sub" not in st.session_state:
         st.session_state.answer_sub = ""
 
+    #rag 생성한 답변
+    if "raganswer" not in st.session_state:
+        st.session_state.raganswer = ""
+
     #포맷
     if "format" not in st.session_state:
         st.session_state.format = ""
