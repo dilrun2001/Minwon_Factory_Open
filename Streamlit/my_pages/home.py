@@ -62,10 +62,11 @@ def sidebar_set():
                 elif check_bool == "프레임 아래":
                     st.session_state['show_style'] = "main"
         
-        with st.sidebar.expander("데이터 초기화", icon = ":material/clear_all:", expanded = False):
+        '''with st.sidebar.expander("데이터 초기화", icon = ":material/clear_all:", expanded = False):
                 db_col, center, clear_col = st.columns((1, 1.7, 1))
-                with center:
-                    st.button("세션 초기화", on_click = minwon_clear, key = "clear_btn")
+                with center:'''
+        st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
+        st.button("세션 초기화", on_click = minwon_clear, key = "clear_btn", icon = ":material/delete:")
     
 
 #답변 양식 포맷 세팅 함수

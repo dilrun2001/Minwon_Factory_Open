@@ -3,9 +3,6 @@
     color : #292929
 }
 
-iframe[title="streamlit_navigation_bar.st_navbar"] {
-    width: 30%;
-}
 
 .stButton{
     background-color: transparent;
@@ -75,7 +72,7 @@ div[data-testid="stFileUploader"] small {
 
 div[data-testid="stFileUploader"] button {
     border: transparent;
-    background-color: #f0f2f6;
+    /*background-color: #f0f2f6;*/
     font-weight: bold;
 }
 
@@ -119,7 +116,19 @@ div[data-testid="stFileUploader"] button {
 .element-container:has(#input-button) + div:has(button){
     position: absolute;
     bottom: 0;
-    right: -5px;
+    right: -20px;
+    width:140px;
+    padding: 5px;
+    z-index:9999;
+    display: flex;
+    justify-content: flex-end;
+    border: transparent;
+}
+
+.element-container:has(#input-button) + div:has(button):hover{
+    position: absolute;
+    bottom: 0;
+    right: -20px;
     width:140px;
     padding: 5px;
     z-index:9999;
@@ -127,16 +136,32 @@ div[data-testid="stFileUploader"] button {
     justify-content: flex-end;
 }
 
-.element-container:has(#input-button) + div:has(button):hover{
-    position: absolute;
-    bottom: 0;
-    right: -5px;
-    width:140px;
+.element-container:has(#delete-button) + div button{
+    width: 150px;
+    height: 15px;
     padding: 5px;
-    z-index:9999;
-    display: flex;
-    justify-content: flex-end;
+    position:fixed;
+    top: 0.35%;
+    right: 1%;
+    z-index: 999999999;
+    background-color: transparent;
+    border: transparent;
+    font-weight: bold;
 }
+
+.element-container:has(#delete-button) + div button:hover{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    top: 0.35%;
+    right: 1%;
+    color: lightblue;
+    font-weight: bold;
+    z-index: 999999999;  
+}
+
+
 div[class = "stAppDeployButton"]{
     display: none;
 }
