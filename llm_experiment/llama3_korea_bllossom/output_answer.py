@@ -105,8 +105,8 @@ def aianswer(answer):
     return tokenizer.decode(outputs[0][input_ids.shape[-1]:], skip_special_tokens=True)
 
 
-input_file = 'testdata.jsonl'
-output_file = 'output.jsonl'
+input_file = 'QAdata.jsonl'
+output_file = 'goodQAdata.jsonl'
 
 with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'w', encoding='utf-8') as outfile:
     for line in infile:
