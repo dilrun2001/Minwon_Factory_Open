@@ -105,8 +105,10 @@ def aianswer(answer):
     return tokenizer.decode(outputs[0][input_ids.shape[-1]:], skip_special_tokens=True)
 
 
-input_file = 'QAdata.jsonl'
+input_file = 'asd.jsonl'
 output_file = 'goodQAdata.jsonl'
+
+line_count = 0
 
 with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'w', encoding='utf-8') as outfile:
     for line in infile:
@@ -120,6 +122,10 @@ with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'w', e
             ai_result = aianswer(answer)
             data['answer'] = ai_result
             outfile.write(json.dumps(data, ensure_ascii=False) + '\n')
+
+            line_count += 1
+            print(f"{line_count}줄 처리 완료")
+            
         except json.JSONDecodeError as e:
             print(f"JSON 오류 발생: {e}")
         except Exception as e:
