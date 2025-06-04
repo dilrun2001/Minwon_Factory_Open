@@ -12,7 +12,7 @@ import torch
 # === 설정 ===
 model_name = "MLP-KTLim/llama-3-Korean-Bllossom-8B"
 data_path = "QAdata.jsonl"
-output_dir = "./llama3-ko-munwon-finetuned"
+output_dir = "./llama3-ko-minwon-finetuned"
 max_seq_length = 2048  # 시퀀스 최대 길이
 
 # === 데이터 불러오기 ===
@@ -42,7 +42,7 @@ model = get_peft_model(model, lora_config)
 
 # === 전처리 함수 ===
 def preprocess(example):
-    prompt = f"민원 내용: {example['instruction']}\n답변: "
+    prompt = f"[민원 내용]\n{example['instruction']}\n[답변 요지]\n{example['answer']}\n[답변]\n"
     response = example["output"]
     full_text = prompt + response + tokenizer.eos_token
 
@@ -70,8 +70,8 @@ data_collator = default_data_collator
 # === 학습 설정 ===
 training_args = TrainingArguments(
     output_dir=output_dir,
-    per_device_train_batch_size=1,
-    gradient_accumulation_steps=16,
+    per_device_train_batch_size=2,
+    gradient_accumulation_steps=8,
     num_train_epochs=3,
     learning_rate=5e-5,
     bf16=True,              # A6000 지원됨

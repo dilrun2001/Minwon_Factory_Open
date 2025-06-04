@@ -20,7 +20,7 @@ answer_format="""1. 안녕하십니까? 귀하께서 신청하신 민원에 대�
 4. 귀하의 민원에 만족스러운 답변이 되었기를 바라며, 답변 내용에 대한 추가 설명이 필요한 경우 [부서명]([이름], [전화번호])으로 연락주시면 친절히 안내해 드리도록 하겠습니다. 감사합니다. """
 
 
-model_id = "./llama3-ko-munwon-finetuned"
+model_id = "./llama3-ko-minwon-finetuned"
 
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
