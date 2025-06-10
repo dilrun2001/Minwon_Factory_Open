@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
+st.set_page_config(page_title = "사하구청 새올전자민원생성기", page_icon=":material/edit_note:", layout="wide", initial_sidebar_state="collapsed")
 from streamlit_navigation_bar import st_navbar
 from util.state import *
 import my_pages as pg
@@ -55,7 +55,8 @@ nav_style = {
     },
     
     "div": {
-        "max-width": "30%",
+        "width": "25%",
+        "max-width": "30%"
     },
     #"span": {
     #    "border-radius": "0.4rem",
