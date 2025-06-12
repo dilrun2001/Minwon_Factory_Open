@@ -1,9 +1,8 @@
 import streamlit as st
 from util.database import *
+import toml
 
-db_query = "SELECT * FROM"
-bool_list = ["log_in"]
-infor_list = ["department", "name", "tel"]
+config = toml.load(".streamlit/custom_option.toml")
 
 def clear_state():
     #ID
@@ -29,10 +28,11 @@ def clear_state():
     #민원 양식, 최종 민원
     if "answer" not in st.session_state:
           st.session_state.answer = ""
-
+          
     #민원 양식 선택 함수
     if "answer_format" not in st.session_state:
-        st.session_state.answer_format = "None"
+        st.session_state.answer_format = ""
+
     #민원 요지
     if "minwon_sub" not in st.session_state:
         st.session_state.minwon_sub = ""
@@ -44,6 +44,10 @@ def clear_state():
     #rag 생성한 답변
     if "raganswer" not in st.session_state:
         st.session_state.raganswer = ""
+    
+    #선택한 최종 답변
+    if "final_answer" not in st.session_state:
+        st.session_state.final_answer = ""
 
     #포맷
     if "format" not in st.session_state:
@@ -118,10 +122,36 @@ def clear_state():
         st.session_state.btn_deactive = False
     
     if "save_df" not in st.session_state:
-        st.session_state.save_df = pd.DataFrame(columns = ["이름", "부서명", "전화번호","민원 카테고리", "민원내용", "답변내용"])
+        st.session_state.save_df = pd.DataFrame(columns = ["민원내용", "답변내용"])
     
-    #if "popup" not in st.session_state:
-    #    st.session_state.popup = True
+    if "ai_option" not in st.session_state:
+        if config['app']['ai'] == 'on':
+            st.session_state.ai_option = True
+        else:
+            st.session_state.ai_option = False
+
+    if "rag_option" not in st.session_state:
+        if config['app']['rag'] == "on":
+            st.session_state.rag_option = True
+        else:
+            st.session_state.rag_option = False
+
+    if "setting" not in st.session_state:
+        if config['app']['setting'] == "on":
+            st.session_state.setting = True
+        else:
+            st.session_state.setting = False
+    
+    if "history_option" not in st.session_state:
+        if config['app']['history'] == "on":
+            st.session_state.history_option = True
+        else:
+            st.session_state.history_option = False
+
+    if "popup" not in st.session_state:
+        st.session_state.popup = True
+    
+    
 
 def logout_state():
     st.session_state.log_in = False
@@ -153,11 +183,12 @@ def minwon_clear():
     st.session_state.minwon = ""
     st.session_state.answer_sub = ""
     st.session_state.answer = ""
-    st.session_state.answer_format = "None"
+    st.session_state.raganswer = ""
+    st.session_state.final_answer = ""
     st.session_state.minwon_sub = ""
     st.session_state.department = ""
     st.session_state.tel = ""
     st.session_state.name =""
-    st.session_state.save_df = pd.DataFrame(columns = ["이름", "부서명", "전화번호","민원 카테고리", "민원내용", "답변내용"])
-    #st.session_state.popup = True
+    st.session_state.save_df = pd.DataFrame(columns = ["민원내용", "답변내용"])
+    st.session_state.popup = True
     st.rerun()
