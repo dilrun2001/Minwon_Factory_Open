@@ -1,4 +1,3 @@
-
 import os
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -105,8 +104,8 @@ def aianswer(answer):
     return tokenizer.decode(outputs[0][input_ids.shape[-1]:], skip_special_tokens=True)
 
 
-input_file = '101-105QAdata.jsonl'
-output_file = '101-105goodQAdata.jsonl'
+input_file = 'QAdata2.jsonl'
+output_file = 'goodQAdata.jsonl'
 
 line_count = 0
 
@@ -130,3 +129,19 @@ with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'w', e
             print(f"JSON 오류 발생: {e}")
         except Exception as e:
             print(f"기타 오류 발생: {e}")
+
+# … 위에 aianswer() 함수 정의 등 …
+
+def main():
+    input_file  = 'QAdata2.jsonl'
+    output_file = 'QAdata2_summaries.jsonl'
+    with open(input_file, 'r', encoding='utf-8') as infile, \
+         open(output_file, 'w', encoding='utf-8') as outfile:
+        line_count = 0
+        for line in infile:
+            # … 기존 줄 단위 처리 로직 …
+            line_count += 1
+            print(f"{line_count}줄 처리 완료")
+
+if __name__ == "__main__":
+    main()

@@ -82,7 +82,7 @@ finetuned_tokenizer, finetuned_model = load_model("./llama3-ko-minwon-merged")
 
 # ✅ 입력/출력 파일 설정
 input_file = 'exampledata.jsonl'
-output_file = 'Fight.jsonl'
+output_file = '101-105Fight.jsonl'
 
 line_count = 0
 

@@ -119,6 +119,9 @@ def clear_state():
     
     if "save_df" not in st.session_state:
         st.session_state.save_df = pd.DataFrame(columns = ["이름", "부서명", "전화번호","민원 카테고리", "민원내용", "답변내용"])
+    
+    #if "popup" not in st.session_state:
+    #    st.session_state.popup = True
 
 def logout_state():
     st.session_state.log_in = False
@@ -156,4 +159,5 @@ def minwon_clear():
     st.session_state.tel = ""
     st.session_state.name =""
     st.session_state.save_df = pd.DataFrame(columns = ["이름", "부서명", "전화번호","민원 카테고리", "민원내용", "답변내용"])
+    #st.session_state.popup = True
     st.rerun()

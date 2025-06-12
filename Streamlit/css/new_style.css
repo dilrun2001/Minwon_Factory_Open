@@ -3,9 +3,6 @@
     color : #292929
 }
 
-iframe[title="streamlit_navigation_bar.st_navbar"] {
-    width: 30%;
-}
 
 .stButton{
     background-color: transparent;
@@ -27,7 +24,7 @@ iframe[title="streamlit_navigation_bar.st_navbar"] {
 
 .stToast {
     position: fixed !important;
-    top: 70px;
+    top: 80px;
     left: 50%;
     transform: translate(-50%, -50%) !important;
     animation: fadeSlideIn 0.3s ease-out !important;
@@ -36,7 +33,7 @@ iframe[title="streamlit_navigation_bar.st_navbar"] {
     font-size: 20px;
     font-weight: bold !important;
     z-index: 9999;
-    
+    background-color: #f0f2f6;
 }
 
 .stToast svg, .stToast i {
@@ -75,7 +72,7 @@ div[data-testid="stFileUploader"] small {
 
 div[data-testid="stFileUploader"] button {
     border: transparent;
-    background-color: #f0f2f6;
+    /*background-color: #f0f2f6;*/
     font-weight: bold;
 }
 
@@ -119,39 +116,82 @@ div[data-testid="stFileUploader"] button {
 .element-container:has(#input-button) + div:has(button){
     position: absolute;
     bottom: 0;
-    right: -5px;
+    right: -20px;
     width:140px;
     padding: 5px;
     z-index:9999;
     display: flex;
     justify-content: flex-end;
+    border: transparent;
 }
 
 .element-container:has(#input-button) + div:has(button):hover{
     position: absolute;
     bottom: 0;
-    right: -5px;
+    right: -20px;
     width:140px;
     padding: 5px;
     z-index:9999;
     display: flex;
     justify-content: flex-end;
 }
+
+.element-container:has(#delete-button) + div button{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    top: 0.35%;
+    right: 1%;
+    z-index: 999999999;
+    background-color: transparent;
+    border: transparent;
+    font-weight: bold;
+}
+
+.element-container:has(#delete-button) + div button:hover{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    top: 0.35%;
+    right: 1%;
+    color: lightblue;
+    font-weight: bold;
+    z-index: 999999999;  
+}
+
+
 div[class = "stAppDeployButton"]{
     display: none;
 }
 
 [data-testid = "stMainBlockContainer"]{
-    padding-top: auto;
+    padding-top: 3%;
     padding-left: 8%;
     padding-right: 8%;
 
 }
 
+.custom-container {
+    background-color: #e0f7fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* 추가 예시: 내부 버튼, 텍스트 박스 등 마진 조정도 가능 */
+.custom-container button, 
+.custom-container textarea, 
+.custom-container input {
+    margin-top: 10px;
+}
+
+
+
+[data-testid = "stVerticalBlockBorderWrapper"]{
+    background-color: #faffff;
+}
 
 [data-testid = "stSidebarCollapseButton"]{
     display : None;
-}
-[data-testid = "stSidebarHeader"]{
-    padding : 5%;
 }
