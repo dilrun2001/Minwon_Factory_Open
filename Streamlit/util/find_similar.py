@@ -8,7 +8,8 @@ from sqlalchemy import create_engine
 import os
 import shutil
 from sentence_transformers import util
-import util.state as st
+import util.state as state_util    # util.state 는 state_util 로
+import streamlit   as st           # st 는 streamlit 으로
 
 
 ### 참고 내용####
@@ -135,9 +136,14 @@ def RUNNING_RAG_CODE(minwon_summary: str, innput_answer_yogi: str, k: int = 1):
     # 3) 본 프롬프트 구성 벡터 db 참고해서 답변을 생성한다. 참고 할게 없으면 답변 미출력.
     system_msg = """\
 당신은 전문 공무원 AI 어시스턴트입니다.
-기존의 답변 내용에 맞추어 민원의 핵심 요점 부분만 수정해서 출력 해주세요
-탬플릿 부분의 문장 끝에는 반드시 '~하였습니다.' 또는 '~되었습니다.' 형태의 종결어미를 사용해야 합니다.
-[기존의 답변 내용] 이후 부분만 출력해주세요.
+
+민원 요지를 바탕으로 1번과 2번 항목을 정중하게 작성해주고,
+3번은  [고정된 답변 내용]을 그대로 출력하세요.
+4번은 [회신 양식을] 그대로 출력하세요.
+
+단, 3.귀하의 민원사항에 대해~ 는 항상 그대로 시작해야 하며,
+그 아래는 수정하지 말고 그대로 이어붙이세요.
+
 """
     if vector_db_fixed_answer.strip():
         # build user message with END sentinel
@@ -145,16 +151,19 @@ def RUNNING_RAG_CODE(minwon_summary: str, innput_answer_yogi: str, k: int = 1):
 [민원의 핵심 요점]
 {minwon_summary}
 
-[기존의 답변 내용]
+[유사한 과거 답변 예시]
 {vector_db_fixed_answer}
 
-[탬플릿]
+[아래 형식에 맞춰 새로운 회신을 작성하세요. 단, 3번부터는 그대로 붙여 쓰세요.]
+
+
+[회신양식]
 1.안녕하십니까? 귀하께서 국민신문고를 통해 신청하신 민원에 대한 검토결과를 다음과 같이 알려드립니다.
-2.귀하께서 제출하신 민원의 내용은 {minwon_summary} 에 관한 것으로 이해 (또는 판단) 됩니다.
+2.귀하께서 제출하신 민원의 내용은 [{minwon_summary}]에 관한 것으로 이해 (또는 판단) 됩니다.
 3.귀하의 민원에 대한 검토 결과는 다음과 같습니다.
 가.
 나.
-4. 답변 내용에 대한 추가 설명이 필요한 경우 000부 000과 홍길동 사무관 (010-101-101) 에게 연락주시면 친절히 안내해 드리도록 하겠습니다.
+4. 답변 내용에 대한 추가 설명이 필요한 경우 {st.session_state.name} ({st.session_state.department} {st.session_state.tel})에게 연락주시면 친절히 안내해 드리도록 하겠습니다.
 감사합니다.
 
 
@@ -168,7 +177,7 @@ END
                 {"role": "system", "content": system_msg},
                 {"role": "user", "content": user_msg},
             ],
-            max_tokens=300,
+            max_tokens=1028,
             stop=["END"],
         )
         mem_reply = res["choices"][0]["message"]["content"].strip()
@@ -190,6 +199,7 @@ def find_similar_respond(minwon_summary: str | None = None,
         minwon_summary = st.session_state.minwon_sub
     if answer_yogi is None:
         answer_yogi = st.session_state.answer_sub
+
 
     return RUNNING_RAG_CODE(minwon_summary, answer_yogi, k)
 

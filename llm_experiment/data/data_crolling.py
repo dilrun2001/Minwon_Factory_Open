@@ -50,7 +50,7 @@ headers = {
 }
 tinyllama_data = []
 
-for page in range(1, 101):
+for page in range(101, 106):
     print(f"📄 페이지 {page} 처리 중...")
 
     list_data = {
@@ -171,7 +171,7 @@ for page in range(1, 101):
                 print("⚠️ 질문 또는 답변이 비어 있어 저장하지 않음")
 
 # ✅ JSONL 저장
-with open("QAdata.jsonl", "w", encoding="utf-8") as f:
+with open("101-105QAdata.jsonl", "w", encoding="utf-8") as f:
     for item in tinyllama_data:
         json_line = json.dumps(item, ensure_ascii=False)
         f.write(json_line + "\n")
