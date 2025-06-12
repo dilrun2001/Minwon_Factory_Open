@@ -178,7 +178,15 @@ END
         print("❗ [ERROR] RAG 응답 생성 중 예외 발생:")
         print("❗ minwon_chroma_db 폴더 삭제후 다시 STREAMLIT 실행 하세요 ")
         traceback.print_exc()
-        mem_reply = "⚠️ (CHROMA DB 초기화 실패 콘솔 참고.--❗ [ERROR] RAG 응답 생성 중 예외 발생:--❗ minwon_chroma_db 폴더 삭제후 다시 STREAMLIT 실행 하세요 ) "
+        mem_reply = ("==================================================="
+                     "⚠️Chroma db 생성 및 데이터 참고에 실패하였습니다. "
+                     "보통 Streamlit 내부의 minwon_chroma_db 폴더가 있을시 발생합니다. "
+                     "해당 폴더를 전체 삭제후 streamlit run 실행해주세요. "
+                     "현재 에러발생시 폴더 다시 삭제후 생성하는 로직은 미포함이며, 실 사용시"
+                     "추가할 예정입니다. "
+    
+                     "==================================================")
+
 
     return mem_reply
 
