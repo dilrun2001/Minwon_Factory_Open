@@ -154,7 +154,7 @@ def RUNNING_RAG_CODE(minwon_summary: str, innput_answer_yogi: str, k: int = 1):
 [유사한 과거 답변 예시]
 {vector_db_fixed_answer}
 
-[아래 형식에 맞춰 새로운 회신을 작성하세요. 단, 3번부터는 그대로 붙여 쓰세요.]
+[아래 형식에 맞춰 새로운 회신을 작성하세요. 단, 3번항목만 그대로 붙여 쓰세요.]
 
 
 [회신양식]
@@ -202,18 +202,6 @@ def find_similar_respond(minwon_summary: str | None = None,
 
 
     return RUNNING_RAG_CODE(minwon_summary, answer_yogi, k)
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
