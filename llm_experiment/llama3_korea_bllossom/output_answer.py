@@ -105,8 +105,8 @@ def aianswer(answer):
     return tokenizer.decode(outputs[0][input_ids.shape[-1]:], skip_special_tokens=True)
 
 
-input_file = 'asd.jsonl'
-output_file = 'goodQAdata.jsonl'
+input_file = '101-105QAdata.jsonl'
+output_file = '101-105goodQAdata.jsonl'
 
 line_count = 0
 
