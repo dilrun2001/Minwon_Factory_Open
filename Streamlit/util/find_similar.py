@@ -10,6 +10,7 @@ import shutil
 from sentence_transformers import util
 import util.state as state_util    # util.state 는 state_util 로
 import streamlit   as st           # st 는 streamlit 으로
+import traceback
 
 
 ### 참고 내용####
@@ -95,59 +96,52 @@ def llama_generate(prompt: str, max_tokens: int = 500) -> str:
 
 
 # 3) 유사 민원 검색 + LLaMA 회신문 생성 함수 =================================
+import traceback  # 꼭 맨 위에 import 되어 있어야 함
+
 def RUNNING_RAG_CODE(minwon_summary: str, innput_answer_yogi: str, k: int = 1):
     ensure_chroma_db()
 
-   #백터 db 에 저장 된거 가져옵니다.
+    try:
+        db = Chroma(
+            persist_directory="minwon_chroma_db/chroma_db",
+            embedding_function=embedding_model
+        )
 
-    db = Chroma(persist_directory="minwon_chroma_db/chroma_db",embedding_function=embedding_model)
+        # 1) 유사 민원 검색
+        results = db.similarity_search(innput_answer_yogi, k=k)
+        docs_list = [doc.page_content for doc in results]
 
+        query_emb = embedding_model.embed_query(innput_answer_yogi)
+        doc_embs = embedding_model.embed_documents(docs_list)
 
+        sims = util.cos_sim(query_emb, doc_embs)[0]
 
-    # 1) 유사 민원 검색 (score 포함) 및 필터링
-    results = db.similarity_search(innput_answer_yogi, k=k)
-    docs_list = [doc.page_content for doc in results]
+        for doc, sim_val in zip(results, sims):
+            print(f'코사인 유사도: {sim_val:.4f}')
 
-    query_emb = embedding_model.embed_query(innput_answer_yogi)
-    doc_embs = embedding_model.embed_documents(docs_list)
+        cosine_threshold = 0.7
+        similar_docs = [doc for doc, sim_val in zip(results, sims) if sim_val >= cosine_threshold]
 
-    sims = util.cos_sim(query_emb, doc_embs)[0]
+        # 2) 유사 응답 정리
+        vector_db_fixed_answer = ""
+        for doc in similar_docs:
+            vector_db_fixed_answer += f"\n{doc.metadata['response']}\n\n"
 
-    for doc, sim_val in zip(results, sims):
-        print(f'코사인 유사도: {sim_val:.4f}')
+        print(f"DEBUG [현재 입력한 답변요지]: {innput_answer_yogi}")
+        print(f"DEBUG [기존의 답변 내용]: {vector_db_fixed_answer}")
 
-    cosine_threshold = 0.7
-    similar_docs = [doc for doc, sim_val in zip(results, sims) if sim_val >= cosine_threshold]
-
-
-    # 2) 프롬프트에 예시로 추가 어떤 것을 [답변 요지를 example_block 에 넣는다].
-    vector_db_fixed_answer = ""
-    for doc in similar_docs:
-        vector_db_fixed_answer += f"""
-    {doc.metadata["response"]}
-
-
-"""
-    # DEBUG: show injected prompt values
-    #print(f"DEBUG [민원의 핵심 요점]: {minwon_summary}")
-    print(f"DEBUG [현재 입력한 답변요지]: {innput_answer_yogi}")
-    print(f"DEBUG [기존의 답변 내용]: {vector_db_fixed_answer}")
-
-    # 3) 본 프롬프트 구성 벡터 db 참고해서 답변을 생성한다. 참고 할게 없으면 답변 미출력.
-    system_msg = """\
+        # 3) 프롬프트 생성
+        system_msg = """\
 당신은 전문 공무원 AI 어시스턴트입니다.
-
 민원 요지를 바탕으로 1번과 2번 항목을 정중하게 작성해주고,
-3번은  [고정된 답변 내용]을 그대로 출력하세요.
+3번은 [고정된 답변 내용]을 그대로 출력하세요.
 4번은 [회신 양식을] 그대로 출력하세요.
-
 단, 3.귀하의 민원사항에 대해~ 는 항상 그대로 시작해야 하며,
 그 아래는 수정하지 말고 그대로 이어붙이세요.
-
 """
-    if vector_db_fixed_answer.strip():
-        # build user message with END sentinel
-        user_msg = f"""\
+
+        if vector_db_fixed_answer.strip():
+            user_msg = f"""\
 [민원의 핵심 요점]
 {minwon_summary}
 
@@ -155,7 +149,6 @@ def RUNNING_RAG_CODE(minwon_summary: str, innput_answer_yogi: str, k: int = 1):
 {vector_db_fixed_answer}
 
 [아래 형식에 맞춰 새로운 회신을 작성하세요. 단, 3번항목만 그대로 붙여 쓰세요.]
-
 
 [회신양식]
 1.안녕하십니까? 귀하께서 국민신문고를 통해 신청하신 민원에 대한 검토결과를 다음과 같이 알려드립니다.
@@ -166,25 +159,28 @@ def RUNNING_RAG_CODE(minwon_summary: str, innput_answer_yogi: str, k: int = 1):
 4. 답변 내용에 대한 추가 설명이 필요한 경우 {st.session_state.name} ({st.session_state.department} {st.session_state.tel})에게 연락주시면 친절히 안내해 드리도록 하겠습니다.
 감사합니다.
 
-
-
 END
 """
+            res = llm.create_chat_completion(
+                messages=[
+                    {"role": "system", "content": system_msg},
+                    {"role": "user", "content": user_msg},
+                ],
+                max_tokens=1028,
+                stop=["END"],
+            )
+            mem_reply = res["choices"][0]["message"]["content"].strip()
+        else:
+            print("유사 답변 없음")
+            mem_reply = "유사 답변 없음"
 
-        # perform chat completion
-        res = llm.create_chat_completion(
-            messages=[
-                {"role": "system", "content": system_msg},
-                {"role": "user", "content": user_msg},
-            ],
-            max_tokens=1028,
-            stop=["END"],
-        )
-        mem_reply = res["choices"][0]["message"]["content"].strip()
-    else:
-        print("유사 답변 없음")
-        mem_reply = "유사 답변 없음"
-    return  mem_reply
+    except Exception as e:
+        print("❗ [ERROR] RAG 응답 생성 중 예외 발생:")
+        print("❗ minwon_chroma_db 폴더 삭제후 다시 STREAMLIT 실행 하세요 ")
+        traceback.print_exc()
+        mem_reply = "⚠️ (CHROMA DB 초기화 실패 콘솔 참고.--❗ [ERROR] RAG 응답 생성 중 예외 발생:--❗ minwon_chroma_db 폴더 삭제후 다시 STREAMLIT 실행 하세요 ) "
+
+    return mem_reply
 
 
 
@@ -202,37 +198,4 @@ def find_similar_respond(minwon_summary: str | None = None,
 
 
     return RUNNING_RAG_CODE(minwon_summary, answer_yogi, k)
-
-
-
-
-# # 4) 인터랙티브 실행 예시 ================================================
-# if __name__ == "__main__":
-#     # 한 번만 실행: 다중행 민원 내용 입력
-#     print("💬 민원 내용을 입력하세요. 입력을 마치려면 빈 줄에서 엔터를 누르세요:")
-#     minwon_lines = []
-#     while True:
-#         line = input()
-#         if line == "":
-#             break
-#         minwon_lines.append(line)
-#     minwon_text = "\n".join(minwon_lines).strip()
-#     if minwon_text.lower() == "exit":
-#         print("🛑 종료합니다!")
-#         exit()
-#
-#     # 단일 행 답변 요지 입력
-#     innput_answer_yogi = input("💬 답변 요지를 입력하세요: ").strip()
-#     print('출력 중입니다. 기다려 주세요.')
-#     mem_reply = respond_with_memory(
-#         minwon_text=minwon_text,
-#         innput_answer_yogi=innput_answer_yogi,
-#         k=1
-#     )
-#
-#     print("\n✨ [Chroma 참조 회신문]:\n")
-#     print(mem_reply)
-# # 프로그램 끝
-
-
 
