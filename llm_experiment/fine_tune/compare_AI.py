@@ -12,7 +12,7 @@ tokenizer1 = AutoTokenizer.from_pretrained(MODEL1_ID)
 model1     = AutoModelForCausalLM.from_pretrained(
     MODEL1_ID,
     torch_dtype=torch.bfloat16,
-    torch_device="cuda",
+    device_map="auto",
     load_in_8bit=True
 )
 model1.eval()
@@ -21,7 +21,7 @@ tokenizer2 = AutoTokenizer.from_pretrained(MODEL2_ID)
 model2     = AutoModelForCausalLM.from_pretrained(
     MODEL2_ID,
     torch_dtype=torch.bfloat16,
-    torch_device="cuda",
+    device_map="auto",
     load_in_8bit=True
 )
 model2.eval()
