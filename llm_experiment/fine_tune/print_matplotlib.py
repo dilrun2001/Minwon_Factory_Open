@@ -8,7 +8,7 @@ plt.rcParams['axes.unicode_minus'] =False
 sim1_values = []
 sim2_values = []
 
-input_file = 'Fight.jsonl'
+input_file = '101-105Fight.jsonl'
 line_count = 0
 
 # ✅ JSONL 파일에서 sim1, sim2 수치 추출
@@ -45,5 +45,14 @@ plt.ylabel('유사도 점수')
 plt.title('모델별 민원 응답 유사도 비교')
 plt.legend()
 plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
+plt.figure(figsize=(8, 6))
+plt.boxplot([sim1_values, sim2_values], labels=['LLaMA3 원본', '파인튜닝'])
+plt.ylabel('유사도 점수')
+plt.title('모델별 유사도 점수 분포 (Boxplot)')
+plt.grid(True, axis='y')
 plt.tight_layout()
 plt.show()
