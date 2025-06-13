@@ -28,11 +28,7 @@ def load_model(model_id):
 # ✅ Q8 모델 로드
 def load_model_q8(model_id):
     tokenizer = AutoTokenizer.from_pretrained(model_id)
-    quant_config = BitsAndBytesConfig(
-        load_in_8bit=True,
-        llm_int8_threshold=6.0,
-        llm_int8_has_fp16_weight=True
-    )
+    quant_config = BitsAndBytesConfig(load_in_8bit=True)
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         device_map="auto",
