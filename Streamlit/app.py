@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-st.set_page_config(page_title = "새올민원자동답변기", page_icon="📝", layout="wide")
+st.set_page_config(page_title = "사하구청 새올전자민원생성기", page_icon=":material/edit_note:", layout="wide", initial_sidebar_state="collapsed")
 from streamlit_navigation_bar import st_navbar
 from util.state import *
 import my_pages as pg
@@ -36,7 +36,7 @@ slider_css()
     #        st.Page(pg.show_admin, title = '관리자 페이지')
     #]
 #else:
-pages = ["홈", "민원 히스토리", "설정"]
+pages = ["민원 입력", "민원 히스토리", "설정"]
     #        st.Page(pg.show_home, title  = "홈"),
     #        st.Page(pg.show_input, title = "민원 입력"),
     #        st.Page(pg.show_history, title = "민원 히스토리"),
@@ -55,7 +55,8 @@ nav_style = {
     },
     
     "div": {
-        "max-width": "30%",
+        "width": "20%",
+        "max-width": "25%"
     },
     #"span": {
     #    "border-radius": "0.4rem",
@@ -71,8 +72,8 @@ options = {
     "show_sidebar": True,
 }
 
-icons = {"홈": ":material/home:",
-            #    "민원 입력": ":material/input:",
+icons = {#"홈": ":material/home:",
+                "민원 입력": ":material/input:",
                 "민원 히스토리" : ":material/history",
                 "설정" : ":material/settings",
             #    "관리자": ":material/admin_panel_settings"
@@ -90,8 +91,8 @@ page = st_navbar(
 
 
 fuctions = {
-    "홈": pg.show_page,
-    "민원 입력": pg.show_input,
+    #"홈": pg.show_page,
+    "민원 입력": pg.show_page,
     "민원 히스토리": pg.show_history,
     "설정": pg.show_setting,
     "관리자": pg.show_admin,
@@ -101,11 +102,11 @@ fuctions = {
 if page != st.session_state['page']:
     st.session_state['page'] = page
     
-if st.session_state['page'] == "홈" :
-   pg.show_page()
+#if st.session_state['page'] == "홈" :
+#   pg.show_page()
     
-elif st.session_state['page'] == "민원 입력" :
-    pg.show_input()
+if st.session_state['page'] == "민원 입력" :
+    pg.show_page()
 elif st.session_state['page'] == "민원 히스토리" :
     pg.show_history()
 elif st.session_state['page'] == "설정":
