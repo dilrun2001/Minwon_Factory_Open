@@ -101,7 +101,7 @@ q8_tokenizer, q8_model = load_model_q8("./llama3-ko-minwon-merged")
 
 # ✅ 입력/출력 파일 설정
 input_file = 'exampledata.jsonl'
-output_file = '101-105Fight.jsonl'
+output_file = '101-105Fight2.jsonl'
 
 line_count = 0
 
