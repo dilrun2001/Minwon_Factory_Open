@@ -1,7 +1,8 @@
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 import json
 from sentence_transformers import SentenceTransformer, util
+import time
 
 # ✅ KURE-v1 모델 로드 (유사도 비교용)
 embedding_model = SentenceTransformer("nlpai-lab/KURE-v1")
@@ -14,6 +15,23 @@ answer_format = """1. 안녕하십니까? 귀하께서 신청하신 민원에 �
 가. [답변요지]
 
 4. 귀하의 민원에 만족스러운 답변이 되었기를 바라며, 답변 내용에 대한 추가 설명이 필요한 경우 [부서명]([이름], [전화번호])으로 연락주시면 친절히 안내해 드리도록 하겠습니다. 감사합니다. """
+
+def load_model_q8(model_id):
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    
+    quant_config = BitsAndBytesConfig(
+        load_in_8bit=True,
+        llm_int8_threshold=6.0,
+        llm_int8_has_fp16_weight=True
+    )
+    
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        device_map="auto",
+        quantization_config=quant_config
+    )
+    model.eval()
+    return tokenizer, model
 
 def load_model(model_id):
     tokenizer = AutoTokenizer.from_pretrained(model_id)
@@ -79,10 +97,11 @@ def llama3vs(minwon, answer, tokenizer, model):
 # ✅ 모델 로딩 (1회만 수행)
 llama3_tokenizer, llama3_model = load_model("MLP-KTLim/llama-3-Korean-Bllossom-8B")
 finetuned_tokenizer, finetuned_model = load_model("./llama3-ko-minwon-merged")
+q8_tokenizer, q8_model = load_model_q8("./llama3-ko-minwon-merged")
 
 # ✅ 입력/출력 파일 설정
 input_file = 'exampledata.jsonl'
-output_file = '101-105Fight.jsonl'
+output_file = '101-105Fight2.jsonl'
 
 line_count = 0
 
@@ -99,19 +118,34 @@ with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'w', e
             answer = data.get('answer', '')
 
             # 생성된 두 답변
+            start = time.time()
             answer1 = llama3vs(minwon, answer, llama3_tokenizer, llama3_model)
+            end = time.time()
+            runtime1 = end - start
+
+            start = time.time()
             answer2 = llama3vs(minwon, answer, finetuned_tokenizer, finetuned_model)
+            end = time.time()
+            runtime2 =end-start
+
+            start = time.time()
+            answer3 = llama3vs(minwon, answer, q8_tokenizer, q8_model)
+            end = time.time()
+            runtime3 =end-start
 
             # 임베딩 및 유사도 계산
-            sentences = [output, answer1, answer2]
+            sentences = [output, answer1, answer2, answer3]
             embeddings = embedding_model.encode(sentences)
             sim1 = util.cos_sim(embeddings[0], embeddings[1]).item()
             sim2 = util.cos_sim(embeddings[0], embeddings[2]).item()
+            sim3 = util.cos_sim(embeddings[0], embeddings[3]).item()
+
 
             # 출력
             print(f"\n✅ {line_count} 유사도 결과:")
-            print(f"정답 vs 답변 1: {sim1:.4f}")
-            print(f"정답 vs 답변 2: {sim2:.4f}")
+            print(f"정답 vs 답변 1: {sim1:.4f} 걸린시간: {runtime1:.4f}")
+            print(f"정답 vs 답변 2: {sim2:.4f} 걸린시간: {runtime2:.4f}")
+            print(f"정답 vs 답변 3: {sim3:.4f} 걸린시간: {runtime3:.4f}")
 
             # 결과 저장
             result = {
@@ -119,8 +153,13 @@ with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'w', e
                 "ground_truth": output,
                 "answer1": answer1,
                 "answer2": answer2,
+                "answer3": answer3,
                 "sim1": sim1,
-                "sim2": sim2
+                "sim2": sim2,
+                "sim3": sim3,
+                "runtime1":runtime1,
+                "runtime2":runtime2,
+                "runtime3":runtime3,
             }
             outfile.write(json.dumps(result, ensure_ascii=False) + '\n')
             line_count += 1
