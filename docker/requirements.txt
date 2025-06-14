@@ -13,3 +13,4 @@ openpyxl==3.1.5
 langchain-chroma==0.2.4
 langchain==0.3.25
 langchain-huggingface==0.2.0
+xlsxwriter==3.2.3
