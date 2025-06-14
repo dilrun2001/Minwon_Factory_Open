@@ -14,3 +14,4 @@ langchain-chroma==0.2.4
 langchain==0.3.25
 langchain-huggingface==0.2.0
 xlsxwriter==3.2.3
+cryptography==45.0.4
