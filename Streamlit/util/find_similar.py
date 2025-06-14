@@ -11,7 +11,7 @@ from sentence_transformers import util
 import util.state as state_util    # util.state 는 state_util 로
 import streamlit   as st           # st 는 streamlit 으로
 import traceback
-
+from util.database import *
 
 ### 참고 내용####
 #  reply = find_similar_respond(minwon_summary, answer_yogi, k)
@@ -37,15 +37,14 @@ embedding_model = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
 
 # 해당 부분은 mysql --> chroma db 로 만드는 과정 ( 주기적으로 실행 필요)
 def rebuild_chroma_db(
-        mysql_url: str = "mysql+pymysql://root:1234@localhost/minwon",
-        query= "SELECT answer_yogi, response FROM history",
+        #mysql_url: str = "mysql+pymysql://root:1234@localhost/minwon",
+        #query= "SELECT answer_yogi, response FROM history",
         persist_directory= "minwon_chroma_db/chroma_db",
 ):
 
-
     # 1) 데이터 로드
-    engine = create_engine(mysql_url)
-    df = pd.read_sql(query, engine)
+    #engine = create_engine(mysql_url)
+    df = run_query("SELECT answer_yogi, response FROM history") #pd.read_sql(query, engine)
 
     # 2) 기존 DB 폴더 삭제
     if os.path.exists(persist_directory):
