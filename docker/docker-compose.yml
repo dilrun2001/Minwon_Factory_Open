@@ -4,7 +4,7 @@ services:
     build: .
     container_name: streamlit_app
     ports:
-      - "8501:8501"
+      - "15031:15031"
     depends_on:
       - mysql
     volumes:
@@ -22,10 +22,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: minwon
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 1234
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
 

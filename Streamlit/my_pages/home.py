@@ -67,13 +67,13 @@ def sidebar_set():
                     st.session_state['show_style'] = 'side-by-side'
                 elif check_bool == "프레임 아래":
                     st.session_state['show_style'] = "main"'''
-        
+
         '''with st.sidebar.expander("데이터 초기화", icon = ":material/clear_all:", expanded = False):
                 db_col, center, clear_col = st.columns((1, 1.7, 1))
                 with center:'''
         st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
         st.button("세션 초기화", on_click = minwon_clear, key = "clear_btn", icon = ":material/delete:")
-    
+
 
 #답변 양식 포맷 세팅 함수
 def format_set():
@@ -128,12 +128,12 @@ def input_set():
             )
             st.markdown('''''')
             st.session_state.minwon_sub = st.text_area(
-                "민원 요지를 입력해주세요.", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height = 70  , value=st.session_state.minwon_sub#, key = "minwon_sub"
+                "민원 요지를 입력해주세요.", placeholder ="민원요지 : 00동 000로 00길 쓰레기 무단투기", height = 70  , value=st.session_state.minwon_sub#, key = "minwon_sub"
             )
         with answer_column:
             st.markdown('''''')
             st.session_state.answer_sub  = st.text_area(
-                        "답변 요지를 입력해주세요." , placeholder = "답변요지 : 현장확인 후 조속히 처리하겠음.", height = 200, value = st.session_state.answer_sub#, key = "answer_sub"
+                        "답변 요지를 입력해주세요." , placeholder="답변요지 : 현장확인 후 조속히 처리하겠음.", height = 200, value = st.session_state.answer_sub#, key = "answer_sub"
                     )
             st.markdown('''''')
             st.session_state.answer_format = st.text_area(
@@ -263,7 +263,7 @@ def show_home():
 #6/11 선택한 답변 값이 들어가도록 수정
 def input_db():
     def insert_data():
-    
+
         run_query("INSERT INTO history (timestamp, name, category, urgency, minwon,answer_yogi,response) VALUES (%s, %s, %s, %s, %s,%s,%s)",
                 (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), st.session_state.name, st.session_state.category, st.session_state.urgency, st.session_state.minwon,st.session_state.minwon_sub,st.session_state.final_answer),
                     fetch = False
@@ -377,7 +377,7 @@ def show_result():
             st.markdown("#### 생성된 답변 결과")
             '''if st.session_state.popup:
                 st.toast("답변이 생성되었습니다. 결과를 확인해주세요.", icon = ":material/done:")'''
-                
+
             st.session_state.popup = False
             #st.markdown('''''')
             st.markdown(f'''##### {st.session_state.name}님이 요청하신 민원에 관한 답변이 생성되었습니다.''')
@@ -388,7 +388,7 @@ def show_result():
                     st.toast("AI 답변 결과 수정이 시작되었습니다.", icon = ":material/done:")
                     st.session_state.answer = st.text_area("답변 결과", value = st.session_state.answer, height = 330, key="result")
                 else:
-                    st.write(st.session_state.answer)       
+                    st.write(st.session_state.answer)
             with rag:
                 rag_edit = st.toggle("답변 결과 수정(RAG)", key = "rag_answer_edit")
                 if rag_edit:
@@ -463,7 +463,7 @@ def show_result():
         '''ul, us, ur = st.columns ((4, 26, 4))
         with ul:'''
         st.button("이전 단계", key = "result_before_button", on_click=page_before, icon = ':material/chevron_left:')
-        
+
 
 #각 페이지 호출
 def show_page():
