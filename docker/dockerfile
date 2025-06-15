@@ -20,14 +20,14 @@ RUN apt update && apt install -y git
 #깃 클론
 RUN git clone --branch TEST_UBUNTO https://github.com/dilrun2001/Minwon_Factory.git Minwon_Factory_2
 
-WORKDIR /Minwon_Factory/Streamlit/.streamlit
+WORKDIR /Minwon_Factory_2/Streamlit/.streamlit
 
 #컨피그 ip랑 mysql시크릿 카피
 COPY config.toml .
-COPY secrets.toml .
+#COPY secrets.toml .
 
 #경로설정
-WORKDIR /Minwon_Factory/Streamlit
+WORKDIR /Minwon_Factory_2/Streamlit
 
 #실행
 CMD ["python3","-m","streamlit","run","app.py"]
