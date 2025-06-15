@@ -14,6 +14,12 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=1234
       - MYSQL_DATABASE=minwon
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [ gpu ]
+    runtime: nvidia  # ✨ 요거 중요!
 
   mysql:
     image: mysql:8.0
