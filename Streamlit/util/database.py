@@ -3,7 +3,13 @@ import pandas as pd
 import pymysql
 from pymysql.cursors import DictCursor
 
-mysql_info = st.secrets["mysql"]
+
+mysql_info = { # secreat 대신에 가져온다
+    "host": "mysql",         # 도커 서비스 이름!
+    "user": "root",
+    "password": "1234",
+    "database": "minwon"
+}
 
 def get_connection():
     return pymysql.connect(

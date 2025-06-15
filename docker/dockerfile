@@ -18,13 +18,13 @@ RUN pip install --no-cache-dir llama-cpp-python==0.3.4 --extra-index-url https:/
 RUN apt update && apt install -y git
 
 #깃 클론
-RUN git clone https://github.com/dilrun2001/Minwon_Factory.git
+RUN git clone --branch TEST_UBUNTO https://github.com/dilrun2001/Minwon_Factory.git
 
 WORKDIR /Minwon_Factory/Streamlit/.streamlit
 
 #컨피그 ip랑 mysql시크릿 카피
 COPY config.toml .
-COPY secrets.toml .
+#COPY secrets.toml .
 
 #경로설정
 WORKDIR /Minwon_Factory/Streamlit
