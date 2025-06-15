@@ -8,10 +8,10 @@ from sqlalchemy import create_engine
 import os
 import shutil
 from sentence_transformers import util
-import util.state as state_util    # util.state 는 state_util 로
-import streamlit   as st           # st 는 streamlit 으로
+import util.state as state_util  # util.state 는 state_util 로
+import streamlit as st  # st 는 streamlit 으로
 import traceback
-
+from util.database import *
 
 ### 참고 내용####
 #  reply = find_similar_respond(minwon_summary, answer_yogi, k)
@@ -20,11 +20,10 @@ import traceback
 # MY sql db 에 answer_yogi  TEXT 형삭으로 속성 필요 합니다
 # 해당 코드는 mysql 이 수정된후 자동으로 벡터 db 의 내용을 반영하지 않으므로 특정 주기에 따라
 # MySQL에서 민원 데이터 가져와서 Chroma DB 만들어 줘야 합니다. 해당 과정에서 기존 Chroma DB  삭제후 다시 생성 됩니다. rebuild_chroma_db 메서드 호출하여 사용
-#chroma 벡터 db 의 생성 위치는 os.path.exists("minwon_chroma_db/chroma_db"): 여기서 설정 가능 합니다.
+# chroma 벡터 db 의 생성 위치는 os.path.exists("minwon_chroma_db/chroma_db"): 여기서 설정 가능 합니다.
 
 
 # 혹여나   Document is not defined 해당 에러뜨면 from langchain_core.schema import Document 로 수정
-
 
 
 EMBEDDING_MODEL_NAME = "nlpai-lab/KURE-v1"
@@ -34,18 +33,15 @@ embedding_model = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
 # 1) MySQL에서 민원 데이터 가져와서 Chroma DB 만들기 ========================
 
 
-
 # 해당 부분은 mysql --> chroma db 로 만드는 과정 ( 주기적으로 실행 필요)
 def rebuild_chroma_db(
-        mysql_url: str = "mysql+pymysql://root:1234@localhost/minwon",
-        query= "SELECT answer_yogi, response FROM history",
-        persist_directory= "minwon_chroma_db/chroma_db",
+        # mysql_url: str = "mysql+pymysql://root:1234@localhost/minwon",
+        # query= "SELECT answer_yogi, response FROM history",
+        persist_directory="minwon_chroma_db/chroma_db",
 ):
-
-
     # 1) 데이터 로드
-    engine = create_engine(mysql_url)
-    df = pd.read_sql(query, engine)
+    # engine = create_engine(mysql_url)
+    df = run_query("SELECT answer_yogi, response FROM history")  # pd.read_sql(query, engine)
 
     # 2) 기존 DB 폴더 삭제
     if os.path.exists(persist_directory):
@@ -70,6 +66,7 @@ def rebuild_chroma_db(
     )
     return chroma_db
 
+
 # 2) LLaMA 양자화 모델 로딩 ===============================================
 model_path = hf_hub_download(
     repo_id="MLP-KTLim/llama-3-Korean-Bllossom-8B-gguf-Q4_K_M",
@@ -80,9 +77,10 @@ llm = Llama(
     n_ctx=2048,
     temperature=0.6,
     top_p=0.9,
-    gpu_layers=-1, # 모든 레이어를 GPU에서
+    gpu_layers=-1,  # 모든 레이어를 GPU에서
 
 )
+
 
 def ensure_chroma_db():
     persist_dir = "minwon_chroma_db/chroma_db"
@@ -97,6 +95,7 @@ def llama_generate(prompt: str, max_tokens: int = 500) -> str:
 
 # 3) 유사 민원 검색 + LLaMA 회신문 생성 함수 =================================
 import traceback  # 꼭 맨 위에 import 되어 있어야 함
+
 
 def RUNNING_RAG_CODE(minwon_summary: str, innput_answer_yogi: str, k: int = 1):
     ensure_chroma_db()
@@ -184,15 +183,12 @@ END
                      "혹은 MYSQL 의 DB 내용이 전혀 없을 경우 에러 발생합니다.\n"
                      "한 행 이상의 데이터를 추가해주세요\n"
                      "해당 폴더를 전체 삭제후 streamlit run 실행해주세요.\n "
-                    
+
                      "현재 에러발생시 폴더 다시 삭제후 생성하는 로직은 미포함이며, 실 사용시"
                      "추가할 예정입니다. \n"
                      "==================================================\n")
 
-
     return mem_reply
-
-
 
 
 # find_similar_respond -> respond함수 호출 (실제 스트림릿 사용시 해당 함수 호출 해서 사용 하면 됩니다) 굳이 사용안해도 될듯 합니다.
@@ -206,6 +202,4 @@ def find_similar_respond(minwon_summary: str | None = None,
     if answer_yogi is None:
         answer_yogi = st.session_state.answer_sub
 
-
     return RUNNING_RAG_CODE(minwon_summary, answer_yogi, k)
-
