@@ -19,7 +19,8 @@ services:
         reservations:
           devices:
             - capabilities: [ gpu ]
-    runtime: nvidia  # ✨ 요거 중요!
+    runtime: nvidia
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
   mysql:
     image: mysql:8.0
