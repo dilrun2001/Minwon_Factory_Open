@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt  # ← matplotlib.pyplot로 수정
 import json
 import numpy as np
+from matplotlib.cbook import boxplot_stats
 
 plt.rcParams['font.family'] ='Malgun Gothic'
 plt.rcParams['axes.unicode_minus'] =False
@@ -113,8 +114,24 @@ plt.tight_layout()
 plt.show()
 
 
+data = [sim1_values, sim2_values, sim3_values]
+labels = ['LLaMA3 파인튜닝', 'Q8양자화', '원래 모델']
+
+# 박스플롯 통계 추출
+stats = boxplot_stats(data)
+
+# 각 모델의 Q1, Q2, Q3 출력
+for i, stat in enumerate(stats):
+    print(f"[{labels[i]}]")
+    print(f" - Q1 (25%): {stat['q1']}")
+    print(f" - Q2 (Median): {stat['med']}")
+    print(f" - Q3 (75%): {stat['q3']}")
+    print(f" - Outliers: {stat['fliers']}")
+    print()
+
+# 박스플롯 그리기
 plt.figure(figsize=(8, 6))
-plt.boxplot([sim1_values, sim2_values,sim3_values], labels=['LLaMA3 파인튜닝', 'Q8양자화','원래 모델'])
+plt.boxplot(data, labels=labels)
 plt.ylabel('유사도 점수')
 plt.title('모델별 유사도 점수 분포 (Boxplot)')
 plt.grid(True, axis='y')
