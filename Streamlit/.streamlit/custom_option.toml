@@ -3,6 +3,6 @@
 #toml 파일을 수정후 streamlit을 다시 껐다 켜주시길 바랍니다.
 [app]
 ai = "on"  #ai on/off 기능
-rag = "on" #ragai on/off 기능
+rag = "off" #ragai on/off 기능
 history = "on" #민원히스토리 on/off
 setting = "off" #설정 on/off

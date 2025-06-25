@@ -1,5 +1,5 @@
 #import streamlit as st
-from my_pages.home import *
+from my_pages.minwon import *
 from my_pages.adminpage import show_admin
 from my_pages.history_new import show_history
 #from my_pages.input import show_input
