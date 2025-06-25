@@ -13,7 +13,7 @@ from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 from util.dataframe import *
 import util.llama3_korea_bllossomQ8 as useAi #우리가 만든 ai를 사용하기위한 임포트
 #if st.session_state.rag_option:
-import util.find_similar as ragai
+#import util.find_similar as ragai
 from io import BytesIO
 
 
@@ -172,7 +172,7 @@ def genereate_response():
             else:
                 st.session_state.answer = "AI OFF"#useAi.AI_print_answer(minwon=st.session_state.minwon, answer=st.session_state.answer_sub,answer_format=st.session_state.answer_format)
             if st.session_state.rag_option:
-                st.session_state.raganswer = ragai.find_similar_respond(minwon_summary=st.session_state.minwon_sub,answer_yogi=st.session_state.answer_sub)
+                st.session_state.raganswer = "RAG OFF"#ragai.find_similar_respond(minwon_summary=st.session_state.minwon_sub,answer_yogi=st.session_state.answer_sub)
             else:
                 st.session_state.raganswer= "RAG OFF"#ragai.find_similar_respond(minwon_summary=st.session_state.minwon_sub,answer_yogi=st.session_state.answer_sub)
 
@@ -185,8 +185,8 @@ def genereate_response():
 #메인 화면
 # 해당 부분 추가 함으로서 (벡터 db 를 생성후) home 을 출력 합니다
 def show_home():
-   if st.session_state.rag_option != False:
-    ragai.ensure_chroma_db()
+    #if st.session_state.rag_option != False:
+    #    ragai.ensure_chroma_db()
     st.session_state['page'] = '홈'
     st.subheader("새올민원자동답변기에 오신 걸 환영합니다!")
     st.markdown('''
