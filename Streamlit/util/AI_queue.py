@@ -19,7 +19,7 @@ def dequeue_task(id):
         fetch = False
     )
     if run_query("SELECT * FROM task_queue").empty:
-        run_query("TRUNCATE TABLE task_queue")
+        clear_queue()
 
 # 큐 데이터 조회
 def get_queue(id):
@@ -31,6 +31,15 @@ def get_queue(id):
         return True
     else:
         return False
+
+
+def search_queue(id):
+    row = run_query(
+        "SELECT id FROM task_queue WHERE user_id = %s ORDER BY id ASC",
+        (id,),
+    )
+    return (row.iloc[0]['id']-1)
+
 
 #작업 시작 
 def start_task(id):
@@ -48,4 +57,7 @@ def end_task(id):
         fetch  = False
     )
     dequeue_task(id)
+
+def clear_queue():
+    run_query("TRUNCATE TABLE task_queue")
 

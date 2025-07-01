@@ -1,6 +1,6 @@
 import streamlit as st
-from util.state import *
-#from util.state_copy import *
+#from util.state import *
+from util.state_copy import *
 
 def page_convert():
     #파일 선택창
@@ -26,7 +26,8 @@ def page_convert():
         if st.session_state.before:
             st.session_state['minwon_check'] = 'minwon_input'
             st.session_state.before = False
-        else:
-            minwon_clear()
 
     st.session_state['btn_show'] = False
+
+def show_home():
+    pass
