@@ -16,6 +16,18 @@ def clear_state():
     #ID (대기열을 위한 키 생성)
     if "id" not in st.session_state:
         st.session_state.id = ""
+    
+    #담당부서
+    if "department" not in st.session_state:
+        st.session_state.department = ""
+
+    #이름
+    if "name" not in st.session_state:
+        st.session_state.name = ""
+
+    #전화번호
+    if "tel" not in st.session_state:
+        st.session_state.tel = ""
         
     #민원 내용
     if "minwon" not in st.session_state:
@@ -53,18 +65,6 @@ def clear_state():
     if "llm_model" not in st.session_state:
         st.session_state.llm_model = "llama3:latest"
 
-    #폐기 예정 사항
-    if "main" not in st.session_state:
-        st.session_state.main = None
-
-    #폐기 예정 사항
-    if "current_dialog" not in st.session_state:
-        st.session_state.current_dialog = True
-
-    #로그인 체크
-    if "log_in" not in st.session_state:
-          st.session_state.log_in = False    
-
     #답변
     if "response" not in st.session_state:
         st.session_state.response = "답변이 생성되지 않았습니다."
@@ -72,10 +72,6 @@ def clear_state():
     #현재 페이지 위치 체크
     if "page" not in st.session_state:
         st.session_state['page'] = "home"
-
-    #다이얼로그 버그 임시 체크용
-    if "dialog" not in st.session_state:
-        st.session_state.dialog_check = False
 
     #데이터프레임 선택
     if "selected_row" not in st.session_state:
@@ -101,9 +97,6 @@ def clear_state():
     if "btn_show" not in st.session_state:
         st.session_state['btn_show'] = False
 
-    # 표시 스타일 지정
-    if "show_style" not in st.session_state:
-        st.session_state['show_style'] = "side-by-side"
     
     #이전 화면 전환용
     if "before" not in st.session_state:
@@ -112,41 +105,58 @@ def clear_state():
     #수동 입력 모드
     if "manual" not in st.session_state:
         st.session_state.manual = False
-
-    #버튼 비활성화
-    if "btn_deactive" not in st.session_state:
-        st.session_state.btn_deactive = False
     
+    #엑셀 파일 저장 프레임
     if "save_df" not in st.session_state:
         st.session_state.save_df = pd.DataFrame(columns = ["민원내용", "답변내용"])
     
+    #AI 옵션
     if "ai_option" not in st.session_state:
         if config['app']['ai'] == 'on':
             st.session_state.ai_option = True
         else:
             st.session_state.ai_option = False
 
+    #RAG 옵션
     if "rag_option" not in st.session_state:
         if config['app']['rag'] == "on":
             st.session_state.rag_option = True
         else:
             st.session_state.rag_option = False
 
+    #설정 옵션
     if "setting" not in st.session_state:
         if config['app']['setting'] == "on":
             st.session_state.setting = True
         else:
             st.session_state.setting = False
     
+    #히스토리 옵션
     if "history_option" not in st.session_state:
         if config['app']['history'] == "on":
             st.session_state.history_option = True
         else:
             st.session_state.history_option = False
 
-    if "popup" not in st.session_state:
-        st.session_state.popup = True
+    #다운로드 버튼 활성화
+    if "file_download" not in st.session_state:
+        st.session_state.file_download = False
     
+    #관리자 모드 활성화
+    if "admin" not in st.session_state:
+        st.session_state.admin = False
+    
+    #파일
+    if "file" not in st.session_state:
+        st.session_state.file = None
+    
+    #파일 확장자 설정
+    if "file_set" not in st.session_state:
+        st.session_state.file_set = "Excel"
+    
+    #DB 등록 여부 체크
+    if "db_check" not in st.session_state:
+        st.session_state.db_check = False
     
 
 def logout_state():
@@ -161,7 +171,6 @@ def logout_state():
 #세션 초기화
 def minwon_clear():
     st.session_state.id = ""#str(uuid.uuid4())
-    print(f"id: {st.session_state.id}")
     st.session_state['minwon_check'] = 'file_select'
     st.session_state.file_check = False
     st.session_state.manual = False
@@ -176,4 +185,6 @@ def minwon_clear():
     st.session_state.name =""
     st.session_state.save_df = pd.DataFrame(columns = ["민원내용", "답변내용"])
     st.session_state.popup = True
-    st.rerun()
+    st.session_state.admin = False
+    st.session_state.file_download = False
+    st.session_state.db_check = False
