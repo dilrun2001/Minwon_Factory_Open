@@ -62,8 +62,8 @@ def clear_state():
         st.session_state.format = ""
 
     #일단 LLM 모델
-    if "llm_model" not in st.session_state:
-        st.session_state.llm_model = "llama3:latest"
+    if "model" not in st.session_state:
+        st.session_state.model = "기본 모델"
 
     #답변
     if "response" not in st.session_state:
@@ -157,6 +157,7 @@ def clear_state():
     #DB 등록 여부 체크
     if "db_check" not in st.session_state:
         st.session_state.db_check = False
+    
     
 
 def logout_state():

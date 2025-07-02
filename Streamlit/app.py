@@ -16,6 +16,7 @@ pages = {
         st.Page(pg.show_page, title = "민원 입력", icon = ":material/input:"),
     ],
     "설정": [
+        st.Page(pg.show_select, title = '모델 선택', icon = ":material/data_check:"),
         st.Page(pg.show_format, title = "양식 포맷", icon  = ":material/edit_note:"),
         st.Page(pg.show_admin, title = "관리자 페이지", icon = ":material/admin_panel_settings:")
     ]
