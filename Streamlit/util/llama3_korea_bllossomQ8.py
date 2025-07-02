@@ -1,5 +1,6 @@
 # (이미 설치하셨으니 생략 가능)
-
+import util.state as state_util
+import streamlit   as st
 # HF 허브에서 GGUF 파일만 내려받기
 def AI_print_answer(minwon,answer,answer_format):
     from huggingface_hub import hf_hub_download
@@ -7,7 +8,16 @@ def AI_print_answer(minwon,answer,answer_format):
     model_path = hf_hub_download(
         repo_id="QuantFactory/llama-3-Korean-Bllossom-8B-GGUF",
         filename="llama-3-Korean-Bllossom-8B.Q8_0.gguf"
-    )
+        )
+
+    if(st.session_state.model == '기본 모델'):
+        model_path = hf_hub_download(
+        repo_id="QuantFactory/llama-3-Korean-Bllossom-8B-GGUF",
+        filename="llama-3-Korean-Bllossom-8B.Q8_0.gguf"
+        )
+    elif(st.session_state.model == '민원팩토리 모델'):
+        model_path = "./util/llm_models/llama3_minwon_factory_q8_0/Llama3_Minwon_Factory-8.0B-Q8_0.gguf"
+    
 
     # llama-cpp-python 으로 모델 로드 및 생성 함수 정의
     from llama_cpp import Llama

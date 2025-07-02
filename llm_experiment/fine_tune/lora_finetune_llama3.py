@@ -40,33 +40,62 @@ lora_config = LoraConfig(
 
 model = get_peft_model(model, lora_config)
 
+# === Llama 3 채팅 템플릿 설정 ===
+tokenizer.chat_template = """
+{%- for message in messages -%}
+    {%- if message['role'] == 'system' -%}
+        {{- '<|begin_of_text|>' + message['content'] + '<|eot_id|>' -}}
+    {%- elif message['role'] == 'user' -%}
+        {{- '<|start_header_id|>user<|end_header_id|>\n\n' + message['content'] + '<|eot_id|>' -}}
+    {%- elif message['role'] == 'assistant' -%}
+        {{- '<|start_header_id|>assistant<|end_header_id|>\n\n' + message['content'] + '<|eot_id|>' -}}
+    {%- endif -%}
+{%- endfor -%}
+"""
+
 # === 전처리 함수 ===
 def preprocess(example):
-    prompt = f"""[민원 내용]
+    # 대화 형식 구성
+    messages = [
+        {"role": "user", "content": f"""[민원 내용]
 {example['instruction']}
+
 [답변 요지]
-{example['answer']}
-[답변]
-"""
-    response = example["output"]
-    full_text = prompt + response + tokenizer.eos_token
-
+{example['answer']}"""},
+        {"role": "assistant", "content": example['output']}
+    ]
+    
+    # chat_template을 사용하여 프롬프트 생성
+    full_text = tokenizer.apply_chat_template(messages, tokenize=False)
+    
+    # 토큰화
     tokenized = tokenizer(
-        full_text, 
-        truncation=True, 
-        padding="max_length", 
-        max_length=max_seq_length
+        full_text,
+        truncation=True,
+        padding="max_length",
+        max_length=max_seq_length,
     )
-    input_ids = tokenized["input_ids"]
-    labels = input_ids.copy()
 
-    prompt_ids = tokenizer(prompt, truncation=True, max_length=max_seq_length)["input_ids"]
-    prompt_len = min(len(prompt_ids), max_seq_length)  # 길이 초과 방지
+    # 레이블 생성 (Assistant의 답변 부분만 학습)
+    labels = tokenized["input_ids"].copy()
+    
+    # User 프롬프트 부분은 loss 계산에서 제외
+    # Assistant 응답 시작점을 찾기 위해 assistant<|end_header_id|>\n\n 부분을 찾음
+    assistant_prompt = tokenizer.apply_chat_template([messages[0]], tokenize=False) # User 부분만 템플릿 적용
+    assistant_header = "<|start_header_id|>assistant<|end_header_id|>\n\n"
+    
+    # User + Assistant 헤더까지의 텍스트
+    prompt_text = assistant_prompt + assistant_header
+    
+    # 해당 텍스트를 토큰화하여 길이 계산
+    prompt_ids = tokenizer(prompt_text, add_special_tokens=False)["input_ids"]
+    prompt_len = len(prompt_ids)
 
-    labels[:prompt_len] = [-100] * prompt_len  # prompt는 loss 계산 제외
+    # prompt 부분의 레이블을 -100으로 설정
+    labels[:prompt_len] = [-100] * prompt_len
+
     tokenized["labels"] = labels
     return tokenized
-
 
 tokenized_dataset = dataset.map(preprocess, batched=False)
 
