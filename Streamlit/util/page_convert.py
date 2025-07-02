@@ -1,5 +1,5 @@
 import streamlit as st
-#from util.state import *
+import my_pages as pg
 from util.state_copy import *
 
 def page_convert():
@@ -30,4 +30,4 @@ def page_convert():
     st.session_state['btn_show'] = False
 
 def show_home():
-    pass
+    pg.show_page()

@@ -169,6 +169,8 @@ def logout_state():
     st.session_state.name =""
     st.session_state.id = ""
 
+
+
 #세션 초기화
 def minwon_clear():
     st.session_state.id = ""#str(uuid.uuid4())

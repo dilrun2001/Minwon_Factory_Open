@@ -25,7 +25,13 @@ def make_random_id(length=16):
 #민원 입력 부분 사이드바
 def sidebar_set():
     if st.session_state.file_check:
-        if st.session_state['minwon_check'] == 'result':
+        if st.session_state['minwon_check'] == 'minwon_input':
+            selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'], key = "llm_model_select", width = 300, label_visibility="collapsed")
+            if selected == '기본 모델':
+                    st.session_state.model = '기본 모델'
+            elif selected == '민원팩토리 모델':
+                    st.session_state.model = '민원팩토리 모델'
+        elif st.session_state['minwon_check'] == 'result':
                 #st.session_state.file_format = st.segmented_control("다운받을 파일 확장자", options= ( "Excel", "CSV"), key = "file_format", help = "다운받을 파일의 확장자를 선택해주세요.", label_visibility="collapsed", default= "Excel")
                 if st.session_state.file_download:
                     st.markdown('<span id = "input-button"></span>', unsafe_allow_html=True)
@@ -417,7 +423,7 @@ f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
             time.sleep(1)
             for i ,row in  data.iterrows():
                 if st.session_state.ai_option:
-                    update(f"{i+1}번 민원에 대한 답변을 생성중입니다. 현재 진행 상황 {i+1}/4") #전체 민원 개수는 {len(data)}개 입니다.")
+                    update(f"{i+1}번 민원에 대한 답변을 생성중입니다. 현재 진행 상황 {i+1}/{len(data)}") #전체 민원 개수는 {len(data)}개 입니다.")
                     answer = useAi.AI_print_answer(minwon=row['민원내용'], answer=row['답변요지'],answer_format=row['답변양식'])
                     update(f"{i+1}번 민원에 대한 유사 답변이 존재하는 지 확인합니다.")
                     

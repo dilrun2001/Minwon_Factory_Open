@@ -187,6 +187,15 @@ div.st-key-file_format .stButtonGroup button:hover{
     border-color: lightblue;
 }
 
+div.st-key-llm_model_select .stSelectbox{
+    position: fixed;
+    width: 200px;
+    top: 1.1%;
+    left: 17%;
+    background-color: transparent;
+    z-index: 99999999999999 !important;
+}
+
 div.rc-overflow{
     padding: 0px 150px;
     font-weight: 550;
