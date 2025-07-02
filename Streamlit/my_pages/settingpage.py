@@ -1,8 +1,8 @@
 import streamlit as st
 from util.database import *
-from util.state import *
-from util.setting import *
-
+from util.state_copy import *
+from util.AI_queue import clear_queue
+import time
 format_list = ["양식 1", "양식 2", "양식 3"]
 
 def fetch_current_format(format_type):
@@ -36,9 +36,48 @@ def change_text(text):
     text = text.replace('[전화번호]', st.session_state.tel)
     return text
 
-def show_setting():
-    
-    if st.session_state.setting:
+def show_admin():
+    st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
+    st.button("민원팩토리",  key = "home_btn_setting_admin", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ")
+    if st.session_state.admin:
+            st.subheader("관리자 페이지")
+            with st.expander("대기열 관리", expanded = True, icon = ":material/queue:"):
+                st.write("대기열 기능 오류 시 해당 부분에서 대기열을 초기화할 수 있습니다.")
+                queue_clear = st.button("대기열 초기화", key = "queue_clear", icon = ":material/clear_all:", on_click = clear_queue)
+                if queue_clear:
+                        st.toast("대기열이 초기화되었습니다.", icon = ":material/check:")
+            st.markdown("---")
+            with st.expander("DB 데이터 관리", expanded = True, icon = ":material/database:"):
+                st.write("민원이 저장된 데이터베이스 확인 및 데이터 추출")
+                db_col = st.columns([8,1,8])
+                with db_col[0]:
+                        if st.button("데이터베이스 데이터 확인", key = "db_check", icon = ":material/database:"):
+                                db_data = run_query("SELECT minwon, response FROM history")
+                                if not db_data.empty:
+                                        st.dataframe(db_data)
+                                else:
+                                        st.toast("데이터베이스에 저장된 데이터가 없습니다.", icon = ":material/block:")
+    else:
+            with st.form("admin_login_form"):
+                    password = st.text_input("관리자 비밀번호 입력", type="password")
+                    if st.form_submit_button("관리자 페이지 열기"):
+                            if password == config['app']['admin_password']:
+                                    st.session_state.admin = True
+                                    st.toast("관리자 모드가 활성화되었습니다", icon=":material/check:")
+                                    time.sleep(0.5)
+                                    st.rerun()
+                            else:
+                                    st.toast("비밀번호가 틀립니다.", icon = ":material/block:")
+
+
+
+def show_format():
+        st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
+        st.button("민원팩토리", key = "home_btn_setting", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ")
+
+        st.write("양식 포맷 설정 창")
+
+        '''if st.session_state.setting:
         st.write("양식 포맷 테스트")
         col1, col2, col3 = st.columns(3)
 
@@ -120,7 +159,7 @@ def show_setting():
                                 st.error("양식을 입력해주세요.")
     else:
            st.error("관리자의 의해 현재 사용할 수 없는 페이지입니다.", icon = ":material/block:")
-
+'''
 
 
 

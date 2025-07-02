@@ -4,20 +4,10 @@ import streamlit.components.v1 as components
 import json
 
 def load_css():
-    with open('./css/new_style.css', encoding = "UTF-8") as f:
+    with open('./css/style.css', encoding = "UTF-8") as f:
         css = f.read()
-    '''with open('./css/new_style.js', encoding="UTF-8") as f:
-        js= f.read()'''
     
     st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
-    '''components.html(f"""
-    <script>
-    {js}
-    highlightByFocusArea({i}, "{option}");
-    </script>                    
-""", height = 0)'''
-    #st.markdown('<div class="top-fixed-menu custom-option-menu">', unsafe_allow_html=True)
-
 
 def highlight_js(highlight_data):
     json_data = json.dumps(highlight_data)
@@ -38,7 +28,7 @@ def highlight_js(highlight_data):
 
             if (item.option === "답변" && normal) {{
                 normal.classList.add("active-highlight");
-            }} else if (item.option === "답변(RAG)" && rag) {{
+            }} else if (item.option === "RAG" && rag) {{
                 rag.classList.add("active-highlight");
             }}
         }});
@@ -62,12 +52,15 @@ def show_loading_overlay(message = "로딩 중입니다."):
     overlay = st.empty()
 
     def update_message(msg):
+        msg_html  = msg.replace('\n', '<br>')
         overlay.markdown(f"""
             <div class="overlay">
                 <div class = "spin-box">
                     <div class="spinner"></div>
                     <div>{msg}</div>
                 </div>
+                <div class = "alert-box">
+                    <h3><경고> 대기열, 민원 생성 중에 절대로 새로고침을 하지 말아주세요!</h3>
             </div>
         """, unsafe_allow_html=True)
     update_message(message)

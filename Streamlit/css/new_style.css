@@ -10,6 +10,7 @@
 }
 
 
+
 /*우측 팝업창 css */
 @keyframes fadeSlideIn {
     0% {
@@ -195,24 +196,6 @@ div[class = "stAppDeployButton"]{
 
 }
 
-
-/* custom_textarea.css */
-/*.element-container:has(#focus_area) + div textarea {
-    transition: all 0.3s ease-in-out;
-    border-radius: 10px;
-    padding: 10px;
-    width: 100%;
-    min-height: 150px;
-}
-
-/* 포커스되었을 때 
-.element-container:has(#focus_area) + div textarea:active {
-    border-color: #4A90E2;
-    box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
-    transform: scale(1.02);
-    min-height: 200px;
-}*/
-
 textarea.active-highlight {
     transition: all 0.2s ease-in-out;
     border: 2px solid #63e73b !important;
@@ -220,23 +203,6 @@ textarea.active-highlight {
     background-color: #d9f0cf !important;
     box-shadow: 0 0 10px rgba(74, 144, 226, 0.5) !important;     
 }
-
-
-/*textarea {
-    transition: all 0.3s ease-in-out;
-    border-radius: 10px;
-    padding: 10px;
-    width: 100%;
-    min-height: 150px;
-}
-
-/*
-textarea.active-highlight {
-    border: 2px solid #4A90E2 !important;
-    box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
-    transform: scale(1.02);
-    min-height: 200px;
-}*/
 
 
 
