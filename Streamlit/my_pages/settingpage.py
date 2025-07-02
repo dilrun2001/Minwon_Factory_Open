@@ -30,11 +30,21 @@ def fetch_current_format(format_type):
 
     return "(등록된 양식이 없습니다.)"
 
+
 def change_text(text):
     text = text.replace('[부서명]', st.session_state.department)
     text = text.replace('[이름]', st.session_state.name)
     text = text.replace('[전화번호]', st.session_state.tel)
     return text
+
+def show_select():
+      with st.expander("모델 선택", expanded = True):
+            selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'])
+            if selected == '기본 모델':
+                st.session_state.model = '기본 모델'
+            elif selected == '민원팩토리 모델':
+                st.session_state.model = '민원팩토리 모델'
+            print(st.session_state.model)
 
 def show_admin():
     st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
