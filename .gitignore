@@ -1,2 +1,3 @@
 /.idea
 .streamlit/secrets.toml
+/Streamlit/minwon_chroma_db/

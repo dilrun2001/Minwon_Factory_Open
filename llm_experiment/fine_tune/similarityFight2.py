@@ -1,30 +1,43 @@
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 import json
 from sentence_transformers import SentenceTransformer, util
+import time
 
-# ✅ KURE-v1 모델 로드 (유사도 비교용)
+# ✅ KURE-v1 임베딩 모델
 embedding_model = SentenceTransformer("nlpai-lab/KURE-v1")
 
+# ✅ 답변 템플릿
 answer_format = """1. 안녕하십니까? 귀하께서 신청하신 민원에 대한 검토결과를 다음과 같이 알려드립니다.
-
 2. 귀하의 민원 내용은 [민원요지]에 관한 것으로 이해됩니다.
-
 3. 귀하의 민원사항에 대해 검토한 결과는 다음과 같습니다.
 가. [답변요지]
-
 4. 귀하의 민원에 만족스러운 답변이 되었기를 바라며, 답변 내용에 대한 추가 설명이 필요한 경우 [부서명]([이름], [전화번호])으로 연락주시면 친절히 안내해 드리도록 하겠습니다. 감사합니다. """
 
+# ✅ 일반 모델 로드
 def load_model(model_id):
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         torch_dtype=torch.bfloat16,
-        device_map="auto",
+        device_map="auto"
     )
     model.eval()
     return tokenizer, model
 
+# ✅ Q8 모델 로드
+def load_model_q8(model_id):
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    quant_config = BitsAndBytesConfig(load_in_8bit=True)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        device_map="auto",
+        quantization_config=quant_config
+    )
+    model.eval()
+    return tokenizer, model
+
+# ✅ 답변 생성 함수
 def llama3vs(minwon, answer, tokenizer, model):
     PROMPT = '''당신은 공공기관의 민원 응답을 담당하는 전문 공무원입니다.
 기관 이름은 '사하구청'입니다.
@@ -76,16 +89,16 @@ def llama3vs(minwon, answer, tokenizer, model):
 
     return tokenizer.decode(outputs[0][input_ids.shape[-1]:], skip_special_tokens=True)
 
-# ✅ 모델 로딩 (1회만 수행)
-llama3_tokenizer, llama3_model = load_model("MLP-KTLim/llama-3-Korean-Bllossom-8B")
+# ✅ 모델 로딩 (일반 + Q8)
 finetuned_tokenizer, finetuned_model = load_model("./llama3-ko-minwon-merged")
+q8_tokenizer, q8_model = load_model_q8("./llama3-ko-minwon-merged")
 
-# ✅ 입력/출력 파일 설정
+# ✅ 파일 설정
 input_file = 'exampledata.jsonl'
-output_file = '101-105Fight.jsonl'
-
+output_file = 'compare_q8_vs_finetuned.jsonl'
 line_count = 0
 
+# ✅ 메인 실행
 with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'w', encoding='utf-8') as outfile:
     for line in infile:
         line = line.strip()
@@ -98,35 +111,43 @@ with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'w', e
             output = data.get('output', '')
             answer = data.get('answer', '')
 
-            # 생성된 두 답변
-            answer1 = llama3vs(minwon, answer, llama3_tokenizer, llama3_model)
-            answer2 = llama3vs(minwon, answer, finetuned_tokenizer, finetuned_model)
+            # 일반 모델 응답
+            start = time.time()
+            answer1 = llama3vs(minwon, answer, finetuned_tokenizer, finetuned_model)
+            runtime1 = time.time() - start
 
-            # 임베딩 및 유사도 계산
+            # Q8 모델 응답
+            start = time.time()
+            answer2 = llama3vs(minwon, answer, q8_tokenizer, q8_model)
+            runtime2 = time.time() - start
+
+            # 유사도 계산
             sentences = [output, answer1, answer2]
-            embeddings = embedding_model.encode(sentences)
+            embeddings = embedding_model.encode(sentences, convert_to_tensor=True)
             sim1 = util.cos_sim(embeddings[0], embeddings[1]).item()
             sim2 = util.cos_sim(embeddings[0], embeddings[2]).item()
 
             # 출력
             print(f"\n✅ {line_count} 유사도 결과:")
-            print(f"정답 vs 답변 1: {sim1:.4f}")
-            print(f"정답 vs 답변 2: {sim2:.4f}")
+            print(f"정답 vs 일반모델 답변: {sim1:.4f} | 시간: {runtime1:.2f}초")
+            print(f"정답 vs Q8모델 답변: {sim2:.4f} | 시간: {runtime2:.2f}초")
 
-            # 결과 저장
+            # 저장
             result = {
                 "instruction": minwon,
                 "ground_truth": output,
-                "answer1": answer1,
-                "answer2": answer2,
-                "sim1": sim1,
-                "sim2": sim2
+                "answer_finetuned": answer1,
+                "answer_q8": answer2,
+                "sim_finetuned": sim1,
+                "sim_q8": sim2,
+                "runtime_finetuned": runtime1,
+                "runtime_q8": runtime2
             }
             outfile.write(json.dumps(result, ensure_ascii=False) + '\n')
             line_count += 1
             print(f"{line_count}줄 처리 완료")
 
         except json.JSONDecodeError as e:
-            print(f"JSON 오류 발생: {e}")
+            print(f"❗ JSON 오류: {e}")
         except Exception as e:
-            print(f"기타 오류 발생: {e}")
+            print(f"❗ 기타 오류: {e}")
