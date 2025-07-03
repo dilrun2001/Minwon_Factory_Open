@@ -3,6 +3,7 @@ from util.database import *
 from util.state_copy import *
 from util.AI_queue import clear_queue
 import time
+from util.page_convert import *
 format_list = ["양식 1", "양식 2", "양식 3"]
 
 def fetch_current_format(format_type):
@@ -37,19 +38,11 @@ def change_text(text):
     text = text.replace('[전화번호]', st.session_state.tel)
     return text
 
-def show_select():
-      with st.expander("모델 선택", expanded = True):
-            selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'])
-            if selected == '기본 모델':
-                st.session_state.model = '기본 모델'
-            elif selected == '민원팩토리 모델':
-                st.session_state.model = '민원팩토리 모델'
-            print(st.session_state.model)
-
 def show_admin():
     st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
-    st.button("민원팩토리",  key = "home_btn_setting_admin", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ")
+    st.button("민원팩토리",  key = "home_btn_setting_admin", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다. ")
     if st.session_state.admin:
+            st.set_page_config(page_title = "관리자 페이지", page_icon=":material/admin_panel_settings:", layout="wide", initial_sidebar_state="collapsed")
             st.subheader("관리자 페이지")
             with st.expander("대기열 관리", expanded = True, icon = ":material/queue:"):
                 st.write("대기열 기능 오류 시 해당 부분에서 대기열을 초기화할 수 있습니다.")
@@ -83,7 +76,7 @@ def show_admin():
 
 def show_format():
         st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
-        st.button("민원팩토리", key = "home_btn_setting", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ")
+        st.button("민원팩토리", key = "home_btn_setting", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", on_click = minwon_clear)
 
         st.write("양식 포맷 설정 창")
 

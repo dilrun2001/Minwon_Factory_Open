@@ -91,7 +91,7 @@ def clear_state():
 
     # 최초 입력 시 데이터 체크
     if "df" not in st.session_state:
-        st.session_state.df = ""
+        st.session_state.df = pd.DataFrame()
 
     # 버튼 호출 미호출 변경
     if "btn_show" not in st.session_state:
@@ -169,6 +169,8 @@ def logout_state():
     st.session_state.name =""
     st.session_state.id = ""
 
+
+
 #세션 초기화
 def minwon_clear():
     st.session_state.id = ""#str(uuid.uuid4())
@@ -189,3 +191,5 @@ def minwon_clear():
     st.session_state.admin = False
     st.session_state.file_download = False
     st.session_state.db_check = False
+    st.session_state.df = pd.DataFrame()
+    st.session_state.ai_check = False

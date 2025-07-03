@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 import os
 import shutil
 from sentence_transformers import util
-import util.state as state_util    # util.state 는 state_util 로
+import util.state_copy as state_util    # util.state 는 state_util 로
 import streamlit   as st           # st 는 streamlit 으로
 import traceback
 from util.database import *
