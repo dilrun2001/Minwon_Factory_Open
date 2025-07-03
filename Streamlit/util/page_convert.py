@@ -30,4 +30,4 @@ def page_convert():
     st.session_state['btn_show'] = False
 
 def show_home():
-    pg.show_page()
+    st.Page(pg.show_page)

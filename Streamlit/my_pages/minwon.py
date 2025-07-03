@@ -70,8 +70,10 @@ def show_home():
     st.markdown('''
     ##### 아래 2가지의 방식 중 하나를 선택해서 답변 생성을 선택해주세요.      
     ''')
+    
     file_col, spacer, manual_col = st.columns((8,1,8))
-
+    #ai 왔다갔다 할 떄 AI 한번만 돌리게ㅉ
+    st.session_state.ai_check = False
     with file_col:
         st.markdown("")
         st.subheader("파일 입력")
@@ -92,7 +94,6 @@ def show_home():
                 else:
                     st.session_state.df = pd.read_excel(upload_files, keep_default_na=False)
                 st.session_state.id = make_random_id()
-                st.session_state.df['입력체크'] = False
                 st.session_state.df['답변요지'] = ""
                 st.session_state.df['최종답변'] = ""
                 st.session_state.df['최종평점'] = ""
@@ -119,6 +120,19 @@ def show_home():
 
         if manual_btn:
             if name != '' and department != '' and tel != '':
+                st.session_state.id = make_random_id()
+                st.session_state.df['이름'] = name
+                st.session_state.df['부서명'] = department
+                st.session_state.df['전화번호'] = tel
+                st.session_state.df['민원내용'] = ""
+                st.session_state.df['답변요지'] = ""
+                st.session_state.df['민원요지'] = ""
+                st.session_state.df['최종답변'] = ""
+                st.session_state.df['최종평점'] = ""
+                st.session_state.df['민원 카테고리'] = "일반"
+                st.session_state.df['민원 긴급도'] = "매우 낮음"
+                st.session_state.df['답변 평점'] = 0
+                st.session_state.df['RAG 평점'] = 0
                 st.session_state.name = name
                 st.session_state.department = department
                 st.session_state.tel = tel
@@ -148,7 +162,9 @@ def show_home():
 def show_input():
     #format_set()
     #양식 선택 기능 임시 비활성화
+    st.set_page_config(page_title = "민원 입력", page_icon=":material/input:", layout="wide", initial_sidebar_state="collapsed")
     st.subheader("민원 입력 및 응답 생성")
+    st.markdown("##### 상단 선택창에서 사용할 AI 모델을 선택할 수 있습니다.")
     minwon = st.session_state.df
     for i , row in minwon.iterrows():
         with st.expander(f"{i+1}번 민원 데이터", expanded=True, icon=":material/comment:"):#, key = f"minwon_input_{i}"):
@@ -234,6 +250,7 @@ def show_input():
 
 # 결과창 표시
 def show_result():
+    st.set_page_config(page_title = "민원 결과", page_icon=":material/lab_profile:", layout="wide", initial_sidebar_state="collapsed")
     highlight_list = []
     result = st.session_state.df
     for i, row in result.iterrows():
@@ -369,7 +386,11 @@ def input_answer():
         st.toast(f"해당 민원에 대한 답변 요지를 입력해주세요. 미입력 민원: {yogi_check}", icon =":material/block:")
         return
     else:    
-        generate_minwon()
+        if st.session_state.ai_check:
+            page_convert()
+        else:
+            generate_minwon()
+            st.session_state.ai_check = True
 
 
 # 민원 요지, 민원 생성 대기열 기능
@@ -404,19 +425,22 @@ f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
 감사합니다."""
                 formats.append(format)
             data['답변양식'] = formats
-            update("대기열에 등록되었습니다. 민원 요지 생성을 시작합니다.")
-            #start_task(st.session_state.id)
-            if st.session_state.ai_option:
-                time.sleep(2)
-                for i, row in data.iterrows():
-                    update(f"{i+1}번 민원에 대한 민원 요지를 생성 중입니다. 전체 민원 개수는 {len(data)}개입니다.")
-                    result = useAi.AI_print_minwon_sub(row['민원내용'])
-                    results.append(result)
-                data['민원요지'] = results
+            if st.session_state.manual is not True:
+                update("대기열에 등록되었습니다. 민원 요지 생성을 시작합니다.")
+                #start_task(st.session_state.id)
+                if st.session_state.ai_option:
+                    time.sleep(2)
+                    for i, row in data.iterrows():
+                        update(f"{i+1}번 민원에 대한 민원 요지를 생성 중입니다. 현재 진행 상황 {i+1}/{len(data)}")
+                        result = useAi.AI_print_minwon_sub(row['민원내용'])
+                        results.append(result)
+                    data['민원요지'] = results
+                else:
+                    for i, row in data.iterrows():
+                        data['민원요지'] = "miwnon_sub_off"
+                    time.sleep(3)
             else:
-                for i, row in data.iterrows():
-                    data['민원요지'] = "miwnon_sub_off"
-                time.sleep(3)
+                pass
         #민원 답변 생성 파트
         elif st.session_state['minwon_check'] == 'minwon_input':
             update("대기열에 등록되었습니다. 입력한 민원의 답변을 생성합니다.")
@@ -446,8 +470,10 @@ f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
                 raganswers.append(raganswer)
             data['답변결과'] = answers
             data['RAG'] = raganswers
+            
         end_task(st.session_state.id)
-        page_convert()
+        
+    page_convert()
 
 
 

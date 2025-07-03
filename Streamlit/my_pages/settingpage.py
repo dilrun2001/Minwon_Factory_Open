@@ -40,8 +40,9 @@ def change_text(text):
 
 def show_admin():
     st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
-    st.button("민원팩토리",  key = "home_btn_setting_admin", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다. ", on_click = minwon_clear)
+    st.button("민원팩토리",  key = "home_btn_setting_admin", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다. ")
     if st.session_state.admin:
+            st.set_page_config(page_title = "관리자 페이지", page_icon=":material/admin_panel_settings:", layout="wide", initial_sidebar_state="collapsed")
             st.subheader("관리자 페이지")
             with st.expander("대기열 관리", expanded = True, icon = ":material/queue:"):
                 st.write("대기열 기능 오류 시 해당 부분에서 대기열을 초기화할 수 있습니다.")
