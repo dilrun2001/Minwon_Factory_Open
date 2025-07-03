@@ -7,7 +7,6 @@ import my_pages as pg
 from css.theme import * 
 load_css()
 clear_state()
-from util.menu import *
 
 
 pages = {

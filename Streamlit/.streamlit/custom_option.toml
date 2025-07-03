@@ -8,3 +8,7 @@ history = "on" #민원히스토리 on/off
 setting = "on" #설정 on/off
 format = "off" #민원 설정 양식 on/off
 admin_password = "minfacadmin123"
+[sub]
+accept  = "조속히 처리하겠음."
+particle_accept = "현장확인 후 조속히 처리하겠음."
+unaccept = "검토 이후 요청을 이행하기 어려움."

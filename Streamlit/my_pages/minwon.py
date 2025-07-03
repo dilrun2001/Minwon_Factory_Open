@@ -1,22 +1,18 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-from util.menu import *
-from util.setting import *
+import time
 from css.theme import *
 from util.database import *
 from pymysql.cursors import DictCursor
 from util.state_copy import *
-from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 from util.page_convert import *
-from util.dataframe import *
 import util.llama3_korea_bllossomQ8 as useAi #우리가 만든 ai를 사용하기위한 임포트
 #import util.find_similar as ragai
 from io import BytesIO
 import random
 import string
 from util.AI_queue import *
-import streamlit.components.v1 as components
 
 def make_random_id(length=16):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -63,8 +59,6 @@ def file_reselect():
 #메인 화면
 # 해당 부분 추가 함으로서 (벡터 db 를 생성후) home 을 출력 합니다
 def show_home():
-    #if st.session_state.rag_option != False:
-    #    ragai.ensure_chroma_db()
     st.session_state['page'] = '홈'
     st.subheader("새올민원자동답변기에 오신 걸 환영합니다!")
     st.markdown('''
@@ -164,7 +158,7 @@ def show_input():
     #양식 선택 기능 임시 비활성화
     st.set_page_config(page_title = "민원 입력", page_icon=":material/input:", layout="wide", initial_sidebar_state="collapsed")
     st.subheader("민원 입력 및 응답 생성")
-    st.markdown("##### 상단 선택창에서 사용할 AI 모델을 선택할 수 있습니다.")
+    st.markdown("###### 상단 선택창에서 사용할 AI 모델을 선택할 수 있습니다.")
     minwon = st.session_state.df
     for i , row in minwon.iterrows():
         with st.expander(f"{i+1}번 민원 데이터", expanded=True, icon=":material/comment:"):#, key = f"minwon_input_{i}"):
@@ -193,19 +187,20 @@ def show_input():
                             case "직접 입력":
                                 pass
                             case "완전 수용":
-                                row['답변요지'] = "조속히 처리하겠음."
+                                row['답변요지'] = config['sub']['accept']
                             case "부분 수용":
-                                row['답변요지'] = '현장확인 후 조속히 처리하겠음.'
+                                row['답변요지'] = config['sub']['particle_accept']
                             case "수용 불가":
-                                row['답변요지'] = '수용 불가는 뭘 써야할까요.'
+                                row['답변요지'] = config['sub']['unaccept']
                     with right:
                         option_map = {
                             "민원 카테고리": ":material/checklist:",
-                            "민원 긴급도": ":material/emergency:",
+                            "민원 긴급도": ":material/siren:",
                             "답변 양식": ":material/edit:",
                         }
                         edit = st.pills(
-                            "민원 카테고리 및 긴급도 설정",  key = f"minwon_edit_{i}", options = option_map.keys(),format_func=lambda option: option_map[option], selection_mode="single"
+                            "민원 카테고리 및 긴급도 설정",  key = f"minwon_edit_{i}", options = option_map.keys(),format_func=lambda option: option_map[option], selection_mode="single",
+                            help = "좌측부터 각 민원 카테고리, 민원 긴급도, 민원 양식 수정 기능을 지원하는 버튼입니다."
                         )
                     match (edit):
                         case "답변 양식":
@@ -250,6 +245,9 @@ def show_input():
 
 # 결과창 표시
 def show_result():
+    st.subheader("답변 결과")
+    st.markdown(f"###### 요청하신 민원 {len(st.session_state.df)}건에 대한 답변이 생성되었습니다.")
+    st.markdown("###### 우측 파일 확장자를 선택하고 생성 버튼을 클릭 시 확장자에 대한 파일이 생성됩니다.")
     st.set_page_config(page_title = "민원 결과", page_icon=":material/lab_profile:", layout="wide", initial_sidebar_state="collapsed")
     highlight_list = []
     result = st.session_state.df

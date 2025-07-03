@@ -1,5 +1,5 @@
 # (이미 설치하셨으니 생략 가능)
-import util.state as state_util
+import util.state_copy as state_util
 import streamlit   as st
 # HF 허브에서 GGUF 파일만 내려받기
 def AI_print_answer(minwon,answer,answer_format):
