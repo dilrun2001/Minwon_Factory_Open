@@ -4,19 +4,20 @@ from datetime import datetime
 import time
 from css.theme import *
 from util.database import *
-from pymysql.cursors import DictCursor
 from util.state_copy import *
 from util.page_convert import *
 import util.llama3_korea_bllossomQ8 as useAi #우리가 만든 ai를 사용하기위한 임포트
 #import util.find_similar as ragai
 from io import BytesIO
+from util.toml_edit import *
 import random
 import string
 from util.AI_queue import *
 
-def make_random_id(length=16):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
+'''def make_random_id(length=16):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+'''
 
 #민원 입력 부분 사이드바
 def sidebar_set():
@@ -159,6 +160,7 @@ def show_input():
     st.set_page_config(page_title = "민원 입력", page_icon=":material/input:", layout="wide", initial_sidebar_state="collapsed")
     st.subheader("민원 입력 및 응답 생성")
     st.markdown("###### 상단 선택창에서 사용할 AI 모델을 선택할 수 있습니다.")
+    config = st.session_state.config
     minwon = st.session_state.df
     for i , row in minwon.iterrows():
         with st.expander(f"{i+1}번 민원 데이터", expanded=True, icon=":material/comment:"):#, key = f"minwon_input_{i}"):
@@ -400,6 +402,7 @@ def generate_minwon():
         formats = []
         answers = []
         raganswers = []
+        config = st.session_state.config
         enqueue_task(st.session_state.id)
         while not get_queue(st.session_state.id):
             num = search_queue(st.session_state.id)
@@ -409,18 +412,7 @@ def generate_minwon():
         if st.session_state['minwon_check'] == 'file_select':
             #답변 양식 생성 및 병합
             for i, row in data.iterrows():
-                format =\
-f"""1. 귀하의 가정에 행복이 가득하시길 바랍니다.
-
-2. 귀하의 민원내용은 [민원요지]에 관한 것으로 이해(또는 판단) 됩니다.
-
-3. 귀하의 질의사항에 대해 검토한 의견은 다음과 같습니다.
-
-가. [답변내용]
-
-4. 귀하의 질문에 만족스러운 답변이 되었기를 바라며, 답변 내용에 대한 추가 설명이 필요한 경우에는 사하구 {row['부서명']}({row['이름']}, ☎{row['전화번호']})에게 연락주시면 친절히 안내해 드리도록 하겠습니다.
-아울러 귀하의 민원처리에 대한 만족도 참여를 부탁드립니다. 
-감사합니다."""
+                format = change_text(config['format']['format'], row['부서명'], row['이름'], row['전화번호'])
                 formats.append(format)
             data['답변양식'] = formats
             if st.session_state.manual is not True:
