@@ -13,7 +13,6 @@ def make_random_id(length=16):
 
 
 def clear_state():
-    st.session_state.config = load_set()
     #ID (대기열을 위한 키 생성)
     if "id" not in st.session_state:
         st.session_state.id = ""
@@ -113,28 +112,28 @@ def clear_state():
     
     #AI 옵션
     if "ai_option" not in st.session_state:
-        if st.session_state.config['app']['ai'] == 'on':
+        if config['app']['ai'] == 'on':
             st.session_state.ai_option = True
         else:
             st.session_state.ai_option = False
 
     #RAG 옵션
     if "rag_option" not in st.session_state:
-        if st.session_state.config['app']['rag'] == "on":
+        if config['app']['rag'] == "on":
             st.session_state.rag_option = True
         else:
             st.session_state.rag_option = False
 
     #설정 옵션
     if "setting" not in st.session_state:
-        if st.session_state.config['app']['setting'] == "on":
+        if config['app']['setting'] == "on":
             st.session_state.setting = True
         else:
             st.session_state.setting = False
     
     #히스토리 옵션
     if "history_option" not in st.session_state:
-        if st.session_state.config['app']['history'] == "on":
+        if config['app']['history'] == "on":
             st.session_state.history_option = True
         else:
             st.session_state.history_option = False
@@ -160,15 +159,16 @@ def clear_state():
         st.session_state.db_check = False
     
 
+# AI, RAG ON/OFF 기능으로 인해 실시간 피드백 변경
 def ai_option_check():
     #AI 옵션
-    if st.session_state.config['app']['ai'] == 'on':
+    if config['app']['ai'] == 'on':
         st.session_state.ai_option = True
     else:
         st.session_state.ai_option = False
 
     #RAG 옵션
-    if st.session_state.config['app']['rag'] == "on":
+    if config['app']['rag'] == "on":
         st.session_state.rag_option = True
     else:
         st.session_state.rag_option = False

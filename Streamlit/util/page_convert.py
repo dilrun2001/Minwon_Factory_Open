@@ -31,4 +31,4 @@ def page_convert():
 
 def convert_home():
     st.toast("민원 입력 버튼에서 기존 화면으로 넘어갈 수 있습니다.", icon = ":material/check:")
-    #st.switch_page("민원 입력")
+    #st.switch_page("pages/minwon.py")

@@ -9,6 +9,9 @@
     border: transparent;
 }
 
+.stAppToolbar{
+    background-color: #f5f7f6ab
+}
 
 /*우측 팝업창 css */
 @keyframes fadeSlideIn {
@@ -54,27 +57,6 @@
     animation: fadeIn 0.6s ease-in;
 }
 
-
-/*파일 업로더 임시 css*/
-div[data-testid="stFileUploader"] > label {
-    display: none;
-}
-
-/* 기본 텍스트 숨김 */
-div[data-testid="stFileUploader"] span {
-    font-size: 16px;        /* 글자 크기 */
-    font-weight: bold; 
-}
-
-div[data-testid="stFileUploader"] small {
-    display: none;
-}
-
-div[data-testid="stFileUploader"] button {
-    border: transparent;
-    /*background-color: #f0f2f6;*/
-    font-weight: bold;
-}
 
 /*이전 단계, 다음 단계 버튼 css *
 
@@ -183,10 +165,11 @@ div.st-key-file_format .stButtonGroup{
 
 
 div.st-key-file_format .stButtonGroup button:hover{
-    color: lightblue;
-    border-color: lightblue;
+    color: #add8e6;
+    border-color: #add8e6;
 }
 
+/* 모델 선택창 */
 div.st-key-llm_model_select .stSelectbox{
     position: fixed;
     width: 200px;
@@ -207,7 +190,7 @@ div.rc-overflow{
     font-weight: 550;
 }
 
-
+/* 파일 형식 재선택 버튼 */
 .element-container:has(#reselect-button) + div button{
     width: 150px;
     height: 15px;
@@ -231,7 +214,7 @@ div.rc-overflow{
     z-index: 999999999;  
 }
 
-
+/*선택된 textarea 영역 */
 textarea.active-highlight {
     transition: all 0.2s ease-in-out;
     border: 2px solid #63e73b !important;
@@ -240,6 +223,7 @@ textarea.active-highlight {
     box-shadow: 0 0 10px rgba(74, 144, 226, 0.5) !important;     
 }
 
+/*streamlit 상단바 비활성화*/
 [data-testid = "stMainMenu"]{
     display: none;
 }

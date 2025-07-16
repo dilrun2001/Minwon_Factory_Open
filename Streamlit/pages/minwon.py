@@ -160,7 +160,7 @@ def show_input():
     st.set_page_config(page_title = "민원 입력", page_icon=":material/input:", layout="wide", initial_sidebar_state="collapsed")
     st.subheader("민원 입력 및 응답 생성")
     st.markdown("###### 상단 선택창에서 사용할 AI 모델을 선택할 수 있습니다.")
-    config = st.session_state.config
+    #config = st.session_state.config
     minwon = st.session_state.df
     for i , row in minwon.iterrows():
         with st.expander(f"{i+1}번 민원 데이터", expanded=True, icon=":material/comment:"):#, key = f"minwon_input_{i}"):
@@ -402,7 +402,7 @@ def generate_minwon():
         formats = []
         answers = []
         raganswers = []
-        config = st.session_state.config
+        #config = st.session_state.config
         enqueue_task(st.session_state.id)
         while not get_queue(st.session_state.id):
             num = search_queue(st.session_state.id)
