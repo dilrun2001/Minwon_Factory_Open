@@ -1,11 +1,11 @@
 import streamlit as st
 from util.database import *
-import toml
 import uuid
 import random
 import string
+from util.toml_edit import *
 
-config = toml.load(".streamlit/custom_option.toml")
+
 
 def make_random_id(length=16):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -158,7 +158,23 @@ def clear_state():
     if "db_check" not in st.session_state:
         st.session_state.db_check = False
     
-    
+
+# AI, RAG ON/OFF 기능으로 인해 실시간 피드백 변경
+def ai_option_check():
+    #AI 옵션
+    if config['app']['ai'] == 'on':
+        st.session_state.ai_option = True
+    else:
+        st.session_state.ai_option = False
+
+    #RAG 옵션
+    if config['app']['rag'] == "on":
+        st.session_state.rag_option = True
+    else:
+        st.session_state.rag_option = False
+
+
+
 
 def logout_state():
     st.session_state.log_in = False

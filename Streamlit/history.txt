@@ -1,0 +1,10 @@
+CREATE TABLE `history` (
+  `timestamp` datetime DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `category` varchar(100) DEFAULT NULL,
+  `urgency` varchar(100) DEFAULT NULL,
+  `minwon` text,
+  `response` text,
+  `grade` int DEFAULT NULL,
+  `answer_yogi` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

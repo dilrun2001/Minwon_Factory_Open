@@ -1,5 +1,5 @@
 import streamlit as st
-import my_pages as pg
+import pages as pg
 from util.state_copy import *
 
 def page_convert():
@@ -29,5 +29,6 @@ def page_convert():
 
     st.session_state['btn_show'] = False
 
-def show_home():
-    st.Page(pg.show_page)
+def convert_home():
+    st.toast("민원 입력 버튼에서 기존 화면으로 넘어갈 수 있습니다.", icon = ":material/check:")
+    #st.switch_page("pages/minwon.py")
