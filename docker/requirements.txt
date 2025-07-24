@@ -3,9 +3,7 @@ langchain_ollama==0.3.2
 pandas==2.2.3
 PyMySQL==1.1.1
 python_bcrypt==0.3.2
-streamlit==1.45.1
-streamlit_navigation_bar==3.3.0
-streamlit_community_navigation_bar==4.7.7
+streamlit==1.46
 streamlit_option_menu==0.4.0
 streamlit_aggrid==1.1.2
 huggingface_hub==0.31.2
@@ -15,3 +13,5 @@ langchain==0.3.25
 langchain-huggingface==0.2.0
 xlsxwriter==3.2.3
 cryptography==45.0.4
+tomlkit==0.13.3
+
