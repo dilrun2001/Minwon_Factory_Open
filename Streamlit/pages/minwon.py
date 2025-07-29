@@ -30,6 +30,11 @@ def sidebar_set():
                     st.session_state.model = '민원팩토리 모델'
         elif st.session_state['minwon_check'] == 'result':
                 #st.session_state.file_format = st.segmented_control("다운받을 파일 확장자", options= ( "Excel", "CSV"), key = "file_format", help = "다운받을 파일의 확장자를 선택해주세요.", label_visibility="collapsed", default= "Excel")
+                selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'], key = "llm_model_select", width = 300, label_visibility="collapsed")
+                if selected == '기본 모델':
+                        st.session_state.model = '기본 모델'
+                elif selected == '민원팩토리 모델':
+                        st.session_state.model = '민원팩토리 모델'
                 if st.session_state.file_download:
                     st.markdown('<span id = "input-button"></span>', unsafe_allow_html=True)
                     st.download_button(
@@ -61,19 +66,19 @@ def file_reselect():
 # 해당 부분 추가 함으로서 (벡터 db 를 생성후) home 을 출력 합니다
 def show_home():
     st.session_state['page'] = '홈'
-    st.subheader("새올민원자동답변기에 오신 걸 환영합니다!")
-    st.markdown('''
-    ##### 아래 2가지의 방식 중 하나를 선택해서 답변 생성을 선택해주세요.      
-    ''')
+    #st.subheader("새올민원자동답변기에 오신 걸 환영합니다!")
+    #st.markdown('''
+    ###### 아래 2가지의 방식 중 하나를 선택해서 답변 생성을 선택해주세요.      
+    #''')
     
-    file_col, spacer, manual_col = st.columns((8,1,8))
+    manual_col, file_col = st.tabs(["단일 민원", "복수 민원"])#st.columns((8,1,8))
     #ai 왔다갔다 할 떄 AI 한번만 돌리게ㅉ
     st.session_state.ai_check = False
     with file_col:
         st.markdown("")
-        st.subheader("파일 입력")
+        st.subheader("복수 민원")
         st.markdown('''
-                    ##### 엑셀 파일을 통해 2개 이상의 민원 데이터들의 답변을 생성할 수 있습니다.\n ##### XLSX, CSV 확장자를 지원합니다.''')
+                    ##### 엑셀 파일을 통해 2개 이상의 민원 데이터를 입력받을 수 있습니다.\n ##### XLSX, CSV 확장자를 지원합니다.''')
         with st.container(key = "file_input", border = True):
 
             upload_files = st.file_uploader(
@@ -98,41 +103,54 @@ def show_home():
                 st.session_state.df['RAG 평점'] = 0
                 #print(st.session_state.df)
                 st.markdown(f"##### {len(st.session_state.df)}개의 민원 데이터가 입력되었습니다.")
+                print(st.session_state.df)
                 st.session_state['btn_show'] = True
 
     # 수동 입력 칸
     with manual_col:
         st.markdown("")
-        st.subheader("수동 입력")
+        st.subheader("단일 민원")
         st.markdown('''
-                    ##### 이름, 부서명, 전화번호를 입력해주세요.\n##### 단, 1개의 민원 데이터만 사용 가능합니다.''')
+                    ##### 이름, 부서명, 전화번호, 민원 내용을 입력해주세요.''')
         with st.form(key = "manual_input"):
-            name = st.text_input("이름", placeholder="이름")
-            department = st.text_input("부서명", placeholder="사하구청")
-            tel = st.text_input("전화번호", placeholder="000-000-0000")
+            name_col, spacer, department_col, spacer2, tel_col = st.columns([5,1,5,1,5])
+            with name_col:
+                name = st.text_input("이름", placeholder="이름")
+            with department_col:
+                department = st.text_input("부서명", placeholder="사하구청")
+            with tel_col:
+                tel = st.text_input("전화번호", placeholder="000-000-0000")
+            minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300)
             manual_btn = st.form_submit_button("수동 입력", icon = ':material/edit_note:')
 
 
         if manual_btn:
-            if name != '' and department != '' and tel != '':
+            if name != '' and department != '' and tel != '' and minwon != '':
                 st.session_state.id = make_random_id()
-                st.session_state.df['이름'] = name
-                st.session_state.df['부서명'] = department
-                st.session_state.df['전화번호'] = tel
-                st.session_state.df['민원내용'] = ""
-                st.session_state.df['답변요지'] = ""
-                st.session_state.df['민원요지'] = ""
-                st.session_state.df['최종답변'] = ""
-                st.session_state.df['최종평점'] = ""
-                st.session_state.df['민원 카테고리'] = "일반"
-                st.session_state.df['민원 긴급도'] = "매우 낮음"
-                st.session_state.df['답변 평점'] = 0
-                st.session_state.df['RAG 평점'] = 0
-                st.session_state.name = name
-                st.session_state.department = department
-                st.session_state.tel = tel
+                st.session_state.df = pd.DataFrame(columns=[
+                '이름', '부서명', '전화번호', '민원내용',
+                '답변요지', '민원요지', '최종답변', '최종평점',
+                '민원 카테고리', '민원 긴급도', '답변 평점', 'RAG 평점'
+            ])
+
+                st.session_state.df.loc[0] = {
+            '이름': name,
+            '부서명': department,
+            '전화번호': tel,
+            '민원내용': minwon,
+            '답변요지': "",
+            '민원요지': "",
+            '최종답변': "",
+            '최종평점': "",
+            '민원 카테고리': "일반",
+            '민원 긴급도': "매우 낮음",
+            '답변 평점': 0,
+            'RAG 평점': 0,
+        }
+
                 st.session_state.manual = True
                 st.session_state['btn_show'] = True
+                print(st.session_state.df)
             else:
                 st.toast("입력 필드를 확인해주세요.", icon = ":material/block:")
 
@@ -141,12 +159,12 @@ def show_home():
         if st.session_state['btn_show']:
             st.markdown('''---''')
             if st.session_state.manual:
-                st.toast("수동 입력이 완료되었습니다. 아래 버튼을 눌러 다음 단계로 이동해주세요.", icon = ":material/done:")
+                st.toast("수동 입력이 완료되었습니다. 우측 상단 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")
             else:
-                st.toast("엑셀 파일이 선택되었습니다. 아래 버튼을 눌러 다음 단계로 이동해주세요.", icon = ":material/done:")
+                st.toast("엑셀 파일이 선택되었습니다. 우측 상단 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")
             st.session_state.file_check = True
-            st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
-            st.button("##### 다음 단계", key = "input_page_show", on_click  = generate_minwon, icon = ':material/chevron_right:')
+            st.markdown('<span id = "input-button"></span>', unsafe_allow_html=True)
+            st.button("##### 민원 요지 생성", key = "input_page_show", on_click  = generate_minwon, icon = ':material/chevron_right:')
 
 
 
@@ -162,6 +180,7 @@ def show_input():
     st.markdown("###### 상단 선택창에서 사용할 AI 모델을 선택할 수 있습니다.")
     #config = st.session_state.config
     minwon = st.session_state.df
+    
     for i , row in minwon.iterrows():
         with st.expander(f"{i+1}번 민원 데이터", expanded=True, icon=":material/comment:"):#, key = f"minwon_input_{i}"):
             with st.container(key = f'main_container_{i}'):
@@ -226,23 +245,10 @@ def show_input():
                 st.markdown('''''')
     st.markdown('<span id = "input-button"></span>', unsafe_allow_html = True)
     st.button("답변 생성", icon=":material/edit:", on_click=input_answer, key = f"input_minwon_generate")
-    st.markdown('''---''')
+   # st.markdown('''---''')
 
     #st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True )
-    st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
-    if st.session_state['btn_show']:
-        st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True )
-        st.button("다음 단계", key = "input_after_button", on_click = page_convert, icon = ':material/chevron_right:')
-    with st.container(key = "input button"):
-        if st.session_state['btn_show']:
-            st.markdown('''---''')
-            #ul, us, ur = st.columns ((4, 12, 4))
-            #with ul:
-            st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True)
-            st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
-            #with ur:
-            st.markdown('<span id = "next-button"></span>', unsafe_allow_html=True)
-            st.button("다음 단계", key = "input_after_button", on_click = page_convert, icon = ':material/chevron_right:')
+    #st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
 
 
 # 결과창 표시
@@ -256,24 +262,31 @@ def show_result():
     for i, row in result.iterrows():
         with st.container(key = f"result_response_container_{i}"):
             with st.expander(f"{i+1}번 민원 답변 결과 확인", icon = ":material/question_answer:", expanded=True, width = 1580):
-                st.markdown("#### 생성된 답변 결과")
+                #st.markdown("#### 생성된 답변 결과")
                 st.session_state.popup = False
                 #option = st.selectbox("등록할 답변", options = ("답변", "답변(RAG)"), key = f"select_option_{i}")
                 #left, spacer, right = st.columns((8, 1, 8))
                 #with left:
                 #    option = st.segmented_control("등록할 답변", options = ("답변", "답변(RAG)"), key = f"select_option_{i}", default = "답변", help = "최종 선택할 답변을 선택해주세요.")
                 mapping = [1,2,3,4,5]
-                main, spacer2, spacer, rag = st.columns((6.8, 0.1,1.4, 6.8))
+                
+                edit =  st.checkbox("민원 수정", key = f"edit_answer_sub_{i}")
+                edit_mode = False
+                main, spacer2, spacer, rag = st.columns((6.8, 0.1,1.6, 6.8))
                 with main:
                     #st.markdown('<span id = "focus_area"></span>', unsafe_allow_html = True)
+                    
                     row['답변결과'] = st.text_area("답변 결과", value = row['답변결과'], height = 330, key=f"minwon result_{i}", width = 690)
                     row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{i}")
+                    
+                    
+                    
                     if row['답변 평점'] is not None:
                         row['답변 평점'] = mapping[row['답변 평점']]
                     else:
                         row['답변 평점'] = 0
                 with spacer:
-                    option = st.pills("등록할 답변", options = ("답변", "RAG"), key = f"select_option_{i}", default = "답변", help = "최종 선택할 답변을 선택해주세요.")
+                    option = st.pills("등록할 답변 선택", options = ("답변", "유사 답변"), key = f"select_option_{i}", default = "답변", help = "최종 선택할 답변을 선택해주세요.")
                     
                 with rag:
                     #st.markdown('<span id = "focus_area"></span>', unsafe_allow_html = True)
@@ -292,12 +305,67 @@ def show_result():
                         result.at[i, '최종답변'] = row['RAG']    
                         result.at[i, '최종평점'] = row['RAG 평점']
                         #print(row['RAG 평점'])
-                st.markdown('''''')
-           
-    highlight_js(highlight_list)
-    with st.container(key = "result button"):
-        st.markdown('''---''')
-        st.button("이전 단계", key = "result_before_button", on_click=page_before, icon = ':material/chevron_left:')
+                if edit:
+                    edit_mode = True
+                    minwon_column, spacer, answer_column = st.columns((8,1.2,8))
+                    with minwon_column: 
+                        row['민원내용'] = st.text_area(
+                                        "민원 내용",  height = 320, value = row['민원내용'], key = f"minwon_{i}",
+                        )
+
+                    with answer_column:                    
+                        left,spacer, right = st.columns([6,0.5,6])
+                        with left:
+                            preset = st.pills(
+                                        "답변 요지 입력 방식", ["직접 입력", "완전 수용", "부분 수용", "수용 불가"],
+                                        key = f"minwon_sub_selecor_{i}", default = "직접 입력",
+                                        help = "답변 요지 입력 방식을 선택해주세요."
+                                        
+                                )                    
+                            match (preset):
+                                case "직접 입력":
+                                    pass
+                                case "완전 수용":
+                                    row['답변요지'] = config['sub']['accept']
+                                case "부분 수용":
+                                    row['답변요지'] = config['sub']['particle_accept']
+                                case "수용 불가":
+                                    row['답변요지'] = config['sub']['unaccept']
+                        with right:
+                            option_map = {
+                                "민원 카테고리": ":material/checklist:",
+                                "민원 긴급도": ":material/siren:",
+                                "답변 양식": ":material/edit:",
+                            }
+                            edit = st.pills(
+                                "민원 카테고리 및 긴급도 설정",  key = f"minwon_edit_{i}", options = option_map.keys(),format_func=lambda option: option_map[option], selection_mode="single",
+                                help = "좌측부터 각 민원 카테고리, 민원 긴급도, 민원 양식 수정 기능을 지원하는 버튼입니다."
+                            )
+                        match (edit):
+                            case "답변 양식":
+                                row['답변양식'] = st.text_area(
+                                    "답변 양식", placeholder = "답변 양식은 민원에 대한 답변을 작성하는 양식입니다.\nex) 귀하의 가정에 행복이 가득하시길 바랍니다.\n귀하의 민원내용은 [민원요지]에 관한 것으로 이해(또는 판단) 됩니다.\n귀하의 질의사항에 대해 검토한 의견은 다음과 같습니다.\n가. [답변내용]\n귀하의 질문에 만족스러운 답변이 되었기를 바라며, 답변 내용에 대한 추가 설명이 필요한 경우에는 사하구 000(000, ☎000-0000)에게 연락주시면 친절히 안내해 드리도록 하겠습니다.\n아울러 귀하의 민원처리에 대한 만족도 참여를 부탁드립니다. 감사합니다.", height = 200, value = row['답변양식'], key = f"answer_format_{i}"
+                                )
+                            case "민원 카테고리":
+                                with right:
+                                    result.at[i, '민원 카테고리'] = st.selectbox(
+                                        "민원 카테고리", options = ["일반", "환경", "교통", "복지", "교육", "기타"], key = f"minwon_category_{i}", help = "민원 카테고리를 선택해주세요."
+                                    )
+                            case "민원 긴급도":
+                                with right:
+                                    result.at[i, '민원 긴급도'] = st.select_slider(
+                                        "민원 긴급도", options = ("매우 낮음", "낮음", "보통", "높음", "매우 높음"), key = f"minwon_urgency_{i}", help = "민원 긴급도를 선택해주세요."
+                                    )
+                        result.at[i, '답변요지']  = st.text_area(
+                                    "답변 요지를 입력해주세요." , placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음.", height = 120, value = row['답변요지'], key = f"answer_sub_{i}"
+                                )
+                    index = i
+                    regenerate = st.button("답변 재생성", key  = f"recreate_answer_{i}", icon = ":material/refresh:", on_click=regenerate_minwon, args = (index,))
+                #else:
+                
+                #st.markdown('''''')
+                if edit_mode == False:
+                    highlight_js(highlight_list)
 
 #데이버베이스 입력
 #데이터프레임 임시 입력 작업 추가
@@ -392,6 +460,27 @@ def input_answer():
             generate_minwon()
             st.session_state.ai_check = True
 
+#민원 재생성 기능 테스트
+def regenerate_minwon(index):
+    data = st.session_state.df
+    with show_loading_overlay(message = "spinner start") as update:
+        enqueue_task(st.session_state.id)
+        while not get_queue(st.session_state.id):
+            num = search_queue(st.session_state.id)
+            update(f"먼저 등록된 작업이 있습니다. 현재 대기번호는 {num}번입니다.")
+            time.sleep(3)
+        update("대기열에 등록되었습니다. 민원 재생성을 시작합니다.")
+        if st.session_state.ai_option:
+            time.sleep(1)
+            update(f"{index+1}번 민원의 답변을 재생성하는 중입니다.")
+            answer = useAi.AI_print_answer(minwon=data.iloc[index]['민원내용'], answer=data.iloc[index]['답변요지'],answer_format=data.iloc[index]['답변양식'])
+            data.loc[index, '답변결과'] = answer
+        else:
+            pass
+        end_task(st.session_state.id)
+            #data.iloc[index]['답변결과'] = answer
+    #useAi.AI_print_answer(minwon=row['민원내용'], answer=row['답변요지'],answer_format=row['답변양식'])
+
 
 # 민원 요지, 민원 생성 대기열 기능
 def generate_minwon():
@@ -415,22 +504,19 @@ def generate_minwon():
                 format = change_text(config['format']['format'], row['부서명'], row['이름'], row['전화번호'])
                 formats.append(format)
             data['답변양식'] = formats
-            if st.session_state.manual is not True:
-                update("대기열에 등록되었습니다. 민원 요지 생성을 시작합니다.")
-                #start_task(st.session_state.id)
-                if st.session_state.ai_option:
-                    time.sleep(2)
-                    for i, row in data.iterrows():
-                        update(f"{i+1}번 민원에 대한 민원 요지를 생성 중입니다. 현재 진행 상황 {i+1}/{len(data)}")
-                        result = useAi.AI_print_minwon_sub(row['민원내용'])
-                        results.append(result)
-                    data['민원요지'] = results
-                else:
-                    for i, row in data.iterrows():
-                        data['민원요지'] = "miwnon_sub_off"
-                    time.sleep(3)
+            update("대기열에 등록되었습니다. 민원 요지 생성을 시작합니다.")
+            #start_task(st.session_state.id)
+            if st.session_state.ai_option:
+                time.sleep(2)
+                for i, row in data.iterrows():
+                    update(f"{i+1}번 민원에 대한 민원 요지를 생성 중입니다. 현재 진행 상황 {i+1}/{len(data)}")
+                    result = useAi.AI_print_minwon_sub(row['민원내용'])
+                    results.append(result)
+                data['민원요지'] = results
             else:
-                pass
+                for i, row in data.iterrows():
+                    data['민원요지'] = "miwnon_sub_off"
+                time.sleep(3)
         #민원 답변 생성 파트
         elif st.session_state['minwon_check'] == 'minwon_input':
             update("대기열에 등록되었습니다. 입력한 민원의 답변을 생성합니다.")
@@ -455,7 +541,7 @@ def generate_minwon():
                 else:
                     update(f"RAG가 비활성화되었습니다.")
                     time.sleep(1)
-                    raganswer= f"RAG 기능은 현재 지원하지 않습니다."#ragai.find_similar_respond(minwon_summary=st.session_state.minwon_sub,answer_yogi=st.session_state.answer_sub)
+                    raganswer= f"유사 답변 기능은 현재 지원하지 않습니다."#ragai.find_similar_respond(minwon_summary=st.session_state.minwon_sub,answer_yogi=st.session_state.answer_sub)
                 answers.append(answer)
                 raganswers.append(raganswer)
             data['답변결과'] = answers
