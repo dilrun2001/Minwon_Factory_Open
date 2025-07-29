@@ -16,7 +16,7 @@ RUN apt update && apt install -y git
 # 필요한 모듈 안에있음
 COPY requirements.txt .
 
-# llama-cpp-python gpu사용버전+ requirements 인스톨 5080이면 아키텍쳐 native
+# llama-cpp-python gpu사용버전+ requirements 인스톨
 RUN pip install --no-cache-dir llama-cpp-python==0.3.4 --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124 \
  && pip install -r requirements.txt
 
