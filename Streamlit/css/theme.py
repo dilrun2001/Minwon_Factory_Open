@@ -28,7 +28,7 @@ def highlight_js(highlight_data):
 
             if (item.option === "답변" && normal) {{
                 normal.classList.add("active-highlight");
-            }} else if (item.option === "RAG" && rag) {{
+            }} else if (item.option === "유사 답변" && rag) {{
                 rag.classList.add("active-highlight");
             }}
         }});
