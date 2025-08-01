@@ -13,6 +13,8 @@ def make_random_id(length=16):
 
 
 def clear_state():
+
+
     #ID (대기열을 위한 키 생성)
     if "id" not in st.session_state:
         st.session_state.id = ""
@@ -88,6 +90,9 @@ def clear_state():
     # 현재 표시되는 페이지 체크
     if "minwon_check" not in st.session_state:
         st.session_state['minwon_check'] = "file_select"
+    
+    if "admin_page" not in st.session_state:
+        st.session_state['admin_page'] = False
 
     # 최초 입력 시 데이터 체크
     if "df" not in st.session_state:
