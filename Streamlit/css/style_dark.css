@@ -1,0 +1,270 @@
+.stApp{
+    background-color: #faffffd7;
+    color : #292929
+}
+
+
+.stButton{
+    background-color: transparent;
+    border: transparent;
+}
+
+.stAppToolbar{
+    background-color: #f5f7f6ab
+}
+
+/*우측 팝업창 css */
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translate(120%, -50%);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.stToast {
+    position: fixed !important;
+    top: 80px;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+    animation: fadeSlideIn 0.3s ease-out !important;
+    bottom: auto;
+    width: 600px;
+    font-size: 20px;
+    font-weight: bold !important;
+    z-index: 9999;
+    background-color: #f0f2f6;
+}
+
+.stToast svg, .stToast i {
+    width: 20px !important;
+    height: 20px !important;
+    padding-bottom: 2%;
+    flex-shrink: 0;
+}
+.stToast button {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+.fade-in {
+    animation: fadeIn 0.6s ease-in;
+}
+
+
+/*이전 단계, 다음 단계 버튼 css *
+
+/* 공통 높이로 조정 */
+.element-container:has(#before-button),
+.element-container:has(#next-button) {
+    position: absolute;
+    height: 90px;
+
+}
+
+/* 이전 버튼 */
+.element-container:has(#before-button) + div:has(button) {
+    left: 150px;
+    position: absolute;
+    bottom: 60px; 
+    z-index: 9999;
+    padding: 5px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* 다음 버튼 */
+.element-container:has(#next-button) + div:has(button) {
+    right: 150px;
+    position: absolute;
+    bottom: 95px; 
+    z-index: 9999;
+    padding: 5px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.element-container:has(#input-button) + div button{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position: fixed;
+    top: 1%;
+    right: 0.5%; /*8.5% 원래*/
+    z-index: 9999999999;
+    background-color:transparent;
+    border: transparent;
+}
+
+.element-container:has(#input-button) + div button:hover{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position: fixed;
+    z-index: 9999999999;
+    color: lightblue;}
+
+
+.element-container:has(#delete-button) + div button{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    top: 1.05%;
+    left: 0%;
+    z-index: 999999999;
+    background-color:transparent;
+    border: transparent;
+    font-size: 0.875rem;
+}
+
+.element-container:has(#delete-button) + div button:hover{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    color: #292929;
+    font-size: 0.875rem;
+    z-index: 999999999;  
+}
+
+.element-container:has(#delete-button) + div button:focus{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    color: #292929;
+    font-size: 0.875rem;
+    z-index: 999999999;  
+}
+
+
+[data-testid = "stMainBlockContainer"]{
+    padding-top: 5%;
+    padding-left: 8%;
+    padding-right: 8%;
+
+}
+
+div.st-key-input_page_show .stButton{
+    position:relative;
+    left: 90.9%;
+}
+
+div[class *= "recreate_answer_"] [data-testid="stBaseButton-secondary"]{
+    position:relative !important;
+    
+    left: 91.8% !important;
+}
+
+div.st-key-input_minwon_generate [data-testid="stBaseButton-secondary"]{
+    position: relative !important;
+    left: 92.8% !important;
+}
+
+div.st-key-FormSubmitter-manual_input------ [data-testid="stBaseButton-secondaryFormSubmit"]{
+    position: relative !important;
+    left:92.7% !important;
+}
+
+div.st-key-FormSubmitter-manual_input------ [data-testid="stBaseButton-secondaryFormSubmit"]:hover,
+div[class *= "recreate_answer_"] [data-testid="stBaseButton-secondary"]:hover,
+div.st-key-FormSubmitter-manual_input------ [data-testid="stBaseButton-secondaryFormSubmit"]:focus,
+div[class *= "recreate_answer_"] [data-testid="stBaseButton-secondary"]:focus
+{
+    color: #9C2333 !important;
+    border: 1px solid #9C2333 !important;
+}
+
+/* file-selector 마커 바로 다음에 나오는 stButtonGroup만 적용 */
+div.st-key-file_format .stButtonGroup{
+    position: fixed !important;
+    top: 1.35%;
+    right: 8%;
+    z-index: 9999999999 !important;
+    background: transparent;
+    gap: 8px;
+    padding: 2px 12px;
+}
+
+
+div.st-key-file_format .stButtonGroup button:hover{
+    color: #add8e6;
+    border-color: #add8e6;
+}
+
+/* 모델 선택창 */
+div.st-key-llm_model_select .stSelectbox{
+    position: fixed;
+    width: 200px;
+    top: 1.05%;
+    left: 17%;
+    background-color: transparent;
+    z-index: 99999999999999 !important;
+}
+
+div.st-key-llm_model_select .st-br{
+    background-color: #f1efef93;
+}
+
+
+
+div.rc-overflow{
+    padding: 0px 150px;
+    font-weight: 550;
+}
+
+/* 파일 형식 재선택 버튼 */
+.element-container:has(#reselect-button) + div button{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    top: 1%;
+    right: 8%;
+    z-index: 999999999;
+    background-color:transparent;
+    border: transparent;
+    font-size: 0.875rem;
+}
+
+.element-container:has(#reselect-button) + div button:hover{
+    width: 150px;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    color: lightblue;
+    font-size: 0.875rem;
+    z-index: 999999999;  
+}
+
+/*선택된 textarea 영역 */
+textarea.active-highlight {
+    transition: all 0.2s ease-in-out;
+    border: 2px solid #63e73b !important;
+    border-radius: 10px;
+    background-color: #d9f0cf !important;
+    box-shadow: 0 0 10px rgba(74, 144, 226, 0.5) !important;     
+}
+
+/*streamlit 상단바 비활성화*/
+[data-testid = "stMainMenu"]{
+    display: none;
+}
+
+div[class = "stAppDeployButton"]{
+    display: none;
+}
+
+[data-testid = "stHeaderActionElements"]{
+    display: none;
+}
+
+
+

@@ -15,46 +15,6 @@ import string
 from util.AI_queue import *
 
 
-'''def make_random_id(length=16):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
-'''
-
-#민원 입력 부분 사이드바
-def sidebar_set():
-    if st.session_state.file_check:
-        if st.session_state['minwon_check'] == 'minwon_input':
-            selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'], key = "llm_model_select", width = 300, label_visibility="collapsed")
-            if selected == '기본 모델':
-                    st.session_state.model = '기본 모델'
-            elif selected == '민원팩토리 모델':
-                    st.session_state.model = '민원팩토리 모델'
-        elif st.session_state['minwon_check'] == 'result':
-                #st.session_state.file_format = st.segmented_control("다운받을 파일 확장자", options= ( "Excel", "CSV"), key = "file_format", help = "다운받을 파일의 확장자를 선택해주세요.", label_visibility="collapsed", default= "Excel")
-                selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'], key = "llm_model_select", width = 300, label_visibility="collapsed")
-                if selected == '기본 모델':
-                        st.session_state.model = '기본 모델'
-                elif selected == '민원팩토리 모델':
-                        st.session_state.model = '민원팩토리 모델'
-                if st.session_state.file_download:
-                    st.markdown('<span id = "input-button"></span>', unsafe_allow_html=True)
-                    st.download_button(
-                        label = "다운로드",
-                        data = st.session_state.file,
-                        file_name = f"민원 결과.csv" if st.session_state.file_set =="CSV" else f"민원 결과.xlsx",
-                        key = "download_file",
-                        icon = ":material/download:",
-                    )
-                    st.markdown('<span id = "reselect-button"></span>', unsafe_allow_html=True)
-                    st.button("파일 형식 재선택", key = "file_reselect", icon = ":material/edit_note:", on_click= file_reselect, help = "다운받을 파일의 형식을 재선택합니다.")
-                    
-                else:
-                    st.session_state.file_set = st.pills("다운받을 파일 확장자", options= ( "Excel", "CSV"), key = "file_format", help = "다운받을 파일의 확장자를 선택해주세요.", label_visibility="collapsed", default= "Excel")
-                    st.markdown('<span id = "input-button"></span>', unsafe_allow_html=True)
-                    st.button("파일 생성", key = "create_file", on_click = input_db, args = (format,), icon = ":material/view_list:", help = "파일 형식을 선택하신 후 해당 버튼을 누르시면 확장자에 따라 파일 생성 후 다운로드 버튼이 생성됩니다.")
-                
-    st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
-    st.button("민원팩토리", on_click = minwon_clear, key = "clear_btn", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ")
-
 def file_reselect():
     global new_data
     if st.session_state.file_download:
@@ -62,23 +22,112 @@ def file_reselect():
         st.session_state.save_df = pd.DataFrame(columns = ["민원내용", "답변내용"])
 
 
+#관리자 설정
+def show_admin():
+        #st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
+        if st.session_state.admin:
+                        st.set_page_config(page_title = "관리자 페이지", page_icon=":material/admin_panel_settings:", layout="wide", initial_sidebar_state="collapsed")
+                        default, format = st.tabs(['기본 설정', '양식'])
+                        with default:
+                                st.subheader("관리자 페이지")
+                                left, center, right = st.columns([6,6,6])
+                                with left:
+                                        with st.expander("대기열 관리", expanded = True, icon = ":material/queue:"):
+                                                st.write("대기열 기능 오류 시 해당 부분에서 대기열을 초기화할 수 있습니다.")
+                                                queue_clear = st.button("대기열 초기화", key = "queue_clear", icon = ":material/clear_all:", on_click = clear_queue)
+                                                if queue_clear:
+                                                        st.toast("대기열이 초기화되었습니다.", icon = ":material/check:")
+                                        '''st.markdown("---")
+                                        with st.expander("DB 데이터 관리", expanded = True, icon = ":material/database:"):
+                                                st.write("민원이 저장된 데이터베이스 확인 및 데이터 추출")
+                                                db_col = st.columns([8,1,8])
+                                                with db_col[0]:
+                                                        if st.button("데이터베이스 데이터 확인", key = "db_check", icon = ":material/database:"):
+                                                                db_data = run_query("SELECT minwon, response FROM history")
+                                                                if not db_data.empty:
+                                                                        st.dataframe(db_data)
+                                                                else:
+                                                                        st.toast("데이터베이스에 저장된 데이터가 없습니다.", icon = ":material/block:")'''
+                                with center:
+                                        with st.expander("AI 설정", expanded = True):
+                                                st.markdown("######  AI 설정")
+                                                st.write("AI 설정을 ON/OFF 할 수 있습니다.")
+                                                ai = st.pills(
+                                                        "AI ON/OFF", ["on", "off"],
+                                                        key = "ai_select_option", default = config['app']['ai']
+                                                        )
+                                                if ai != config['app']['ai']:
+                                                        change_toml('app', 'ai', ai, f"AI 설정 {ai}")
+                                                        ai_option_check()
+                                        with st.expander("RAG 설정", expanded = True):
+                                                st.markdown("######  RAG 설정")
+                                                st.write("RAG 설정을 ON/OFF 할 수 있습니다.")
+                                                rag = st.pills(
+                                                        "RAG ON/OFF", ["on", "off"],
+                                                        key = "rag_select_option", default = config['app']['rag']
+                                                        )
+                                                if rag != config['app']['rag']:
+                                                        change_toml('app', 'rag', rag, f"RAG 설정 {rag}")
+                                                        ai_option_check()
+                                        
+                                with right:
+                                        with st.expander("관리자 비밀번호 변경", expanded = True, icon= ":material/key:"):
+                                                st.write("관리자 비밀번호를 변경할 수 있습니다.")
+                                                with st.form(key = "change_admin_password", height = 320):
+                                                        old = st.text_input("기존 비밀번호", key = "old_possword", placeholder="기존 비밀번호를 입력해주세요.", type = "password")
+                                                        new = st.text_input("신규 비밀번호", key = "new_password", placeholder="신규 비밀번호를 입력해주세요.", type = "password")
+                                                        repeat = st.text_input("신규 비밀번호", key = "new_password_repeat", placeholder="신규 비밀번호를 한번 더 입력해주세요.", type = "password")
+                                                        if st.form_submit_button("수정"):
+                                                                if old != new:
+                                                                        if new == repeat:
+                                                                                change_toml('app', 'admin_password', new, "관리자 비밀번호")
+                        with format:
+                                st.subheader("양식 포맷 설정")
+                                with st.expander("양식 포맷 설정 테스트", icon = ":material/home:", expanded = True):
+                                        format = st.text_area("양식 수정", value = f"{config['format']['format']}", height = 300)
+                                        st.button("수정", key = "edit_format_btn", icon = ":material/note:", on_click = change_toml, args = ('format', 'format', format, '답변 양식 포맷'))
+                                with st.expander("답변 요지 양식 테스트", icon = ":material/home:", expanded = True):
+                                        preset_edit = st.pills(
+                                        "수정할 답변 요지 방식을 선택해주세요.", ["완전 수용", "부분 수용", "수용 불가"],
+                                        key = "minwon_sub_edit_selector"
+                                        )
+                                
+                                        match (preset_edit):
+                                                case "완전 수용":
+                                                        accept = st.text_input("완전 수용 수정", value = config['sub']['accept'], label_visibility="hidden")
+                                                        st.button("수정", key = "edit_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'accept', accept, '완전 수용 양식'))
+                                                case "부분 수용":
+                                                        particle = st.text_input("부분 수용 수정", value = config['sub']['particle_accept'], label_visibility="hidden")
+                                                        st.button("수정", key = "edit_particle_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'particle_accept', particle, '부분 수용 양식'))
+                                                case "수용 불가":
+                                                        unaccept = st.text_input("수용 불가 수정", value = config['sub']['unaccept'], label_visibility="hidden")
+                                                        st.button("수정", key = "edit_unaccept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'unaccept', unaccept, '수용 불가 양식'))
+        else:
+                with st.form("admin_login_form"):
+                        password = st.text_input("관리자 비밀번호 입력", type="password")
+                        if st.form_submit_button("관리자 페이지 열기"):
+                                if password == config['app']['admin_password']:
+                                        st.session_state.admin = True
+                                        st.toast("관리자 모드가 활성화되었습니다", icon=":material/check:")
+                                        time.sleep(0.5)
+                                        st.rerun()
+                                else:
+                                        st.toast("비밀번호가 틀립니다.", icon = ":material/block:")
+            
+
+
 #메인 화면
 # 해당 부분 추가 함으로서 (벡터 db 를 생성후) home 을 출력 합니다
 def show_home():
     st.session_state['page'] = '홈'
-    #st.subheader("새올민원자동답변기에 오신 걸 환영합니다!")
-    #st.markdown('''
-    ###### 아래 2가지의 방식 중 하나를 선택해서 답변 생성을 선택해주세요.      
-    #''')
-    
     manual_col, file_col = st.tabs(["단일 민원", "복수 민원"])#st.columns((8,1,8))
-    #ai 왔다갔다 할 떄 AI 한번만 돌리게ㅉ
+    #ai 왔다갔다 할 떄 AI 한번만 돌리게
     st.session_state.ai_check = False
     with file_col:
         st.markdown("")
         st.subheader("복수 민원")
         st.markdown('''
-                    ##### 엑셀 파일을 통해 2개 이상의 민원 데이터를 입력받을 수 있습니다.\n ##### XLSX, CSV 확장자를 지원합니다.''')
+                    ###### - 엑셀 파일을 통해 2개 이상의 민원 데이터를 입력받을 수 있습니다.\n ###### - XLSX, CSV 확장자를 지원합니다.''')
         with st.container(key = "file_input", border = True):
 
             upload_files = st.file_uploader(
@@ -111,7 +160,7 @@ def show_home():
         st.markdown("")
         st.subheader("단일 민원")
         st.markdown('''
-                    ##### 이름, 부서명, 전화번호, 민원 내용을 입력해주세요.''')
+                    ###### - 이름, 부서명, 전화번호, 민원 내용을 입력해주세요.''')
         with st.form(key = "manual_input"):
             name_col, spacer, department_col, spacer2, tel_col = st.columns([5,1,5,1,5])
             with name_col:
@@ -121,7 +170,7 @@ def show_home():
             with tel_col:
                 tel = st.text_input("전화번호", placeholder="000-000-0000")
             minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300)
-            manual_btn = st.form_submit_button("수동 입력", icon = ':material/edit_note:')
+            manual_btn = st.form_submit_button("민원 입력", icon = ':material/edit_note:')
 
 
         if manual_btn:
@@ -157,14 +206,12 @@ def show_home():
                     
     with st.container(key = "result button"):
         if st.session_state['btn_show']:
-            st.markdown('''---''')
             if st.session_state.manual:
-                st.toast("수동 입력이 완료되었습니다. 우측 상단 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")
+                st.toast("수동 입력이 완료되었습니다. 우측 아래 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")
             else:
-                st.toast("엑셀 파일이 선택되었습니다. 우측 상단 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")
+                st.toast("엑셀 파일이 선택되었습니다. 우측 아래 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")
             st.session_state.file_check = True
-            st.markdown('<span id = "input-button"></span>', unsafe_allow_html=True)
-            st.button("##### 민원 요지 생성", key = "input_page_show", on_click  = generate_minwon, icon = ':material/chevron_right:')
+            st.button("민원 요지 생성", key = "input_page_show", on_click  = generate_minwon, icon = ':material/edit:')
 
 
 
@@ -177,7 +224,7 @@ def show_input():
     #양식 선택 기능 임시 비활성화
     st.set_page_config(page_title = "민원 입력", page_icon=":material/input:", layout="wide", initial_sidebar_state="collapsed")
     st.subheader("민원 입력 및 응답 생성")
-    st.markdown("###### 상단 선택창에서 사용할 AI 모델을 선택할 수 있습니다.")
+    st.markdown("###### - 상단 선택창에서 사용할 AI 모델을 선택할 수 있습니다.\n ###### - 답변 요지를 입력해주셔야 답변을 생성할 수 있습니다. 복수 민원은 입력한 모든 민원에 기입해주시길 바랍니다.\n###### - 아이콘만 있는 버튼들은 좌측부터 각 민원 카테고리, 민원 긴급도, 민원 양식 수정 기능을 지원하는 버튼입니다.")
     #config = st.session_state.config
     minwon = st.session_state.df
     
@@ -243,22 +290,25 @@ def show_input():
                             )
                     #result.at[i, '최종답변'] = row['답변결과']
                 st.markdown('''''')
-    st.markdown('<span id = "input-button"></span>', unsafe_allow_html = True)
     st.button("답변 생성", icon=":material/edit:", on_click=input_answer, key = f"input_minwon_generate")
-   # st.markdown('''---''')
-
-    #st.markdown('<span id = "before-button"></span>', unsafe_allow_html=True )
-    #st.button("이전 단계", key = "input_before_button", on_click=page_before, icon = ':material/chevron_left:')
+    st.button("처음으로", on_click = minwon_clear, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ")
+    
+    selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'], key = "llm_model_select", width = 300, label_visibility="collapsed")
+    if selected == '기본 모델':
+            st.session_state.model = '기본 모델'
+    elif selected == '민원팩토리 모델':
+            st.session_state.model = '민원팩토리 모델'
 
 
 # 결과창 표시
 def show_result():
     st.subheader("답변 결과")
-    st.markdown(f"###### 요청하신 민원 {len(st.session_state.df)}건에 대한 답변이 생성되었습니다.")
-    st.markdown("###### 우측 파일 확장자를 선택하고 생성 버튼을 클릭 시 확장자에 대한 파일이 생성됩니다.")
+    st.markdown(f"###### - 요청하신 민원 {len(st.session_state.df)}건에 대한 답변이 생성되었습니다.")
+    st.markdown("###### - 우측 파일 확장자를 선택하고 생성 버튼을 클릭 시 확장자에 대한 파일이 생성됩니다.\n ###### - 민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 재생성이 가능합니다.")
     st.set_page_config(page_title = "민원 결과", page_icon=":material/lab_profile:", layout="wide", initial_sidebar_state="collapsed")
     highlight_list = []
     result = st.session_state.df
+    edit_mode = False
     for i, row in result.iterrows():
         with st.container(key = f"result_response_container_{i}"):
             with st.expander(f"{i+1}번 민원 답변 결과 확인", icon = ":material/question_answer:", expanded=True, width = 1580):
@@ -271,7 +321,7 @@ def show_result():
                 mapping = [1,2,3,4,5]
                 
                 edit =  st.checkbox("민원 수정", key = f"edit_answer_sub_{i}")
-                edit_mode = False
+                
                 main, spacer2, spacer, rag = st.columns((6.8, 0.1,1.6, 6.8))
                 with main:
                     #st.markdown('<span id = "focus_area"></span>', unsafe_allow_html = True)
@@ -307,10 +357,11 @@ def show_result():
                         #print(row['RAG 평점'])
                 if edit:
                     edit_mode = True
-                    minwon_column, spacer, answer_column = st.columns((8,1.2,8))
+                    st.markdown('''---''')
+                    minwon_column, spacer, answer_column = st.columns((6.8,1.7,6.8))
                     with minwon_column: 
                         row['민원내용'] = st.text_area(
-                                        "민원 내용",  height = 320, value = row['민원내용'], key = f"minwon_{i}",
+                                        "민원 내용",  height = 230, value = row['민원내용'], key = f"minwon_{i}",
                         )
 
                     with answer_column:                    
@@ -364,8 +415,28 @@ def show_result():
                 #else:
                 
                 #st.markdown('''''')
-                if edit_mode == False:
-                    highlight_js(highlight_list)
+    if edit_mode == False:
+        highlight_js(highlight_list)
+    st.button("처음으로", on_click = minwon_clear, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ")
+    selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'], key = "llm_model_select", width = 300, label_visibility="collapsed")
+    if selected == '기본 모델':
+            st.session_state.model = '기본 모델'
+    elif selected == '민원팩토리 모델':
+            st.session_state.model = '민원팩토리 모델'
+    if st.session_state.file_download:
+        st.download_button(
+            label = "다운로드",
+            data = st.session_state.file,
+            file_name = f"민원 결과.csv" if st.session_state.file_set =="CSV" else f"민원 결과.xlsx",
+            key = "download_file",
+            icon = ":material/download:",
+        )
+        #st.markdown('<span id = "reselect-button"></span>', unsafe_allow_html=True)
+        st.button("파일 형식 재선택", key = "file_reselect", icon = ":material/edit_note:", on_click= file_reselect, help = "다운받을 파일의 형식을 재선택합니다.")
+        
+    else:
+        st.session_state.file_set = st.pills("다운받을 파일 확장자", options= ( "Excel", "CSV"), key = "file_format", help = "다운받을 파일의 확장자를 선택해주세요.", label_visibility="collapsed", default= "Excel")
+        st.button("파일 생성", key = "create_file", on_click = input_db, args = (format,), icon = ":material/view_list:")
 
 #데이버베이스 입력
 #데이터프레임 임시 입력 작업 추가
@@ -376,7 +447,7 @@ def input_db(format):
         data = st.session_state.df
         grade_check = (data[data['최종평점'] == 0].index+1).tolist()
         if grade_check:#(data['최종평점'] == 0).any():
-            st.toast(f"다음과 같은 민원의 평점이 채점되지 않았습니다. 미입력 민원: {grade_check}", icon =":material/block:")
+            st.toast(f"다음과 같은 민원의 평점이 채점되지 않았습니다. 미입력 민원: {', '.join(map(str, grade_check))}", icon =":material/block:")
             return False
         else:
             for i, row in data.iterrows():
@@ -428,6 +499,7 @@ def input_db(format):
 
 #각 페이지 호출
 def show_page():
+    
     if st.session_state['minwon_check'] == 'file_select':
          show_home()
 
@@ -436,7 +508,8 @@ def show_page():
 
     elif st.session_state['minwon_check'] == 'result':
         show_result()
-    sidebar_set()
+    
+    
 def page_before():
     st.session_state.before = True
     page_convert()
@@ -451,7 +524,7 @@ def input_answer():
     yogi_check = (data[data['답변요지'] == ""].index+1).tolist()
     print(yogi_check)
     if yogi_check:#((data['답변요지'] =="") ).any():
-        st.toast(f"해당 민원에 대한 답변 요지를 입력해주세요. 미입력 민원: {yogi_check}", icon =":material/block:")
+        st.toast(f"해당 민원에 대한 답변 요지를 입력해주세요. 미입력 민원: {', '.join(map(str, yogi_check))}", icon =":material/block:")
         return
     else:    
         if st.session_state.ai_check:
