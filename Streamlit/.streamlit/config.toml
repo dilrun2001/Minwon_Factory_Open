@@ -1,5 +1,6 @@
 [theme]
 primaryColor = "#2766C2"
+base = "dark"
 
 
 [server]

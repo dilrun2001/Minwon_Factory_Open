@@ -42,8 +42,8 @@
 }             
 
 .alert-box h3 {
-    font-size: 1rem !important;      /* 폰트 크기 줄이기 (필요시 0.9rem, 14px 등으로 조정) */
-    color: #e53935 !important;       /* 빨간색 (Material Red 600) */
+    font-size: 1rem !important;      
+    color: #e53935 !important;       
     font-weight: bold;
     margin: 0;
     padding: 0;
@@ -53,7 +53,7 @@
 /* 로딩 스피너(st.spinner 대체*/
 .spinner {
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #9c2333;
+    border-top: 4px solid #2766C2;
     border-radius: 50%;
     width: 35px;
     height: 35px;

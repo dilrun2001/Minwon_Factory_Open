@@ -108,7 +108,7 @@
     padding: 5px;
     position: fixed;
     z-index: 9999999999;
-    color: lightblue;}
+    color: lightblue#f1efef93;}
 
 
 .element-container:has(#delete-button) + div button{
