@@ -167,12 +167,14 @@ def show_home():
                 st.session_state['btn_show'] = True
                 print(st.session_state.df)
             else:
-                st.toast("입력 필드를 확인해주세요.", icon = ":material/block:")
+                st.toast(":red[입력 필드]를 확인해주세요.", icon = ":material/block:")
         
     def show_file():
             st.markdown("")
             st.subheader("복수 민원")
-            st.markdown('''- 엑셀 파일을 통해 2개 이상의 민원 데이터를 입력받을 수 있습니다.\n\n - XLSX, CSV 확장자를 지원합니다.''')
+            with st.container(key = "file_select_guide", horizontal=True):
+                st.write("- 엑셀 파일을 통해 :green[2개] 이상의 민원 데이터를 입력받을 수 있습니다.")
+                st.write("- :green[XLSX, CSV] 확장자를 지원합니다.")
             with st.container(key = "file_input", border = True):
 
                 upload_files = st.file_uploader(
@@ -214,11 +216,11 @@ def show_home():
     with st.container(key = "result button"):
         if st.session_state['btn_show']:
             if st.session_state.manual:
-                st.toast("수동 입력이 완료되었습니다. 우측 아래 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")
+                st.toast("수동 입력이 완료되었습니다. :green[우측 아래] 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")
             else:
-                st.toast("엑셀 파일이 선택되었습니다. 우측 아래 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")
+                st.toast("엑셀 파일이 선택되었습니다. :green[우측 아래] 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")
                 st.session_state.file_check = True
-            st.button("민원 요지 생성", key = "input_page_show", on_click  = generate_answer, icon = ':material/edit:')
+            st.button("민원 요지 생성", key = "input_page_show", on_click  = generate_answer, icon = ':material/edit:', args=(0,False,False,True))
 
 
 
@@ -232,9 +234,9 @@ def show_input():
     st.set_page_config(page_title = "민원 입력", page_icon=":material/input:", layout="wide", initial_sidebar_state="collapsed")
     st.subheader("민원 입력 및 응답 생성")
     with st.container(key = "input_guide_container", horizontal=True):
-        st.write("- 답변 요지를 입력해주셔야 답변을 생성할 수 있습니다. 복수 민원은 입력한 모든 민원에 기입해주시길 바랍니다.")
-        st.write("- 아이콘만 있는 버튼들은 좌측부터 각 민원 카테고리, 민원 긴급도, 민원 양식 수정 기능을 지원하는 버튼입니다.")
-        st.write("- 상단 선택창에서 사용할 AI 모델을 선택할 수 있습니다.")
+        st.write("- :red[답변 요지]를 :red[입력]해주셔야 답변을 생성할 수 있습니다. 복수 민원은 입력한 :red[모든 민원]에 기입해주시길 바랍니다.")
+        st.write("- 아이콘만 있는 버튼들은 좌측부터 각 :red[민원 카테고리, 민원 긴급도, 민원 양식 수정] 기능을 지원하는 버튼입니다.")
+        st.write("- 상단 선택창에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.")
     #config = st.session_state.config
     minwon = st.session_state.df
     with st.container(key = f'main_container'):
@@ -243,7 +245,7 @@ def show_input():
             
                 #with st.form(key = "response_generate"):
                 #임시 UI 체크용
-                minwon_column, spacer, answer_column = st.columns((8,1.2,8))
+                minwon_column, spacer, answer_column = st.columns((8,1.2,8)) #8, 1.2,
                 with minwon_column: 
                     row['민원내용'] = st.text_area(
                                     "민원 내용",  height = 320, value = row['민원내용'], key = f"minwon_{i}",
@@ -297,8 +299,9 @@ def show_input():
                     #result.at[i, '최종답변'] = row['답변결과']
                 st.markdown('''''')
     st.button("답변 생성", icon=":material/edit:", on_click=input_answer, key = f"input_minwon_generate")
-    st.button("처음으로", on_click = minwon_clear, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ")
+    st.button("처음으로", on_click = minwon_clear, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = 'tertiary')
     
+
     selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'], key = "llm_model_select", width = 300, label_visibility="collapsed")
     if selected == '기본 모델':
             st.session_state.model = '기본 모델'
@@ -394,19 +397,19 @@ def show_result():
     def show_total():
         st.subheader("답변 결과")
         with st.container(key = "minwon_result_guide_container", horizontal=True):
-            st.write("- 이때 2개의 입력창 중 왼쪽의 입력창이 파일 생성 시 입력되는 값입니다.")
-            st.write("- 민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 재생성이 가능합니다.")
-            st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 교환됩니다.")
+            st.write("- 이때 2개의 입력창 중 :red[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
+            st.write("- 민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.")
+            st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 :red[교환]됩니다.")
         for i, row in result.iterrows():
             with st.container(key = f"result_response_container_{i}", gap = "medium"):
-                with st.expander(f"{i+1}번 민원 답변 생성 결과", icon = ":material/question_answer:", expanded=True, width = 1580):
+                with st.expander(f"{i+1}번 민원 답변 생성 결과", icon = ":material/question_answer:", expanded=True):
                     mapping = [1,2,3,4,5]
                     edit =  st.checkbox("민원 수정", key = f"edit_answer_sub_{i}")
-                    first, spacer, second = st.columns((6.8, 1.6, 6.8))
+                    first, spacer, second = st.columns((6.8, 1.6, 6.8)) #8,1.2,8 6.8, 1.6, 6.8
                     with spacer:
                         for j in range(9):
                             st.markdown('''''')
-                        st.button("위치 스위치", key = f"switch_option_{i}", icon = ":material/compare_arrows:", on_click=switch_result, args = (i, ))
+                        st.button("위치 스위치", key = f"switch_option_{i}", icon = ":material/compare_arrows:", on_click=switch_result, args = (i, ), type = "tertiary")
                     with first:
                         if row['test'] is not True:
                             show_first(i)
@@ -428,11 +431,12 @@ def show_result():
                          show_edit(i)
                     else:
                          result.at[i, '수정'] = False
+        show_button()
 # index = 데이터프레임 열 번호, recreate = 민원 재생성 체크 여부, check = 민원 멀티 재생성 여부
     def show_button():
         if st.session_state.file_check:
-             st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다.", on_click=generate_answer, args = (0, True, True))
-        st.button("처음으로", on_click = minwon_clear, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ")
+             st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다.", on_click=reinput_answer, args = ())
+        st.button("처음으로", on_click = minwon_clear, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary")
         selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'], key = "llm_model_select", width = 300, label_visibility="collapsed")
         if selected == '기본 모델':
                 st.session_state.model = '기본 모델'
@@ -445,18 +449,19 @@ def show_result():
                 file_name = f"민원 결과.csv" if st.session_state.file_set =="CSV" else f"민원 결과.xlsx",
                 key = "download_file",
                 icon = ":material/download:",
+                type="tertiary",
             )
             #st.markdown('<span id = "reselect-button"></span>', unsafe_allow_html=True)
-            st.button("파일 형식 재선택", key = "file_reselect", icon = ":material/edit_note:", on_click= file_reselect, help = "다운받을 파일의 형식을 재선택합니다.")
+            st.button("파일 형식 재선택", key = "file_reselect", icon = ":material/edit_note:", on_click= file_reselect, help = "다운받을 파일의 형식을 재선택합니다.", type="tertiary")
         
         else:
             
             st.session_state.file_set = st.pills("다운받을 파일 확장자", options= ( "Excel", "CSV"), key = "file_format", help = "다운받을 파일의 확장자를 선택해주세요.", label_visibility="collapsed", default= "Excel")
-            st.button("파일 생성", key = "create_file", on_click = input_db, args = (format,), icon = ":material/view_list:")
+            st.button("파일 생성", key = "create_file", on_click = input_db, args = (format,), icon = ":material/view_list:", type="tertiary")
 
     
     show_total()
-    show_button()
+    
 
 #데이버베이스 입력
 #데이터프레임 임시 입력 작업 추가
@@ -467,7 +472,7 @@ def input_db(format):
         data = st.session_state.df
         grade_check = (data[data['최종평점'] == 0].index+1).tolist()
         if grade_check:#(data['최종평점'] == 0).any():
-            st.toast(f"다음과 같은 민원의 평점이 채점되지 않았습니다. 미입력 민원: {', '.join(map(str, grade_check))}", icon =":material/block:")
+            st.toast(f"다음과 같은 민원의 평점이 채점되지 않았습니다. :red[미입력 민원: {', '.join(map(str, grade_check))}]", icon =":material/block:")
             return False
         else:
             for i, row in data.iterrows():
@@ -545,7 +550,7 @@ def input_answer():
     yogi_check = (data[data['답변요지'] == ""].index+1).tolist()
     print(yogi_check)
     if yogi_check:#((data['답변요지'] =="") ).any():
-        st.toast(f"해당 민원에 대한 답변 요지를 입력해주세요. 미입력 민원: {', '.join(map(str, yogi_check))}", icon =":material/block:")
+        st.toast(f"해당 민원에 대한 답변 요지를 입력해주세요. :red[미입력 민원: {', '.join(map(str, yogi_check))}]", icon =":material/block:")
         return
     else:    
         if st.session_state.ai_check:
@@ -556,12 +561,118 @@ def input_answer():
 
 #선택한 답변 재생성
 def reinput_answer():
-    pass
+    data = st.session_state.df
+
+    recreate_check = data['수정'].sum() 
+    if recreate_check == 0:
+        st.toast(f"재생성할 민원을 체크해주세요. 답변 영역 내 :red[좌측 상단]을 확인해주세요.", icon = ":material/block:")
+    else:
+        generate_answer(recreate = True, multi=True)
+
+
+# match, case 문 ver
+
+def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
+    enqueue_task(st.session_state.id)
+    data = st.session_state.df
+    results, formats, answers, raganswers = [], [], [], []
+    with show_loading_overlay(message = "spinner start") as update:
+        task_id = None
+        while not task_id:
+            task_id = get_queue(st.session_state.id)
+            if not task_id:
+                num = search_queue(st.session_state.id)
+                update(f"선행 처리 중인 작업이 있습니다. 대기열에 등록됩니다.")
+                time.sleep(3)
+                update(f"현재 대기번호는 {num}번입니다. 잠시만 기다려주세요.")
+                time.sleep(3)
+        update("대기열에 등록되었습니다. 요청하신 작업을 시작합니다.")
+        time.sleep(0.5)
+        match (recreate, multi, yogi):
+            
+            case (True, False, False):
+                if st.session_state.ai_option:
+                        update(f"{index+1}번 민원의 답변을 재생성하는 중입니다.")
+                        answer = useAi.AI_print_answer(minwon=data.iloc[index]['민원내용'], answer=data.iloc[index]['답변요지'],answer_format=data.iloc[index]['답변양식'])
+                        data.loc[index, '답변결과'] = answer
+                else:
+                    timer = 5
+                    update(f"단일 민원 생성 테스트. {timer}초 동안 해당 화면이 유지됩니다.")
+                    time.sleep(timer)
+                end_task(task_id)
+            
+            case (True, True, False):
+                    if st.session_state.ai_option:
+                        for i, row in data.iterrows():
+                            cnt = data['수정'].sum() 
+                            if row['수정'] == True:
+                                cnt -= 1
+                                update(f"{i+1}번 민원의 답변을 재생성하는 중입니다. 남은 민원 수 : {cnt}")
+                                answer = useAi.AI_print_answer(minwon = row['민원내용'], answer = row['답변요지'], answer_format = row['답변양식'])
+                                data.at[i, '답변결과'] = answer
+                    else:
+                        for i, row in data.iterrows():
+                            #cnt = row['수정']
+                            if row['수정'] == True:
+                                update(f"{i+1}번 민원의 답변 재생성 테스트. 답변은 생성되지 않습니다.")
+                                time.sleep(1)
+                    end_task(task_id)
+            
+            case (False, False, True):
+                for i, row in data.iterrows():
+                    format = change_text(config['format']['format'], row['부서명'], row['이름'], row['전화번호'])
+                    formats.append(format)
+                data['답변양식'] = formats  
+                if st.session_state.ai_option:
+                    time.sleep(0.5)
+                    for i, row in data.iterrows():
+                        update(f"{i+1}번 민원에 대한 민원 요지를 생성 중입니다. 현재 진행 상황 {i+1}/{len(data)}")
+                        result_sub = useAi.AI_print_minwon_sub(row['민원내용'])
+                        results.append(result_sub)
+                    data['민원요지'] = results
+                else:
+                    for i, row in data.iterrows():
+                        data['민원요지'] = "miwnon_sub_off"
+                    time.sleep(2)
+                end_task(task_id)
+                page_convert()
+            
+            case (False, False, False):
+                for i, row in data.iterrows():
+                    if st.session_state.ai_option:
+                        
+                        update(f"{i+1}번 민원에 대한 답변을 생성중입니다. 현재 진행 상황 {i+1}/{len(data)}") #전체 민원 개수는 {len(data)}개 입니다.")
+                        answer = useAi.AI_print_answer(minwon=row['민원내용'], answer=row['답변요지'],answer_format=row['답변양식'])
+                        update(f"{i+1}번 민원에 대한 유사 답변이 존재하는 지 확인합니다.")
+                        
+                        #ragai.find_similar_respond(minwon_summary=st.session_state.minwon_sub,answer_yogi=st.session_state.answer_sub)
+                    else:
+                        update(f"AI가 비활성화되었습니다.")
+                        time.sleep(1)
+                        answer = row['답변양식']#useAi.AI_print_answer(minwon=st.session_state.minwon, answer=st.session_state.answer_sub,answer_format=st.session_state.answer_format)
+                        #answers.append(answer)
+                    #data.at['답변결과', i] = answer
+                    if st.session_state.rag_option:
+                        st.session_state.name = row['이름']
+                        st.session_state.department = row['부서명']
+                        st.session_state.tel = row['전화번호']
+                        raganswer = "rag 미지원"#ragai.find_similar_respond(minwon_summary=row['민원요지'],answer_yogi=row['답변요지'])    
+                    else:
+                        update(f"RAG가 비활성화되었습니다.")
+                        time.sleep(1)
+                        raganswer= f"유사 답변 기능은 현재 지원하지 않습니다."#ragai.find_similar_respond(minwon_summary=st.session_state.minwon_sub,answer_yogi=st.session_state.answer_sub)
+                    answers.append(answer)
+                    raganswers.append(raganswer)
+                data['답변결과'] = answers
+                data['RAG'] = raganswers
+                end_task(task_id)
+                page_convert()
+              
 
 
 #민원요지, 답변 생성, 재생성 기능 통합
 # index = 데이터프레임 열 번호, recreate = 민원 재생성 체크 여부, check = 민원 멀티 재생성 여부
-def generate_answer(index = 0, recreate = False, multi = False):
+def generate_answer1(index = 0, recreate = False, multi = False):
     enqueue_task(st.session_state.id)
     data = st.session_state.df
     results, formats, answers, raganswers = [], [], [], []
@@ -625,7 +736,7 @@ def generate_answer(index = 0, recreate = False, multi = False):
                 else:
                     for i, row in data.iterrows():
                         data['민원요지'] = "miwnon_sub_off"
-                    time.sleep(20)
+                    time.sleep(2)
             #민원 답변 생성
             else:
                 for i, row in data.iterrows():
@@ -707,7 +818,7 @@ def regenerate_minwon(index, check = False):
                         update(f"{i+1}번 민원의 답변 재생성 테스트. 답변은 생성되지 않습니다. 남은 민원 갯수: {cnt}")
                         time.sleep(1)
             else:
-                timer = 25
+                timer = 5
                 update(f"단일 민원 생성 테스트. {timer}초 동안 해당 화면이 유지됩니다.")
                 time.sleep(timer)
         end_task(task_id)
