@@ -11,8 +11,8 @@ services:
       - .:/app
     environment:
       - MYSQL_HOST=mysql
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=1234
+      - MYSQL_USER=saha
+      - MYSQL_PASSWORD=rlghlr0133!
       - MYSQL_DATABASE=minwon
     deploy:
       resources:

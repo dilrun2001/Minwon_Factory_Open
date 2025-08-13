@@ -3,7 +3,7 @@ langchain_ollama==0.3.2
 pandas==2.2.3
 PyMySQL==1.1.1
 python_bcrypt==0.3.2
-streamlit==1.46
+streamlit==1.48.0
 streamlit_option_menu==0.4.0
 streamlit_aggrid==1.1.2
 huggingface_hub==0.31.2
