@@ -4,8 +4,11 @@ import streamlit.components.v1 as components
 import json
 
 def load_css():
-
-    with open('./css/style.css', encoding = "UTF-8") as f:
+    #1.46.1
+    """with open('./css/style.css', encoding = "UTF-8") as f:
+        css = f.read()"""
+    #1.48.0
+    with open('./css/style(1.48).css', encoding = "UTF-8") as f:
         css = f.read()
     st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
@@ -28,7 +31,7 @@ def highlight_js(highlight_data):
 
             if (item.option === "답변" && normal) {{
                 normal.classList.add("active-highlight");
-            }} else if (item.option === "RAG" && rag) {{
+            }} else if (item.option === "유사 답변" && rag) {{
                 rag.classList.add("active-highlight");
             }}
         }});
@@ -44,9 +47,14 @@ def slider_css():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     
 
-#spinner
+def custom_textarea():
+    pass
+
+
+
 @contextmanager
-def show_loading_overlay(message = "로딩 중입니다."):
+def show_loading_overlay(message = "로딩 중입니다.", page_title="처리 중..."):
+
     with open('./css/spinner.css', encoding = "UTF-8") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     overlay = st.empty()
