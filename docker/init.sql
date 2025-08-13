@@ -4,7 +4,7 @@ CREATE DATABASE IF NOT EXISTS minwon CHARACTER SET utf8mb4 COLLATE utf8mb4_unico
 
 -- 'saha'라는 애플리케이션 전용 사용자를 생성합니다.
 -- 🔑 비밀번호는 더 안전한 것으로 변경해서 사용하세요.
-CREATE USER IF NOT EXISTS 'saha'@'%' IDENTIFIED BY 'rlghlr0133!';
+CREATE USER IF NOT EXISTS 'saha'@'%' IDENTIFIED BY '1234';
 
 -- 생성한 'saha' 사용자에게 'minwon' 데이터베이스에 대한 모든 권한만 부여합니다.
 GRANT ALL PRIVILEGES ON minwon.* TO 'saha'@'%';
