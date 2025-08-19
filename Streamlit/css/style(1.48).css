@@ -6,6 +6,17 @@
     --font-color: inherit;
 }
 
+/*streamlit 상단바 비활성화*/
+[data-testid = "stMainMenu"],
+div[class = "stAppDeployButton"],
+[data-testid = "stHeaderActionElements"],
+.stToast [data-baseweb = "icon"],
+.rc-overflow span[label="민원 입력"],
+.rc-overflow span[label="설정"],
+[data-testid = "InputInstructions"],
+div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
+    display: none !important;
+}
 
 .stApp,
 [data-testid = "stBaseButton-secondary"],
@@ -17,10 +28,9 @@
     background-color: var(--background);
 }
 
-[aria-selected="true"] [data-testid="stMarkdownContainer"] {
-    color: var(--main-color);
-}
-[data-baseweb = "tab"] [data-testid="stMarkdownContainer"]:hover{
+[aria-selected="true"] [data-testid="stMarkdownContainer"],
+[data-baseweb = "tab"] [data-testid="stMarkdownContainer"]:hover,
+[data-testid = "stBaseButton-tertiary"]:hover{
     color: var(--main-color);
 }
 
@@ -41,35 +51,19 @@
 
 }
 
-
-
 [data-baseweb="select"] > div:first-child:focus-within {
-        border-color: var(--main-color) !important; /* 파란색 */
+        border-color: var(--main-color) !important; 
     }
 
-/*[data-testid = "StCheckbox"] [data-baseweb="checkbox"] > span:first-child:focus-within{
-    border-bottom-color: var(--main-color);
-    border-top-color: var(--main-color);
-    border-left-color: var(--main-color);
-    border-right-color: var(--main-color);
-    background-color: var(--main-color);
-}*/
 
-[data-baseweb = "button-group"] [ data-testid = "stBaseButton-pillsActive"]{
-    border: 1px solid var(--main-color);
-    background-color: var(--background);
-    color: var(--main-color);
-}
-
+[data-baseweb = "button-group"] [ data-testid = "stBaseButton-pillsActive"],
 [data-baseweb = "button-group"] [data-testid = "stBaseButton-pills"]:hover{
     border: 1px solid var(--main-color);
     background-color: var(--background);
     color: var(--main-color);
 }
 
-[data-testid = "stBaseButton-tertiary"]:hover{
-    color: var(--main-color);
-}
+
 
 
 /*우측 팝업창 css */
@@ -113,9 +107,7 @@
 }
 
 
-.stToast [data-baseweb = "icon"] {
-    display: none;
-}
+
 
 @keyframes fadeIn {
     from {opacity: 0;}
@@ -129,24 +121,6 @@
 /*이전 단계, 다음 단계 버튼 css *
 
 /* 공통 높이로 조정 */
-.element-container:has(#before-button),
-.element-container:has(#next-button) {
-    position: absolute;
-    height: 90px;
-
-}
-
-/* 이전 버튼 */
-.element-container:has(#before-button) + div:has(button) {
-    left: 150px;
-    position: absolute;
-    bottom: 60px; 
-    z-index: 9999;
-    padding: 5px;
-    display: flex;
-    justify-content: flex-start;
-}
-
 
 [data-testid = "stMainBlockContainer"]{
     padding-left: 9rem;
@@ -155,9 +129,6 @@
 
 }
 
-[data-testid = "InputInstructions"]{
-    display:none;
-}
 
 /*홈 버튼 css*/
 div.st-key-clear_btn [data-testid = "stBaseButton-tertiary"],
@@ -264,9 +235,6 @@ div[class *= "switch_option_"] [data-testid="stIconMaterial"]{
     font-size: 50px;
 }
 
-div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
-    display: none !important;
-}
 
 /*답변 멀티 재생성 버튼*/
 [data-testid="stVerticalBlock"]{
@@ -290,12 +258,10 @@ div.st-key-total_regenerate_btn [data-testid="stBaseButton-secondary"]:hover{
 /*민원 생성 버튼*/
 div.st-key-input_minwon_generate {
     margin-left:auto;
-    /*position: relative !important;
-    left: 92.8% !important;*/
 } 
 
 div.st-key-input_minwon_generate [data-testid = "stBaseButton-secondary"]:hover{
-    background-color: #161616 !important;
+    background-color: transparent !important;
     color: var(--main-color)!important;
     border: 1px solid var(--main-color) !important;
 }
@@ -359,11 +325,6 @@ div.st-key-llm_model_select .st-br{
     background-color: #161616;
 }
 
-/*.rc-overflow{
-    padding: 0px 60px;
-    font-weight: 550;
-}*/
-
 .rc-overflow [data-testid = "stTopNavLink"]{
     
     background-color: transparent;
@@ -380,12 +341,6 @@ div.st-key-llm_model_select .st-br{
     color:var(--main-color);
 }
 
-.rc-overflow span[label="민원 입력"]{
-    display: none;
-}
-.rc-overflow span[label="설정"]{
-    display: none;
-}
 
 .rc-overflow .stSidebarNavLinkContainer {
     font-size: 28px !important;
@@ -399,19 +354,6 @@ textarea.active-highlight {
     border-radius: 10px;
     background-color: #d9f0cf !important;
     box-shadow: 0 0 10px rgba(74, 144, 226, 0.5) !important;     
-}
-
-/*streamlit 상단바 비활성화*/
-[data-testid = "stMainMenu"]{
-    display: none;
-}
-
-div[class = "stAppDeployButton"]{
-    display: none;
-}
-
-[data-testid = "stHeaderActionElements"]{
-    display: none;
 }
 
 
