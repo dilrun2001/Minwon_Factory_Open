@@ -8,9 +8,9 @@ def load_css():
     """with open('./css/style.css', encoding = "UTF-8") as f:
         css = f.read()"""
     #1.48.0
-    with open('./css/style(1.48).css', encoding = "UTF-8") as f:
+    with open('./css/style.css', encoding = "UTF-8") as f:
         css = f.read()
-    st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+    st.html(f'<style>{css}</style>')#, unsafe_allow_html=True)
 
 def highlight_js(highlight_data):
     json_data = json.dumps(highlight_data)

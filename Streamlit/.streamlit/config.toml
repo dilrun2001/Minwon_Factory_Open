@@ -1,6 +1,8 @@
 [theme]
 
 base = "dark"
+codeFont = "Source Sans Pro"
+codeFontSize = "16px"
 
 
 [server]

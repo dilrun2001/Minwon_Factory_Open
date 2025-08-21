@@ -55,7 +55,7 @@ def show_admin():
                                                 st.write("AI 설정을 ON/OFF 할 수 있습니다.")
                                                 ai = st.pills(
                                                         "AI ON/OFF", ["on", "off"],
-                                                        key = "ai_select_option", default = config['app']['ai']
+                                                        key = "ai_select_option", default = config['app']['ai'], label_visibility="collapsed"
                                                         )
                                                 if ai != config['app']['ai']:
                                                         change_toml('app', 'ai', ai, f"AI 설정 {ai}")
@@ -65,7 +65,7 @@ def show_admin():
                                                 st.write("RAG 설정을 ON/OFF 할 수 있습니다.")
                                                 rag = st.pills(
                                                         "RAG ON/OFF", ["on", "off"],
-                                                        key = "rag_select_option", default = config['app']['rag']
+                                                        key = "rag_select_option", default = config['app']['rag'], label_visibility="collapsed"
                                                         )
                                                 if rag != config['app']['rag']:
                                                         change_toml('app', 'rag', rag, f"RAG 설정 {rag}")
@@ -320,13 +320,24 @@ def switch_area(index):
 
 def show_result():
     result = st.session_state.df
-    def show_first(index):
-        result.at[index, '답변결과'] = st.text_area("답변 결과", value = result.iloc[index]['답변결과'], height = 330, key=f"result_first_{index}", width = 690)  
+    #좌측 컨테이너
+    def show_first(index, check = False):
+        #with st.container(key = f"first_answer_{index}"):
+        if check:
+            result.at[index, '답변결과'] = st.text_area("답변 결과", value = result.iloc[index]['답변결과'], height = 330, key=f"result_first_{index}", width = 690, label_visibility="collapsed")
+        else:
+            st.code(result.iloc[index]['답변결과'], language=None, width=690,  wrap_lines=True, height = 330)
+        #result.at[index, '답변결과'] = st.text_area("답변 결과", value = result.iloc[index]['답변결과'], height = 330, key=f"result_first_{index}", width = 690)  
         if result.iloc[index]['test'] == False:
              result.at[index,'최종답변'] = result.iloc[index]['답변결과']
 
-    def show_second(index):
-        result.at[index, 'RAG'] = st.text_area("유사 답변", value=  result.iloc[index]['RAG'], height= 330, key=f"result_second_{index}", width = 690)
+    def show_second(index, check = False):
+        #with st.container(key = f"second_answer_{index}"):
+        if check:
+            result.at[index, 'RAG'] = st.text_area("유사 답변", value=  result.iloc[index]['RAG'], height= 330, key=f"result_second_{index}", width = 690, label_visibility="collapsed")
+        else:
+            st.code(result.iloc[index]['RAG'], language=None, width=690,  wrap_lines=True, height = 330)
+        #result.at[index, 'RAG'] = st.text_area("유사 답변", value=  result.iloc[index]['RAG'], height= 330, key=f"result_second_{index}", width = 690)
         if result.iloc[index]['test'] == True:
              result.at[index,'최종답변'] = result.iloc[index]['RAG']
     def switch_result(index):
@@ -397,35 +408,69 @@ def show_result():
     def show_total():
         st.subheader("답변 결과")
         with st.container(key = "minwon_result_guide_container", horizontal=True):
-            st.write("- 이때 2개의 입력창 중 :red[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
+            st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
             st.write("- 민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.")
             st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 :red[교환]됩니다.")
         for i, row in result.iterrows():
             with st.container(key = f"result_response_container_{i}", gap = "medium"):
                 with st.expander(f"{i+1}번 민원 답변 생성 결과", icon = ":material/question_answer:", expanded=True):
                     mapping = [1,2,3,4,5]
-                    edit =  st.checkbox("민원 수정", key = f"edit_answer_sub_{i}")
+                    
                     first, spacer, second = st.columns((6.8, 1.6, 6.8)) #8,1.2,8 6.8, 1.6, 6.8
                     with spacer:
-                        for j in range(9):
+                        for j in range(11):
                             st.markdown('''''')
                         st.button("위치 스위치", key = f"switch_option_{i}", icon = ":material/compare_arrows:", on_click=switch_result, args = (i, ), type = "tertiary")
                     with first:
-                        if row['test'] is not True:
-                            show_first(i)
+                        first_edit = st.checkbox("답변 수정", key = f"edit_firstanswer_{i}")
+                        with st.container(key = f"first_answer_{i}"):
+                            if first_edit:
+                                if row['test'] is not True:
+                                    show_first(i, check = True)
+                                else:
+                                    show_second(i, check = True)
+                            else:
+                                if row['test'] is not True:
+                                    show_first(i)
+                                else:
+                                    show_second(i)
+                        '''if row['test'] is not True:
+                            if first_edit:
+                                show_first(i, check = True)
+                            else:
+                                 show_first(i)
                         else:
-                             show_second(i)
-                        row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{i}")     
+                             show_second(i)'''
+                        with st.container(key = f"result_checkbox_container_{i}", horizontal=True, gap = "medium"):
+                            row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{i}")  
+                            edit =  st.checkbox("민원 수정", key = f"edit_answer_sub_{i}")
+                            
+                               
                         if row['답변 평점'] is not None:
                             row['답변 평점'] = mapping[row['답변 평점']]
                         else:
                             row['답변 평점'] = 0
                         result.at[i, '최종평점'] = row['답변 평점']
                     with second:
-                        if row['test'] is not True:
+                        rag_edit = st.checkbox("답변 수정", key = f"edit_raganswer_{i}")
+                        with st.container(key = f"second_answer_{i}"):
+                            if rag_edit:
+                                if row['test'] is not True:
+                                    show_second(i, check = True)
+                                    
+                                else:
+                                    show_first(i, check = True)
+                            else:
+                                if row['test'] is not True:
+                                    show_second(i)
+                                else:
+                                    show_first(i)
+                        """if row['test'] is not True:
                             show_second(i)
                         else:
-                             show_first(i)
+                             show_first(i)  
+                        """
+                    
                     if edit:
                          result.at[i, '수정'] = True
                          show_edit(i)
@@ -589,7 +634,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
         update("대기열에 등록되었습니다. 요청하신 작업을 시작합니다.")
         time.sleep(0.5)
         match (recreate, multi, yogi):
-            
+            #답변 단일 재생성
             case (True, False, False):
                 if st.session_state.ai_option:
                         update(f"{index+1}번 민원의 답변을 재생성하는 중입니다.")
@@ -600,7 +645,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                     update(f"단일 민원 생성 테스트. {timer}초 동안 해당 화면이 유지됩니다.")
                     time.sleep(timer)
                 end_task(task_id)
-            
+            #답변 멀티 재생성            
             case (True, True, False):
                     if st.session_state.ai_option:
                         for i, row in data.iterrows():
@@ -617,7 +662,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                                 update(f"{i+1}번 민원의 답변 재생성 테스트. 답변은 생성되지 않습니다.")
                                 time.sleep(1)
                     end_task(task_id)
-            
+            #답변 요지 생성
             case (False, False, True):
                 for i, row in data.iterrows():
                     format = change_text(config['format']['format'], row['부서명'], row['이름'], row['전화번호'])
@@ -636,7 +681,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                     time.sleep(2)
                 end_task(task_id)
                 page_convert()
-            
+            #답변 생성
             case (False, False, False):
                 for i, row in data.iterrows():
                     if st.session_state.ai_option:
@@ -672,7 +717,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
 
 #민원요지, 답변 생성, 재생성 기능 통합
 # index = 데이터프레임 열 번호, recreate = 민원 재생성 체크 여부, check = 민원 멀티 재생성 여부
-def generate_answer1(index = 0, recreate = False, multi = False):
+def generate_answer_if(index = 0, recreate = False, multi = False):
     enqueue_task(st.session_state.id)
     data = st.session_state.df
     results, formats, answers, raganswers = [], [], [], []
