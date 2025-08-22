@@ -24,10 +24,14 @@ def file_reselect():
 
 #관리자 설정
 def show_admin():
-        #st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
+        #st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)                           
+        def test_spinner():
+            timer = 50
+            with show_loading_overlay(f"로딩 화면 테스트 중입니다 해당 화면이 {int(timer / 60)}분 동안 지속됩니다.", dialog = True):
+                time.sleep(timer)
         if st.session_state.admin:
                         st.set_page_config(page_title = "관리자 페이지", page_icon=":material/admin_panel_settings:", layout="wide", initial_sidebar_state="collapsed")
-                        default, format = st.tabs(['기본 설정', '양식'])
+                        default, format, DB = st.tabs(['기본 설정', '양식', "DB 관리"])
                         with default:
                                 st.subheader("관리자 페이지")
                                 #left, center, right = st.columns([6,6,6])
@@ -38,17 +42,9 @@ def show_admin():
                                                 queue_clear = st.button("대기열 초기화", key = "queue_clear", icon = ":material/clear_all:", on_click = clear_queue)
                                                 if queue_clear:
                                                         st.toast("대기열이 초기화되었습니다.", icon = ":material/check:")
-                                        '''st.markdown("---")
-                                        with st.expander("DB 데이터 관리", expanded = True, icon = ":material/database:"):
-                                                st.write("민원이 저장된 데이터베이스 확인 및 데이터 추출")
-                                                db_col = st.columns([8,1,8])
-                                                with db_col[0]:
-                                                        if st.button("데이터베이스 데이터 확인", key = "db_check", icon = ":material/database:"):
-                                                                db_data = run_query("SELECT minwon, response FROM history")
-                                                                if not db_data.empty:
-                                                                        st.dataframe(db_data)
-                                                                else:
-                                                                        st.toast("데이터베이스에 저장된 데이터가 없습니다.", icon = ":material/block:")'''
+                                                st.write("로딩 화면 테스트")
+                                            
+                                                start_spinner = st.button("스피너 시작", key = "start_spinner", on_click = test_spinner)#, args = ("test", "spinnertest",  test_spinner,))
                                 #with center:
                                         with st.expander("AI 설정", expanded = True):
                                                 st.markdown("######  AI 설정")
@@ -96,14 +92,23 @@ def show_admin():
                                     
                                             match (preset_edit):
                                                     case "완전 수용":
-                                                            accept = st.text_input("완전 수용 수정", value = config['sub']['accept'], label_visibility="hidden")
+                                                            accept = st.text_input("완전 수용 수정", value = config['sub']['accept'], label_visibility="collapsed")
                                                             st.button("수정", key = "edit_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'accept', accept, '완전 수용 양식'))
                                                     case "부분 수용":
-                                                            particle = st.text_input("부분 수용 수정", value = config['sub']['particle_accept'], label_visibility="hidden")
-                                                            st.button("수정", key = "edit_particle_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'particle_accept', particle, '부분 수용 양식'))
+                                                            particle = st.text_input("부분 수용 수정", value = config['sub']['particle_accept'], label_visibility="collapsed")
+                                                            st.button("수정", key = "   ", icon = ":material/note:", on_click = change_toml, args = ('sub', 'particle_accept', particle, '부분 수용 양식'))
                                                     case "수용 불가":
-                                                            unaccept = st.text_input("수용 불가 수정", value = config['sub']['unaccept'], label_visibility="hidden")
+                                                            unaccept = st.text_input("수용 불가 수정", value = config['sub']['unaccept'], label_visibility="collapsed")
                                                             st.button("수정", key = "edit_unaccept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'unaccept', unaccept, '수용 불가 양식'))
+                        with DB:
+                            with st.expander("DB 데이터 관리", expanded = True, icon = ":material/database:"):
+                                st.write("민원이 저장된 데이터베이스 확인 및 데이터 추출")
+                                if st.button("데이터베이스 데이터 확인", key = "db_check", icon = ":material/database:"):
+                                        db_data = run_query("SELECT * FROM history")
+                                        if not db_data.empty:
+                                                st.dataframe(db_data)
+                                        else:
+                                                st.toast("데이터베이스에 저장된 데이터가 없습니다.", icon = ":material/block:")
         else:
                 with st.form("admin_login_form"):
                         password = st.text_input("관리자 비밀번호 입력", type="password")
@@ -298,15 +303,31 @@ def show_input():
                             )
                     #result.at[i, '최종답변'] = row['답변결과']
                 st.markdown('''''')
+    ''' st.button(
+         "답변 생성", icon=":material/edit:", on_click=show_popup, key = f"input_minwon_generate"
+         ,args = ("민원 생성", "민원을 생성하시겠습니까?", input_answer))'''
     st.button("답변 생성", icon=":material/edit:", on_click=input_answer, key = f"input_minwon_generate")
-    st.button("처음으로", on_click = minwon_clear, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = 'tertiary')
+    st.button(
+             "처음으로", on_click = show_popup, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary"
+             , args = (':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))     
+        
     
 
-    selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'], key = "llm_model_select", width = 300, label_visibility="collapsed")
-    if selected == '기본 모델':
+    selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
+    match (selected):
+        case '기본 모델':
+              st.session_state.model = '기본 모델'
+        case '민원팩토리 모델':
+              st.session_state.model = '민원팩토리 모델'
+        case '사하아이 연동':
+              st.toast("현재 지원하지 않는 기능입니다.")
+              selected = '기본 모델'
+              st.session_state.model = '민원팩토리 모델'
+    """if selected == '기본 모델':
             st.session_state.model = '기본 모델'
     elif selected == '민원팩토리 모델':
-            st.session_state.model = '민원팩토리 모델'
+            st.session_state.model = '민원팩토리 모델'"""
+    
 
 #area 결과값 스위치
 def switch_area(index):
@@ -481,11 +502,20 @@ def show_result():
     def show_button():
         if st.session_state.file_check:
              st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다.", on_click=reinput_answer, args = ())
-        st.button("처음으로", on_click = minwon_clear, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary")
-        selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델'], key = "llm_model_select", width = 300, label_visibility="collapsed")
-        if selected == '기본 모델':
+        st.button(
+             "처음으로", on_click = show_popup, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary"
+             , args = ('작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))     
+        
+        #st.button("처음으로", on_click = minwon_clear, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary")
+        selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
+        match (selected):
+            case '기본 모델':
                 st.session_state.model = '기본 모델'
-        elif selected == '민원팩토리 모델':
+            case '민원팩토리 모델':
+                st.session_state.model = '민원팩토리 모델'
+            case '사하아이 연동':
+                st.toast("현재 지원하지 않는 기능입니다.")
+                selected = '기본 모델'
                 st.session_state.model = '민원팩토리 모델'
         if st.session_state.file_download:
             st.download_button(
@@ -502,51 +532,62 @@ def show_result():
         else:
             
             st.session_state.file_set = st.pills("다운받을 파일 확장자", options= ( "Excel", "CSV"), key = "file_format", help = "다운받을 파일의 확장자를 선택해주세요.", label_visibility="collapsed", default= "Excel")
-            st.button("파일 생성", key = "create_file", on_click = input_db, args = (format,), icon = ":material/view_list:", type="tertiary")
+            st.button("파일 생성", key = "create_file", on_click = grade_check, icon = ":material/view_list:", type="tertiary")
+            #st.button("파일 생성", key = "create_file", on_click = input_db, args = (), icon = ":material/view_list:", type="tertiary")
 
     
     show_total()
     
 
+
+def grade_check():
+    data = st.session_state.df
+    grade_check = (data[data['최종평점'] == 0].index+1).tolist()
+    if grade_check:#(data['최종평점'] == 0).any():
+        st.toast(f"다음과 같은 민원의 평점이 채점되지 않았습니다. :red[미입력 민원: {', '.join(map(str, grade_check))}]", icon =":material/block:")
+        return False
+    else:
+        show_popup(":material/view_list: 파일 생성", f"""선택한 답변으로 파일을 생성하시겠습니까?   
+                   현재 :green[{st.session_state.file_set}] 형식을 선택하셨습니다.""", input_db, {st.session_state.file_set,})
 #데이버베이스 입력
 #데이터프레임 임시 입력 작업 추가
 #6/11 선택한 답변 값이 들어가도록 수정
-def input_db(format):
+def input_db():#format):
     def insert_data():
         global new_data
         data = st.session_state.df
-        grade_check = (data[data['최종평점'] == 0].index+1).tolist()
-        if grade_check:#(data['최종평점'] == 0).any():
+        #grade_check = (data[data['최종평점'] == 0].index+1).tolist()
+        """if grade_check:#(data['최종평점'] == 0).any():
             st.toast(f"다음과 같은 민원의 평점이 채점되지 않았습니다. :red[미입력 민원: {', '.join(map(str, grade_check))}]", icon =":material/block:")
             return False
-        else:
-            for i, row in data.iterrows():
-                print(f"{row['최종평점']}")
-                #print(row['최종답변'])
-                if st.session_state.db_check is not True:
-                    run_query("INSERT INTO history (timestamp, name, category, urgency, minwon,answer_yogi,response, grade) VALUES (%s, %s, %s, %s, %s,%s,%s, %s)",
-                            (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), row['이름'], row['민원 카테고리'], row['민원 긴급도'], row['민원내용'],row['답변요지'],row['최종답변'], row['최종평점']),
-                                fetch = False
-                            
+        else:"""
+        for i, row in data.iterrows():
+            print(f"{row['최종평점']}")
+            #print(row['최종답변'])
+            if st.session_state.db_check is not True:
+                run_query("INSERT INTO history (timestamp, name, category, urgency, minwon,answer_yogi,response, grade) VALUES (%s, %s, %s, %s, %s,%s,%s, %s)",
+                        (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), row['이름'], row['민원 카테고리'], row['민원 긴급도'], row['민원내용'],row['답변요지'],row['최종답변'], row['최종평점']),
+                            fetch = False
+                        
 
-                            )
+                        )
 
-                new_data = pd.DataFrame([{
-                    "민원내용": row['민원내용'],
-                    "답변내용": row['최종답변'],
-                }])
-                st.session_state.save_df = pd.concat(
-                        [st.session_state.save_df, new_data],
-                        ignore_index=True
-                )
-            #print(st.session_state.save_df)
-            if st.session_state.db_check == False:
-                st.session_state.db_check = True
-            return True
+            new_data = pd.DataFrame([{
+                "민원내용": row['민원내용'],
+                "답변내용": row['최종답변'],
+            }])
+            st.session_state.save_df = pd.concat(
+                    [st.session_state.save_df, new_data],
+                    ignore_index=True
+            )
+        #print(st.session_state.save_df)
+        if st.session_state.db_check == False:
+            st.session_state.db_check = True
+        return True
         
 
     def create_file(format):
-        if format == "CSV":
+        if st.session_state.file_set == "CSV":
             st.session_state.file =  st.session_state.save_df.to_csv().encode("utf-8-sig")
         else:
             output = BytesIO()
@@ -565,6 +606,7 @@ def input_db(format):
               
     if insert_data():
         create_file(format)
+    
     #st.success("데이터베이스에 등록이 완료되었습니다.")
 
 
@@ -601,6 +643,7 @@ def input_answer():
         if st.session_state.ai_check:
             page_convert()
         else:
+            #show_popup("민원 입력", f"민원을 생성하겠습니까?", generate_answer)
             generate_answer()
             st.session_state.ai_check = True
 
@@ -621,7 +664,8 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
     enqueue_task(st.session_state.id)
     data = st.session_state.df
     results, formats, answers, raganswers = [], [], [], []
-    with show_loading_overlay(message = "spinner start") as update:
+    with show_loading_overlay() as update:
+    #with js_overlay_spinner() as update:
         task_id = None
         while not task_id:
             task_id = get_queue(st.session_state.id)
@@ -704,7 +748,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                         raganswer = "rag 미지원"#ragai.find_similar_respond(minwon_summary=row['민원요지'],answer_yogi=row['답변요지'])    
                     else:
                         update(f"RAG가 비활성화되었습니다.")
-                        time.sleep(1)
+                        time.sleep(2)
                         raganswer= f"유사 답변 기능은 현재 지원하지 않습니다."#ragai.find_similar_respond(minwon_summary=st.session_state.minwon_sub,answer_yogi=st.session_state.answer_sub)
                     answers.append(answer)
                     raganswers.append(raganswer)

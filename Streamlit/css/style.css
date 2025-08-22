@@ -1,6 +1,6 @@
 :root {
     --main-color: #2766c2;
-    --background: #0d0d0d00;
+    --background: rgba(13, 13, 13, 0);
     --error-color: #FF4B4B;
     --accept-color: #3dd56d;
     --font-color: inherit;
@@ -46,6 +46,7 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
     background-color: var(--main-color);
 }
 
+
 [data-baseweb = "input"]:focus-within,
 [data-baseweb = "textarea"]:focus-within{
     border-bottom-color: var(--main-color);
@@ -67,8 +68,16 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
     color: var(--main-color);
 }
 
+[data-testid = "stDialog"]{
+    background-color: rgba(53, 53, 53, 0.315)
+}
 
-
+[data-testid="stDialog"] div[role="dialog"] {
+    background-color: #161616;
+    width: 30rem;
+    border: 1px solid var(--main-color);
+    border-radius: 15px;
+}
 
 /*우측 팝업창 css */
 @keyframes fadeSlideIn {
@@ -121,10 +130,6 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
     animation: fadeIn 0.6s ease-in;
 }
 
-
-/*이전 단계, 다음 단계 버튼 css *
-
-/* 공통 높이로 조정 */
 
 [data-testid = "stMainBlockContainer"]{
     padding-left: 9rem;
@@ -197,12 +202,21 @@ div.st-key-create_file [data-testid = "stIconMaterial"],
 div.st-key-download_file [data-testid = "stIconMaterial"] {
     font-size: 25px;
 }
-
+/*민원 생성 버튼*/
 /*민원 요지 생성 버튼*/
-div.st-key-input_page_show {
+div.st-key-input_page_show,
+/*민원 재생성 버튼*/
+div[class *= "recreate_answer_"],
+div.st-key-total_regenerate_btn,
+div.st-key-input_minwon_generate,                       /*수동 입력 버튼 */
+div.st-key-FormSubmitter-admin_login_form-----------,
+div.st-key-FormSubmitter-manual_input------,    
+div.st-key-edit_particle_accept_btn,
+div.st-key-edit_accept_btn,
+div.st-key-edit_unaccept_btn,
+div.st-key-edit_format_btn{
     margin-left: auto;
 }
-
 div.st-key-input_page_show [data-testid = "stBaseButton-secondary"]:hover{
     background-color: #161616 !important;
     color: var(--main-color) !important;
@@ -210,12 +224,12 @@ div.st-key-input_page_show [data-testid = "stBaseButton-secondary"]:hover{
 }
 
 div[class *= "first_answer_"]{
-    border-radius: 1.5rem;
+    border-radius: 1.7rem;
     background-color: #60b14c;
 }
 
 div[class *= "second_answer_"]{
-    border-radius: 1.5rem;
+    border-radius: 1.7rem;
     background-color: #b34949;
 }
 
@@ -229,14 +243,6 @@ div[class *= "resilt_first_"] [data-testid = "stWidgetLabel"]{
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(2px); }
     to { opacity: 1; transform: translateY(0); }
-}
-
-
-
-
-/*민원 재생성 버튼*/
-div[class *= "recreate_answer_"] {
-    margin-left: auto;
 }
 
 /*답변 스위치 버튼*/
@@ -259,23 +265,17 @@ div[class *= "switch_option_"] [data-testid="stIconMaterial"]{
     
 }
 
-div.st-key-total_regenerate_btn{
-    margin-left: auto;
-    display: flex;
-    justify-content: flex-end;
-}
 
-div.st-key-total_regenerate_btn [data-testid="stBaseButton-secondary"]:hover{
+
+div.st-key-total_regenerate_btn [data-testid="stBaseButton-secondary"]:hover,
+div.st-key-agree_btn [data-testid="stBaseButton-secondary"]:hover,
+div.st-key-disagree_btn [data-testid="stBaseButton-secondary"]:hover{
     background-color: #161616 !important;
     color: var(--main-color)!important;
     border: 1px solid var(--main-color) !important;
 }
 
 
-/*민원 생성 버튼*/
-div.st-key-input_minwon_generate {
-    margin-left:auto;
-} 
 
 div.st-key-input_minwon_generate [data-testid = "stBaseButton-secondary"]:hover{
     background-color: transparent !important;
@@ -283,11 +283,7 @@ div.st-key-input_minwon_generate [data-testid = "stBaseButton-secondary"]:hover{
     border: 1px solid var(--main-color) !important;
 }
 
-/*수동 입력 버튼 */
-div.st-key-FormSubmitter-admin_login_form-----------,
-div.st-key-FormSubmitter-manual_input------ {
-    margin-left: auto;
-}
+
 
 
 div.st-key-FormSubmitter-admin_login_form----------- [data-testid = "stBaseButton-secondaryFormSubmit"]:hover,
