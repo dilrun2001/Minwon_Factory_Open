@@ -79,6 +79,19 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
     border-radius: 15px;
 }
 
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 75, 75)"]) {
+    border: 1px solid var(--error-color);
+}
+
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 75, 75)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
+    background-color: #161616 !important;
+    color: var(--error-color)!important;
+    border: 1px solid var(--error-color) !important;
+}
+/*.stToast:has(span[style*="color: rgb(255, 75, 75)"])  [data-testid = "stToastDynamicIcon"]{
+    color:var(--error-color);
+}
+*/
 /*우측 팝업창 css */
 @keyframes fadeSlideIn {
     0% {
@@ -217,6 +230,7 @@ div.st-key-edit_unaccept_btn,
 div.st-key-edit_format_btn{
     margin-left: auto;
 }
+
 div.st-key-input_page_show [data-testid = "stBaseButton-secondary"]:hover{
     background-color: #161616 !important;
     color: var(--main-color) !important;
@@ -269,11 +283,13 @@ div[class *= "switch_option_"] [data-testid="stIconMaterial"]{
 
 div.st-key-total_regenerate_btn [data-testid="stBaseButton-secondary"]:hover,
 div.st-key-agree_btn [data-testid="stBaseButton-secondary"]:hover,
-div.st-key-disagree_btn [data-testid="stBaseButton-secondary"]:hover{
+div.st-key-disagree_btn [data-testid="stBaseButton-secondary"]:hover,
+div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
     background-color: #161616 !important;
     color: var(--main-color)!important;
     border: 1px solid var(--main-color) !important;
 }
+
 
 
 

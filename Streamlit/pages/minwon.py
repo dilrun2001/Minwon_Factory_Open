@@ -172,7 +172,9 @@ def show_home():
                 st.session_state['btn_show'] = True
                 print(st.session_state.df)
             else:
-                st.toast(":red[입력 필드]를 확인해주세요.", icon = ":material/block:")
+                show_popup(":red[:material/block:  입력 오류]", f'''입력 필드에 내용을 전부 입력해주세요.'''
+                   , popup_check=True)
+                #st.toast(":red[입력 필드]를 확인해주세요.", icon = ":material/block:")
         
     def show_file():
             st.markdown("")
@@ -313,7 +315,7 @@ def show_input():
         
     
 
-    selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
+    """selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
     match (selected):
         case '기본 모델':
               st.session_state.model = '기본 모델'
@@ -322,7 +324,7 @@ def show_input():
         case '사하아이 연동':
               st.toast("현재 지원하지 않는 기능입니다.")
               selected = '기본 모델'
-              st.session_state.model = '민원팩토리 모델'
+              st.session_state.model = '민원팩토리 모델'"""
     """if selected == '기본 모델':
             st.session_state.model = '기본 모델'
     elif selected == '민원팩토리 모델':
@@ -507,7 +509,7 @@ def show_result():
              , args = ('작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))     
         
         #st.button("처음으로", on_click = minwon_clear, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary")
-        selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
+        """selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
         match (selected):
             case '기본 모델':
                 st.session_state.model = '기본 모델'
@@ -516,7 +518,7 @@ def show_result():
             case '사하아이 연동':
                 st.toast("현재 지원하지 않는 기능입니다.")
                 selected = '기본 모델'
-                st.session_state.model = '민원팩토리 모델'
+                st.session_state.model = '민원팩토리 모델'"""
         if st.session_state.file_download:
             st.download_button(
                 label = "다운로드",
@@ -543,12 +545,16 @@ def show_result():
 def grade_check():
     data = st.session_state.df
     grade_check = (data[data['최종평점'] == 0].index+1).tolist()
+
     if grade_check:#(data['최종평점'] == 0).any():
-        st.toast(f"다음과 같은 민원의 평점이 채점되지 않았습니다. :red[미입력 민원: {', '.join(map(str, grade_check))}]", icon =":material/block:")
+        show_popup(":red[:material/block:  파일 생성 오류]", f'''답변들의 평점이 채점되지 않았습니다.    
+                   미입력 민원: :red[{'번, '.join(map(str, grade_check))}번]'''
+                   , popup_check=True)
+        #st.toast(f"다음과 같은 민원의 평점이 채점되지 않았습니다. :red[미입력 민원: {', '.join(map(str, grade_check))}]", icon =":material/block:")
         return False
     else:
         show_popup(":material/view_list: 파일 생성", f"""선택한 답변으로 파일을 생성하시겠습니까?   
-                   현재 :green[{st.session_state.file_set}] 형식을 선택하셨습니다.""", input_db, {st.session_state.file_set,})
+                   현재 :green[{st.session_state.file_set}] 형식을 선택하셨습니다.""", input_db, False,  {},)
 #데이버베이스 입력
 #데이터프레임 임시 입력 작업 추가
 #6/11 선택한 답변 값이 들어가도록 수정
@@ -621,6 +627,16 @@ def show_page():
 
     elif st.session_state['minwon_check'] == 'result':
         show_result()
+    selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
+    match (selected):
+        case '기본 모델':
+            st.session_state.model = '기본 모델'
+        case '민원팩토리 모델':
+            st.session_state.model = '민원팩토리 모델'
+        case '사하아이 연동':
+            st.toast("현재 지원하지 않는 기능입니다.")
+            selected = '기본 모델'
+            st.session_state.model = '민원팩토리 모델'
     
     
 def page_before():
@@ -637,7 +653,10 @@ def input_answer():
     yogi_check = (data[data['답변요지'] == ""].index+1).tolist()
     print(yogi_check)
     if yogi_check:#((data['답변요지'] =="") ).any():
-        st.toast(f"해당 민원에 대한 답변 요지를 입력해주세요. :red[미입력 민원: {', '.join(map(str, yogi_check))}]", icon =":material/block:")
+        show_popup(":red[:material/block:  생성 오류]", f'''입력하신 민원에 대한 답변 요지를 전부 입력해주세요.    
+                   미입력 민원: :red[{'번, '.join(map(str, yogi_check))}번]'''
+                   , popup_check=True)
+        #st.toast(f"해당 민원에 대한 답변 요지를 입력해주세요. :red[미입력 민원: {', '.join(map(str, yogi_check))}]", icon =":material/block:")
         return
     else:    
         if st.session_state.ai_check:
@@ -653,7 +672,8 @@ def reinput_answer():
 
     recreate_check = data['수정'].sum() 
     if recreate_check == 0:
-        st.toast(f"재생성할 민원을 체크해주세요. 답변 영역 내 :red[좌측 상단]을 확인해주세요.", icon = ":material/block:")
+        show_popup(":red[:material/block:  재생성 오류]", f"""재생성할 답변이 존재하지 않습니다.\n답변 영역 내 민원 수정 체크 박스를 확인해주세요.""", popup_check = True)
+        #st.toast(f"재생성할 민원을 체크해주세요. 답변 영역 내 :red[좌측 상단]을 확인해주세요.", icon = ":material/block:")
     else:
         generate_answer(recreate = True, multi=True)
 

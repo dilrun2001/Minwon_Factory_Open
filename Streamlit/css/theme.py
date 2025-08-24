@@ -88,11 +88,11 @@ def show_loading_overlay(message = "로딩 중입니다.", page_title="처리 �
 def show_popup(
         title: str ,
         text: str,
-        btn_action,
-        check: str = "False",
+        btn_action = None,
+        popup_check = False,
         action_args: dict = {},
         agree_button_txt: str = "예",
-        disagree_button_txt: str = "아니오"
+        disagree_button_txt: str = "아니오",
 ):
     if 'dialog_counter' not in st.session_state:
         st.session_state.dialog_counter = 0
@@ -100,20 +100,33 @@ def show_popup(
 
     #with st.dialog(title):
     @st.dialog(title)
-    def result_popup():
+    def popup_yesorno():
         st.write(text)
 
         col1, col2 = st.columns(2)
         with col1:
-            if st.button(agree_button_txt, use_container_width=True, key = "agree_btn"):
+            if st.button(agree_button_txt, use_container_width=True, key = "agree_btn", icon = ":material/check:"):
                 # '예'를 누르면 전달받은 함수를 실행
                 btn_action(**action_args)
                 st.session_state.dialog_counter += 1
                 st.rerun()
 
         with col2:
-            if st.button(disagree_button_txt, use_container_width=True, key = "disagree_btn"):
+            if st.button(disagree_button_txt, use_container_width=True, key = "disagree_btn", icon = ":material/close:"):
                 # '아니오'를 누르면 그냥 닫힘 (특별한 동작 없음)
                 st.session_state.dialog_counter += 1
                 st.rerun()
-    result_popup()
+
+    @st.dialog(title)
+    def popup_onebtn():
+        st.write(text)
+
+        left, center, right = st.columns(3)
+        with center:
+            if st.button("확인", use_container_width=True, key = "check_btn", icon = ":material/check:"):
+                st.rerun()
+
+    if popup_check:
+        popup_onebtn()
+    else:
+        popup_yesorno()
