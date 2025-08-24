@@ -163,6 +163,9 @@ def clear_state():
     if "db_check" not in st.session_state:
         st.session_state.db_check = False
     
+    #
+    if "dialog_check" not in st.session_state:
+        st.session_state.dialog_check = False
 
 # AI, RAG ON/OFF 기능으로 인해 실시간 피드백 변경
 def ai_option_check():
