@@ -2,7 +2,7 @@
     --main-color: #2766c2;
     --background: rgba(13, 13, 13, 0);
     --error-color: #FF4B4B;
-    --accept-color: #3dd56d;
+    --accept-color: #35b85e;
     --font-color: inherit;
 }
 
@@ -88,10 +88,17 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
     color: var(--error-color)!important;
     border: 1px solid var(--error-color) !important;
 }
-/*.stToast:has(span[style*="color: rgb(255, 75, 75)"])  [data-testid = "stToastDynamicIcon"]{
-    color:var(--error-color);
+
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(61, 213, 109)"]) {
+    border: 1px solid var(--accept-color);
 }
-*/
+
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(61, 213, 109)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
+    background-color: #161616 !important;
+    color: var(--accept-color)!important;
+    border: 1px solid var(--accept-color) !important;
+}
+
 /*우측 팝업창 css */
 @keyframes fadeSlideIn {
     0% {
@@ -115,6 +122,7 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
     font-size: 20px;
     font-weight: bold !important;
     z-index: 9999;
+    border: 1px solid var(--main-color);
 }
 
 .stToast [data-testid = "stToastDynamicIcon"]{
@@ -125,6 +133,10 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
     top: 0.5rem;
     font-size: 15px;
 }
+.stToast:has(span[style*="color: rgb(61, 213, 109)"])  {
+    border: 1px solid var(--accept-color);
+}
+
 .stToast:has(span[style*="color: rgb(61, 213, 109)"])  [data-testid = "stToastDynamicIcon"]{
     color:var(--accept-color);
 }
@@ -240,11 +252,13 @@ div.st-key-input_page_show [data-testid = "stBaseButton-secondary"]:hover{
 div[class *= "first_answer_"]{
     border-radius: 1.7rem;
     background-color: #60b14c;
+    padding-right: 1rem;
 }
 
 div[class *= "second_answer_"]{
     border-radius: 1.7rem;
     background-color: #b34949;
+    padding-right: 1rem;
 }
 
 div[class *= "result_first_"] [data-baseweb = "base-input"],

@@ -9,13 +9,10 @@ from util.toml_edit import *
 
 load_css()
 clear_state()
-
 pages = [
     st.Page(pg.show_page, title = "민원 입력", icon = ":material/home:"),
-    st.Page(pg.show_admin, title = "설정", icon = ":material/settings:")
+    st.Page(pg.show_setting, title = "설정", icon = ":material/settings:")
 ]
-
-
 page = st.navigation(pages, position="top")
 
 

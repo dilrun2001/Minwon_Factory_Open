@@ -125,7 +125,6 @@ def show_popup(
         with center:
             if st.button("확인", use_container_width=True, key = "check_btn", icon = ":material/check:"):
                 st.rerun()
-
     if popup_check:
         popup_onebtn()
     else:

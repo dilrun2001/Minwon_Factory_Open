@@ -5,6 +5,7 @@ from util.AI_queue import clear_queue
 import time
 from util.page_convert import * 
 from util.toml_edit import *
+from css.theme import *
 format_list = ["양식 1", "양식 2", "양식 3"]
 
 def fetch_current_format(format_type):
@@ -32,55 +33,52 @@ def fetch_current_format(format_type):
 
     return "(등록된 양식이 없습니다.)"
 
-"""#관리자 설정
+#관리자 설정
 def show_admin():
-        #st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
+        #st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)                           
+        def test_spinner():
+            timer = 50
+            with show_loading_overlay(f"로딩 화면 테스트 중입니다 해당 화면이 {int(timer / 60)}분 동안 지속됩니다.", dialog = True):
+                time.sleep(timer)
         if st.session_state.admin:
                         st.set_page_config(page_title = "관리자 페이지", page_icon=":material/admin_panel_settings:", layout="wide", initial_sidebar_state="collapsed")
-                        default, format = st.tabs(['기본 설정', '양식'])
+                        default, format, DB = st.tabs(['기본 설정', '양식', "DB 관리"])
                         with default:
                                 st.subheader("관리자 페이지")
-                                left, center, right = st.columns([6,6,6])
-                                with left:
+                                #left, center, right = st.columns([6,6,6])
+                                #with left:
+                                with st.container(horizontal=True, key = "admin_page_container"):
                                         with st.expander("대기열 관리", expanded = True, icon = ":material/queue:"):
                                                 st.write("대기열 기능 오류 시 해당 부분에서 대기열을 초기화할 수 있습니다.")
                                                 queue_clear = st.button("대기열 초기화", key = "queue_clear", icon = ":material/clear_all:", on_click = clear_queue)
                                                 if queue_clear:
                                                         st.toast("대기열이 초기화되었습니다.", icon = ":material/check:")
-                                        '''st.markdown("---")
-                                        with st.expander("DB 데이터 관리", expanded = True, icon = ":material/database:"):
-                                                st.write("민원이 저장된 데이터베이스 확인 및 데이터 추출")
-                                                db_col = st.columns([8,1,8])
-                                                with db_col[0]:
-                                                        if st.button("데이터베이스 데이터 확인", key = "db_check", icon = ":material/database:"):
-                                                                db_data = run_query("SELECT minwon, response FROM history")
-                                                                if not db_data.empty:
-                                                                        st.dataframe(db_data)
-                                                                else:
-                                                                        st.toast("데이터베이스에 저장된 데이터가 없습니다.", icon = ":material/block:")'''
-                                with center:
+                                                st.write("로딩 화면 테스트")
+                                            
+                                                start_spinner = st.button("스피너 시작", key = "start_spinner", on_click = test_spinner)#, args = ("test", "spinnertest",  test_spinner,))
+                                #with center:
                                         with st.expander("AI 설정", expanded = True):
                                                 st.markdown("######  AI 설정")
                                                 st.write("AI 설정을 ON/OFF 할 수 있습니다.")
                                                 ai = st.pills(
                                                         "AI ON/OFF", ["on", "off"],
-                                                        key = "ai_select_option", default = config['app']['ai']
+                                                        key = "ai_select_option", default = config['app']['ai'], label_visibility="collapsed"
                                                         )
                                                 if ai != config['app']['ai']:
                                                         change_toml('app', 'ai', ai, f"AI 설정 {ai}")
                                                         ai_option_check()
-                                        with st.expander("RAG 설정", expanded = True):
+                                        #with st.expander("RAG 설정", expanded = True):
                                                 st.markdown("######  RAG 설정")
                                                 st.write("RAG 설정을 ON/OFF 할 수 있습니다.")
                                                 rag = st.pills(
                                                         "RAG ON/OFF", ["on", "off"],
-                                                        key = "rag_select_option", default = config['app']['rag']
+                                                        key = "rag_select_option", default = config['app']['rag'], label_visibility="collapsed"
                                                         )
                                                 if rag != config['app']['rag']:
                                                         change_toml('app', 'rag', rag, f"RAG 설정 {rag}")
                                                         ai_option_check()
                                         
-                                with right:
+                                #with right:
                                         with st.expander("관리자 비밀번호 변경", expanded = True, icon= ":material/key:"):
                                                 st.write("관리자 비밀번호를 변경할 수 있습니다.")
                                                 with st.form(key = "change_admin_password", height = 320):
@@ -93,94 +91,53 @@ def show_admin():
                                                                                 change_toml('app', 'admin_password', new, "관리자 비밀번호")
                         with format:
                                 st.subheader("양식 포맷 설정")
-                                with st.expander("양식 포맷 설정 테스트", icon = ":material/home:", expanded = True):
-                                        format = st.text_area("양식 수정", value = f"{config['format']['format']}", height = 300)
-                                        st.button("수정", key = "edit_format_btn", icon = ":material/note:", on_click = change_toml, args = ('format', 'format', format, '답변 양식 포맷'))
-                                with st.expander("답변 요지 양식 테스트", icon = ":material/home:", expanded = True):
-                                        preset_edit = st.pills(
-                                        "수정할 답변 요지 방식을 선택해주세요.", ["완전 수용", "부분 수용", "수용 불가"],
-                                        key = "minwon_sub_edit_selector"
-                                        )
-                                
-                                        match (preset_edit):
-                                                case "완전 수용":
-                                                        accept = st.text_input("완전 수용 수정", value = config['sub']['accept'], label_visibility="hidden")
-                                                        st.button("수정", key = "edit_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'accept', accept, '완전 수용 양식'))
-                                                case "부분 수용":
-                                                        particle = st.text_input("부분 수용 수정", value = config['sub']['particle_accept'], label_visibility="hidden")
-                                                        st.button("수정", key = "edit_particle_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'particle_accept', particle, '부분 수용 양식'))
-                                                case "수용 불가":
-                                                        unaccept = st.text_input("수용 불가 수정", value = config['sub']['unaccept'], label_visibility="hidden")
-                                                        st.button("수정", key = "edit_unaccept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'unaccept', unaccept, '수용 불가 양식'))
+                                with st.container(horizontal=True):
+                                    with st.expander("양식 포맷 설정", icon = ":material/home:", expanded = True):
+                                            format = st.text_area("양식 수정", value = f"{config['format']['format']}", height = 300)
+                                            st.button("수정", key = "edit_format_btn", icon = ":material/note:", on_click = change_toml, args = ('format', 'format', format, '답변 양식 포맷'))
+                                    with st.expander("답변 요지 양식", icon = ":material/home:", expanded = True):
+                                            preset_edit = st.pills(
+                                            "수정할 답변 요지 방식을 선택해주세요.", ["완전 수용", "부분 수용", "수용 불가"],
+                                            key = "minwon_sub_edit_selector"
+                                            )
+                                    
+                                            match (preset_edit):
+                                                    case "완전 수용":
+                                                            accept = st.text_input("완전 수용 수정", value = config['sub']['accept'], label_visibility="collapsed")
+                                                            st.button("수정", key = "edit_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'accept', accept, '완전 수용 양식'))
+                                                    case "부분 수용":
+                                                            particle = st.text_input("부분 수용 수정", value = config['sub']['particle_accept'], label_visibility="collapsed")
+                                                            st.button("수정", key = "   ", icon = ":material/note:", on_click = change_toml, args = ('sub', 'particle_accept', particle, '부분 수용 양식'))
+                                                    case "수용 불가":
+                                                            unaccept = st.text_input("수용 불가 수정", value = config['sub']['unaccept'], label_visibility="collapsed")
+                                                            st.button("수정", key = "edit_unaccept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'unaccept', unaccept, '수용 불가 양식'))
+                        with DB:
+                            with st.expander("DB 데이터 관리", expanded = True, icon = ":material/database:"):
+                                st.write("민원이 저장된 데이터베이스 확인 및 데이터 추출")
+                                if st.button("데이터베이스 데이터 확인", key = "db_check", icon = ":material/database:"):
+                                        db_data = run_query("SELECT * FROM history")
+                                        if not db_data.empty:
+                                                st.dataframe(db_data)
+                                        else:
+                                                st.toast("데이터베이스에 저장된 데이터가 없습니다.", icon = ":material/block:")
         else:
                 with st.form("admin_login_form"):
                         password = st.text_input("관리자 비밀번호 입력", type="password")
                         if st.form_submit_button("관리자 페이지 열기"):
                                 if password == config['app']['admin_password']:
                                         st.session_state.admin = True
-                                        st.toast("관리자 모드가 활성화되었습니다", icon=":material/check:")
+                                        show_popup(":green[:material/admin_panel_settings:] 관리자 모드", "관리자 모드가 활성화되었습니다.",None, popup_check = True)
+                                        '''st.toast("관리자 모드가 활성화되었습니다", icon=":material/check:")
                                         time.sleep(0.5)
-                                        st.rerun()
+                                        st.rerun()'''
                                 else:
                                         st.toast("비밀번호가 틀립니다.", icon = ":material/block:")
-        if st.button("홈버튼",  key = "home_btn_setting_admin", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다. "):
-                st.toast("민원 입력 칸 안에 민원 입력 페이지를 눌러주세요.", icon = ":material/home:")
-"""
+            
 
-#양식 설정
-def show_format():
-        
-        #st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
-        st.button("민원팩토리", key = "home_btn_setting", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", on_click = convert_home)
-        st.subheader("양식 포맷 설정")
-        with st.expander("양식 포맷 설정 테스트", icon = ":material/home:", expanded = True):
-                format = st.text_area("양식 수정", value = f"{config['format']['format']}", height = 300)
-                st.button("수정", key = "edit_format_btn", icon = ":material/note:", on_click = change_toml, args = ('format', 'format', format, '답변 양식 포맷'))
-        with st.expander("답변 요지 양식 테스트", icon = ":material/home:", expanded = True):
-                preset_edit = st.pills(
-                      "수정할 답변 요지 방식을 선택해주세요.", ["완전 수용", "부분 수용", "수용 불가"],
-                      key = "minwon_sub_edit_selector"
-                )
-               
-                match (preset_edit):
-                      case "완전 수용":
-                            accept = st.text_input("완전 수용 수정", value = config['sub']['accept'], label_visibility="hidden")
-                            st.button("수정", key = "edit_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'accept', accept, '완전 수용 양식'))
-                      case "부분 수용":
-                            particle = st.text_input("부분 수용 수정", value = config['sub']['particle_accept'], label_visibility="hidden")
-                            st.button("수정", key = "edit_particle_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'particle_accept', particle, '부분 수용 양식'))
-                      case "수용 불가":
-                            unaccept = st.text_input("수용 불가 수정", value = config['sub']['unaccept'], label_visibility="hidden")
-                            st.button("수정", key = "edit_unaccept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'unaccept', unaccept, '수용 불가 양식'))
+def show_setting():
+       match (st.session_state['set_check']):
+              case 'admin':
+                     show_admin()
 
 
-def show_default():
-        #st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)
-        st.button("민원팩토리", key = "home_btn_setting", icon = ":material/home:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다." , on_click = convert_home)
-        st.subheader("기본 설정")
-        
-        with st.expander("기본 설정", icon = ":material/home:", expanded = True):
-              left, center, right = st.columns([6,6,6], border = True)
-              '''with left:
-                ll, lr = st.columns([9,9])
-                with ll:
-                        st.markdown("######  AI 설정")
-                        st.write("AI 설정을 ON/OFF 할 수 있습니다.")
-                        ai = st.pills(
-                                "AI ON/OFF", ["on", "off"],
-                                key = "ai_select_option", default = config['app']['ai']
-                                )
-                        if ai != config['app']['ai']:
-                              change_toml('app', 'ai', ai, f"AI 설정 {ai}")
-                              ai_option_check()
-                with lr:
-                        st.markdown("######  RAG 설정")
-                        st.write("RAG 설정을 ON/OFF 할 수 있습니다.")
-                        rag = st.pills(
-                                "RAG ON/OFF", ["on", "off"],
-                                key = "rag_select_option", default = config['app']['rag']
-                                )
-                        if rag != config['app']['rag']:
-                              change_toml('app', 'rag', rag, f"RAG 설정 {rag}")
-                              ai_option_check()'''
-        
+

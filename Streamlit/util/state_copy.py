@@ -87,9 +87,13 @@ def clear_state():
     if "minwon_select" not in st.session_state:
         st.session_state.minwon_select = False
 
-    # 현재 표시되는 페이지 체크
+    # 현재 표시되는 민원페이지 체크
     if "minwon_check" not in st.session_state:
         st.session_state['minwon_check'] = "file_select"
+
+    # 현재 표시되는 설정페이지 체크
+    if "set_check" not in st.session_state:
+        st.session_state['set_check'] = 'admin'
     
     if "admin_page" not in st.session_state:
         st.session_state['admin_page'] = False
