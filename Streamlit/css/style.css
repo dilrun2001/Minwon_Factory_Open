@@ -250,15 +250,15 @@ div.st-key-input_page_show [data-testid = "stBaseButton-secondary"]:hover{
 }
 
 div[class *= "first_answer_"]{
-    border-radius: 1.7rem;
+    border-radius: 1.6rem;
     background-color: #60b14c;
-    padding-right: 1rem;
+    padding-right: 0.8rem;
 }
 
 div[class *= "second_answer_"]{
-    border-radius: 1.7rem;
+    border-radius: 1.6rem;
     background-color: #b34949;
-    padding-right: 1rem;
+    padding-right: 0.8rem;
 }
 
 div[class *= "result_first_"] [data-baseweb = "base-input"],

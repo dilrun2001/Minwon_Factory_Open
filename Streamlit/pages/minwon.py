@@ -30,100 +30,114 @@ def show_home():
     manual_col, file_col = st.tabs(["단일 민원", "복수 민원"])#st.columns((8,1,8))
 
     def show_manual():
-        st.markdown("")
-        st.subheader("단일 민원")
-        with st.container(key = "manual_select_guide", horizontal=True):
-            st.write('''- 이름, 부서명, 전화번호, 민원 내용을 입력해주세요. ''')
-            st.write('''- :red[복수 민원]을 이미 입력하신 경우 단일 민원은 :red[입력할 수 없습니다.]''')
-        with st.form(key = "manual_input"):
-            with st.container(horizontal=True, key = "manual_input_infor"):
-                name = st.text_input("이름", placeholder="이름")
-                department = st.text_input("부서명", placeholder="사하구청")
-                tel = st.text_input("전화번호", placeholder="000-000-0000")
-            minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300)
-            manual_btn = st.form_submit_button("민원 입력", icon = ':material/edit_note:')
+        if st.session_state.file_check is not True:
+            st.subheader("단일 민원")
+            with st.container(key = "manual_select_guide", horizontal=True):
+                st.write('''- 이름, 부서명, 전화번호, 민원 내용을 입력해주세요. ''')
+                st.write('''- :red[복수 민원]을 이미 입력하신 경우 단일 민원은 :red[입력할 수 없습니다.]''')
+            with st.form(key = "manual_input"):
+                with st.container(horizontal=True, key = "manual_input_infor"):
+                    name = st.text_input("이름", placeholder="이름")
+                    department = st.text_input("부서명", placeholder="사하구청")
+                    tel = st.text_input("전화번호", placeholder="000-000-0000")
+                minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300)
+                manual_btn = st.form_submit_button("민원 입력", icon = ':material/edit_note:')
 
 
-        if manual_btn:
-            if name != '' and department != '' and tel != '' and minwon != '':
-                if st.session_state.file_check:
-                    show_popup(":red[:material/block:] 입력 불가", f"현재 파일 입력으로 민원이 입력되어 있습니다 페이지를 새로고침 후 다시 입력해주세요.", popup_check=True)
+            if manual_btn:
+                if name != '' and department != '' and tel != '' and minwon != '':
+                    if st.session_state.file_check:
+                        show_popup(":red[:material/block:] 입력 불가", f"현재 파일 입력으로 민원이 입력되어 있습니다 페이지를 새로고침 후 다시 입력해주세요.", popup_check=True)
+                    else:
+                        st.session_state.id = make_random_id()
+                        st.session_state.df = pd.DataFrame(columns=[
+                        '이름', '부서명', '전화번호', '민원내용',
+                        '답변요지', '민원요지', '최종답변', '최종평점',
+                        '민원 카테고리', '민원 긴급도', '답변 평점', 'RAG 평점', 'test', '수정'
+                    ])
+
+                        st.session_state.df.loc[0] = {
+                    '이름': name,
+                    '부서명': department,
+                    '전화번호': tel,
+                    '민원내용': minwon,
+                    '답변요지': "",
+                    '민원요지': "",
+                    '최종답변': "",
+                    '최종평점': "",
+                    '민원 카테고리': "일반",
+                    '민원 긴급도': "매우 낮음",
+                    '답변 평점': 0,
+                    'RAG 평점': 0,
+                    'test': False,
+                    '수정': False
+                }
+
+                        st.session_state.manual = True
+                        st.session_state['btn_show'] = True
+                        show_popup(":green[:material/done:] 단일 민원 입력", f'''{name} 님의 민원이 입력되었습니다.    
+                                :green[민원 요지 생성] 버튼을 눌러 민원 요지를 생성해주세요.''', popup_check=True)
+                        print(st.session_state.df)
                 else:
-                    st.session_state.id = make_random_id()
-                    st.session_state.df = pd.DataFrame(columns=[
-                    '이름', '부서명', '전화번호', '민원내용',
-                    '답변요지', '민원요지', '최종답변', '최종평점',
-                    '민원 카테고리', '민원 긴급도', '답변 평점', 'RAG 평점', 'test', '수정'
-                ])
-
-                    st.session_state.df.loc[0] = {
-                '이름': name,
-                '부서명': department,
-                '전화번호': tel,
-                '민원내용': minwon,
-                '답변요지': "",
-                '민원요지': "",
-                '최종답변': "",
-                '최종평점': "",
-                '민원 카테고리': "일반",
-                '민원 긴급도': "매우 낮음",
-                '답변 평점': 0,
-                'RAG 평점': 0,
-                'test': False,
-                '수정': False
-            }
-
-                    st.session_state.manual = True
-                    st.session_state['btn_show'] = True
-                    show_popup(":green[:material/done:] 단일 민원 입력", f'''{name} 님의 민원이 입력되었습니다.    
-                               :green[민원 요지 생성] 버튼을 눌러 민원 요지를 생성해주세요.''', popup_check=True)
-                    print(st.session_state.df)
-            else:
-                show_popup(":red[:material/block:]  입력 오류", f'''입력 필드에 내용을 전부 입력해주세요.'''
-                   , popup_check=True)
+                    show_popup(":red[:material/block:]  입력 오류", f'''입력 필드에 내용을 전부 입력해주세요.'''
+                    , popup_check=True)
                 #st.toast(":red[입력 필드]를 확인해주세요.", icon = ":material/block:")
-
+        else:
+            st.subheader(":material/block: 단일 민원 입력 불가")
+            with st.container(key = "manual_select_guide"):
+                st.write('''- 복수 민원 탭을 통해 이미 민원을 :red[입력]받은 상태입니다.''')
+                st.write('''- :red[복수 민원]을 이미 입력하신 경우 단일 민원은 :red[입력할 수 없습니다.]''')
+                st.write('''- 다시 입력하시고 싶으시면 새로 고침(F5)을 해주시거나 위 버튼을 눌러 초기화해주세요.''')
 
 
     def show_file():
-            st.markdown("")
-            st.subheader("복수 민원")
-            with st.container(key = "file_select_guide", horizontal=True):
-                st.write("- 엑셀 파일을 통해 :green[2개] 이상의 민원 데이터를 입력받을 수 있습니다.")
-                st.write("- :green[XLSX, CSV] 확장자를 지원합니다.")
-            with st.container(key = "file_input", border = True):
+            if st.session_state.manual is not True:
+                st.subheader("복수 민원")
+                with st.container(key = "file_select_guide", horizontal=True):
+                    st.write("- 엑셀 파일을 통해 :green[2개] 이상의 민원 데이터를 입력받을 수 있습니다.")
+                    st.write("- :green[XLSX, CSV] 확장자를 지원합니다.")
+                    st.write('''- :red[단일 민원]을 이미 입력하신 경우 복수 민원은 :red[입력할 수 없습니다.]''')
+                with st.container(key = "file_input", border = True):
 
-                upload_files = st.file_uploader(
-                "민원을 입력할 파일을 선택해주세요. (지원하는 파일 양식: csv, xlsx)",
-                type = ['csv', 'xlsx'],
-                key = "file_uploader_1", label_visibility="collapsed")
-                #uploader_set()
-            if upload_files:
-                    data_filename = r"{}".format(upload_files.name)
-            #st.write(data_filename)
-                    if data_filename[-4:] == ".csv":
-                        st.session_state.df = pd.read_csv(upload_files, keep_default_na=False, encoding = 'cp949')
-                    else:
-                        st.session_state.df = pd.read_excel(upload_files, keep_default_na=False)
-                    st.session_state.id = make_random_id()
-                    st.session_state.df['답변요지'] = ""
-                    st.session_state.df['최종답변'] = ""
-                    st.session_state.df['최종평점'] = ""
-                    st.session_state.df['민원 카테고리'] = "일반"
-                    st.session_state.df['민원 긴급도'] = "매우 낮음"
-                    st.session_state.df['답변 평점'] = 0
-                    st.session_state.df['RAG 평점'] = 0
-                    st.session_state.df['test'] = False
-                    st.session_state.df['수정'] = False
-                    #print(st.session_state.df)
-                    #st.markdown(f"##### {len(st.session_state.df)}개의 민원 데이터가 입력되었습니다.")
-                    print(st.session_state.df)
-                    st.session_state['btn_show'] = True 
-                    if st.session_state.file_check   is not True:
-                        if st.session_state.manual:
-                            st.session_state.manual = False
-                        show_popup(":green[:material/done:] 파일 입력", f":green[{data_filename}]이 입력되었습니다. :green[민원 요지 생성] 버튼을 눌러 민원 요지를 생성할 수 있습니다.", popup_check=True)
-                        st.session_state.file_check = True
+                    upload_files = st.file_uploader(
+                    "민원을 입력할 파일을 선택해주세요. (지원하는 파일 양식: csv, xlsx)",
+                    type = ['csv', 'xlsx'],
+                    key = "file_uploader_1", label_visibility="collapsed")
+                    #uploader_set()
+                if upload_files:
+                        data_filename = r"{}".format(upload_files.name)
+                #st.write(data_filename)
+                        if data_filename[-4:] == ".csv":
+                            st.session_state.df = pd.read_csv(upload_files, keep_default_na=False, encoding = 'cp949')
+                        else:
+                            st.session_state.df = pd.read_excel(upload_files, keep_default_na=False)
+                        st.session_state.id = make_random_id()
+                        st.session_state.df['답변요지'] = ""
+                        st.session_state.df['최종답변'] = ""
+                        st.session_state.df['최종평점'] = ""
+                        st.session_state.df['민원 카테고리'] = "일반"
+                        st.session_state.df['민원 긴급도'] = "매우 낮음"
+                        st.session_state.df['답변 평점'] = 0
+                        st.session_state.df['RAG 평점'] = 0
+                        st.session_state.df['test'] = False
+                        st.session_state.df['수정'] = False
+                        #print(st.session_state.df)
+                        #st.markdown(f"##### {len(st.session_state.df)}개의 민원 데이터가 입력되었습니다.")
+                        print(st.session_state.df)
+                        st.session_state['btn_show'] = True 
+                        if st.session_state.file_check   is not True:
+                            if st.session_state.manual:
+                                st.session_state.manual = False
+                            st.session_state.file_check = True
+                            show_popup(":green[:material/done:] 파일 입력", f''':green[{data_filename}]이 입력되었습니다.   
+                                       :green[민원 요지 생성] 버튼을 눌러 민원 요지를 생성할 수 있습니다.''', popup_check=True)
+                            
+            else:
+                st.subheader(":material/block: 복수 민원 입력 불가")
+                with st.container(key = "file_select_guide"):
+                    st.write('''- 단일 민원 탭을 통해 이미 민원을 :red[입력]받은 상태입니다.''')
+                    st.write('''- :red[단일 민원]을 이미 입력하신 경우 복수 민원은 :red[입력할 수 없습니다.]''')
+                    st.write('''- 다시 입력하시고 싶으시면 새로 고침(F5)을 해주시거나 위 버튼을 눌러 초기화해주세요.''')
 
     #ai 왔다갔다 할 떄 AI 한번만 돌리게
     st.session_state.ai_check = False
@@ -144,7 +158,9 @@ def show_home():
                 st.toast("엑셀 파일이 선택되었습니다. :green[우측 아래] 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")"""
                 
             st.button("민원 요지 생성", key = "input_page_show", on_click  = generate_answer, icon = ':material/edit:', args=(0,False,False,True))
-
+            st.button(
+             "처음으로", on_click = show_popup, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary"
+             , args = (':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))   
 
 
 
@@ -234,20 +250,6 @@ def show_input():
         
     
 
-    """selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
-    match (selected):
-        case '기본 모델':
-              st.session_state.model = '기본 모델'
-        case '민원팩토리 모델':
-              st.session_state.model = '민원팩토리 모델'
-        case '사하아이 연동':
-              st.toast("현재 지원하지 않는 기능입니다.")
-              selected = '기본 모델'
-              st.session_state.model = '민원팩토리 모델'"""
-    """if selected == '기본 모델':
-            st.session_state.model = '기본 모델'
-    elif selected == '민원팩토리 모델':
-            st.session_state.model = '민원팩토리 모델'"""
     
 
 #area 결과값 스위치
@@ -266,7 +268,7 @@ def show_result():
     def show_first(index, check = False):
         #with st.container(key = f"first_answer_{index}"):
         if check:
-            result.at[index, '답변결과'] = st.text_area("답변 결과", value = result.iloc[index]['답변결과'], height = 330, key=f"result_first_{index}", width = 690, label_visibility="collapsed")
+            result.at[index, '답변결과'] = st.text_area("답변 결과", value = result.iloc[index]['답변결과'], height = 330, key=f"result_first_{index}",label_visibility="collapsed")
         else:
             st.code(result.iloc[index]['답변결과'], language=None,  wrap_lines=True, height = 330)
         #result.at[index, '답변결과'] = st.text_area("답변 결과", value = result.iloc[index]['답변결과'], height = 330, key=f"result_first_{index}", width = 690)  
@@ -276,7 +278,7 @@ def show_result():
     def show_second(index, check = False):
         #with st.container(key = f"second_answer_{index}"):
         if check:
-            result.at[index, 'RAG'] = st.text_area("유사 답변", value=  result.iloc[index]['RAG'], height= 330, key=f"result_second_{index}", width = 690, label_visibility="collapsed")
+            result.at[index, 'RAG'] = st.text_area("유사 답변", value=  result.iloc[index]['RAG'], height= 330, key=f"result_second_{index}", label_visibility="collapsed")
         else:
             st.code(result.iloc[index]['RAG'], language=None,  wrap_lines=True, height = 330)
         #result.at[index, 'RAG'] = st.text_area("유사 답변", value=  result.iloc[index]['RAG'], height= 330, key=f"result_second_{index}", width = 690)
@@ -358,13 +360,13 @@ def show_result():
                 with st.expander(f"{i+1}번 민원 답변 생성 결과", icon = ":material/question_answer:", expanded=True):
                     mapping = [1,2,3,4,5]
                     
-                    first, spacer, second = st.columns((6.8, 1.6, 6.8)) #8,1.2,8 6.8, 1.6, 6.8
+                    first, spacer, second = st.columns((6.8, 1.4, 6.8)) #8,1.2,8 6.8, 1.6, 6.8
                     with spacer:
                         for j in range(11):
                             st.markdown('''''')
                         st.button("위치 스위치", key = f"switch_option_{i}", icon = ":material/compare_arrows:", on_click=switch_result, args = (i, ), type = "tertiary")
                     with first:
-                        first_edit = st.checkbox("답변 수정", key = f"edit_firstanswer_{i}")
+                        first_edit = st.toggle("답변 수정", key = f"edit_firstanswer_{i}")
                         with st.container(key = f"first_answer_{i}"):
                             if first_edit:
                                 if row['test'] is not True:
@@ -385,7 +387,7 @@ def show_result():
                              show_second(i)'''
                         with st.container(key = f"result_checkbox_container_{i}", horizontal=True, gap = "medium"):
                             row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{i}")  
-                            edit =  st.checkbox("민원 수정", key = f"edit_answer_sub_{i}")
+                            edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{i}")
                             
                                
                         if row['답변 평점'] is not None:
@@ -394,7 +396,7 @@ def show_result():
                             row['답변 평점'] = 0
                         result.at[i, '최종평점'] = row['답변 평점']
                     with second:
-                        rag_edit = st.checkbox("답변 수정", key = f"edit_raganswer_{i}")
+                        rag_edit = st.toggle("답변 수정", key = f"edit_raganswer_{i}")
                         with st.container(key = f"second_answer_{i}"):
                             if rag_edit:
                                 if row['test'] is not True:
@@ -466,7 +468,7 @@ def grade_check():
     grade_check = (data[data['최종평점'] == 0].index+1).tolist()
 
     if grade_check:#(data['최종평점'] == 0).any():
-        show_popup(":red[:material/block:  파일 생성 오류]", f'''답변들의 평점이 채점되지 않았습니다.    
+        show_popup(":red[:material/block:]  파일 생성 오류", f'''답변들의 평점이 채점되지 않았습니다.    
                    미입력 민원: :red[{'번, '.join(map(str, grade_check))}번]'''
                    , popup_check=True)
         #st.toast(f"다음과 같은 민원의 평점이 채점되지 않았습니다. :red[미입력 민원: {', '.join(map(str, grade_check))}]", icon =":material/block:")
@@ -544,24 +546,18 @@ def show_page():
             show_input()
         case 'result':
             show_result()
-    """if st.session_state['minwon_check'] == 'file_select':
-         show_home()
-
-    elif st.session_state['minwon_check'] == 'minwon_input':
-        show_input()
-
-    elif st.session_state['minwon_check'] == 'result':
-        show_result()"""
-    selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
-    match (selected):
+    st.session_state.selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
+    match (st.session_state.selected):
         case '기본 모델':
+            if st.session_state.model != '기본 모델':
+                st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[기본 모델]", icon = ":material/check:")
             st.session_state.model = '기본 모델'
         case '민원팩토리 모델':
+            if st.session_state.model != '민원팩토리 모델':
+                st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[민원팩토리 모델]", icon = ":material/check:")
             st.session_state.model = '민원팩토리 모델'
         case '사하아이 연동':
-            st.toast("현재 지원하지 않는 기능입니다.")
-            selected = '기본 모델'
-            st.session_state.model = '민원팩토리 모델'
+            show_popup(":red[:material/block:]사용 불가", '''선택하신 설정은 현재 지원하지 않는 설정입니다.''', None, popup_check=True)
     
     
 def page_before():
@@ -578,7 +574,7 @@ def input_answer():
     yogi_check = (data[data['답변요지'] == ""].index+1).tolist()
     print(yogi_check)
     if yogi_check:#((data['답변요지'] =="") ).any():
-        show_popup(":red[:material/block:]  생성 오류", f'''입력하신 민원에 대한 답변 요지를 전부 입력해주세요.    
+        show_popup(":red[:material/block:]  답변 생성 오류", f'''입력하신 민원에 대한 :red[답변 요지]를 전부 입력해주세요.    
                    미입력 민원: :red[{'번, '.join(map(str, yogi_check))}번]'''
                    , popup_check=True)
         #st.toast(f"해당 민원에 대한 답변 요지를 입력해주세요. :red[미입력 민원: {', '.join(map(str, yogi_check))}]", icon =":material/block:")
@@ -597,7 +593,7 @@ def reinput_answer():
 
     recreate_check = data['수정'].sum() 
     if recreate_check == 0:
-        show_popup(":red[:material/block:  재생성 오류]", f"""재생성할 답변이 존재하지 않습니다.\n답변 영역 내 민원 수정 체크 박스를 확인해주세요.""", popup_check = True)
+        show_popup(":red[:material/block:  답변 재생성 오류]", f"""재생성할 답변이 존재하지 않습니다.\n답변 영역 내 민원 수정 체크 박스를 확인해주세요.""", popup_check = True)
         #st.toast(f"재생성할 민원을 체크해주세요. 답변 영역 내 :red[좌측 상단]을 확인해주세요.", icon = ":material/block:")
     else:
         generate_answer(recreate = True, multi=True)

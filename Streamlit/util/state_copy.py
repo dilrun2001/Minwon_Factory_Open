@@ -221,3 +221,4 @@ def minwon_clear():
     st.session_state.db_check = False
     st.session_state.df = pd.DataFrame()
     st.session_state.ai_check = False
+    st.session_state['btn_show'] = False

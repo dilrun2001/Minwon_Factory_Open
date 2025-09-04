@@ -6,6 +6,7 @@ import time
 from util.page_convert import * 
 from util.toml_edit import *
 from css.theme import *
+import datetime
 format_list = ["양식 1", "양식 2", "양식 3"]
 
 def fetch_current_format(format_type):
@@ -112,10 +113,27 @@ def show_admin():
                                                             unaccept = st.text_input("수용 불가 수정", value = config['sub']['unaccept'], label_visibility="collapsed")
                                                             st.button("수정", key = "edit_unaccept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'unaccept', unaccept, '수용 불가 양식'))
                         with DB:
+                            
                             with st.expander("DB 데이터 관리", expanded = True, icon = ":material/database:"):
                                 st.write("민원이 저장된 데이터베이스 확인 및 데이터 추출")
+                                today = datetime.datetime.now()
+                                before_day = datetime.date(today.year, today.month-1, today.day)    
+                                date = st.date_input("날짜 범위 지정", (before_day, today),key = "db_datetime_check", format = "YYYY.MM.DD")
+                                print(date)
+                                with st.container(key = "DB_option_container_1", horizontal=True, gap  = "medium"):
+                                       #date = st.date_input("날짜 범위 지정", (before_day, today),key = "db_datetime_check", format = "YYYY.MM.DD")
+                                       name = st.text_input("이름", key = "db_name_check", label_visibility="collapsed", placeholder="이름 입력, 전체 검색은 공백", width = 400, value = "")
+                                       grade = st.slider("답변 평점 기준", 1, 5, value = 3)
+                                       minwon = st.toggle("민원 내용 표시", value = True, key = "db_minwon_check")
+                                       response = st.toggle("답변 표시", key = "db_response_check", value = True)
+                                       answer_yogi = st.toggle("답변 요지 표시", key = "db_answer_yogi_check", value = True)
+                                
+                                #with st.container(key = "DB_option_container_2", horizontal=True):
+                                        
+                                        
+
                                 if st.button("데이터베이스 데이터 확인", key = "db_check", icon = ":material/database:"):
-                                        db_data = run_query("SELECT * FROM history")
+                                        db_data = check_db_option(date,name, grade, minwon, response, answer_yogi)#run_query(f"SELECT {name},{grade}, {minwon}, {response}, {answer_yogi} FROM history")
                                         if not db_data.empty:
                                                 st.dataframe(db_data)
                                         else:
@@ -139,5 +157,19 @@ def show_setting():
               case 'admin':
                      show_admin()
 
-
-
+#DB 옵션따라 리턴값 다르게 하려는 의도
+def check_db_option(date, name, grade, minwon, response, answer_yogi):
+        start_date = date[0]
+        end_date = date[1]
+        option_list = []
+        if minwon:
+                option_list.append("minwon")
+        if response:
+                option_list.append("response")
+        if answer_yogi:
+                option_list.append("answer_yogi")
+        if name is not "":
+                return run_query(f"SELECT name, minwon, response, answer_yogi, grade FROM history WHERE grade >= {grade} AND name = {name}")
+        else:
+               return run_query(f"SELECT name, minwon, response, answer_yogi, grade FROM history WHERE grade >= {grade}")
+        #return run_query(f"SELECT {option_list}")
