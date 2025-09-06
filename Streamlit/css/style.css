@@ -16,6 +16,7 @@ div[class = "stAppDeployButton"],
 [data-testid = "stHeaderActionElements"],
 .stToast [data-baseweb = "icon"],
 .rc-overflow span[label="민원 입력"],
+.rc-overflow span[label="관리자 설정"],
 .rc-overflow span[label="설정"],
 [data-testid = "InputInstructions"],
 div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
@@ -99,6 +100,16 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
     border: 1px solid var(--accept-color) !important;
 }
 
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 164, 33)"]) {
+    border: 1px solid rgb(255, 164, 33);
+}
+
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 164, 33)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
+    background-color: #161616 !important;
+    color: rgb(255, 164, 33) !important;
+    border: 1px solid rgb(255, 164, 33) !important;
+}
+
 /*우측 팝업창 css */
 @keyframes fadeSlideIn {
     0% {
@@ -172,7 +183,7 @@ div.st-key-home_btn_setting_admin [data-testid = "stBaseButton-secondary"]{
     padding: 5px;
     position:fixed;
     top: 0.6rem;
-    left: 17.5rem;
+    left: 19rem;
     z-index: 999999999;
     /*color: #292929;*/
     /*background-color:transparent;
@@ -354,12 +365,14 @@ div.st-key-file_format .stButtonGroup button:hover{
     border-color: var(--main-color);
 }
 
+
+
 /* 모델 선택창 */
 div.st-key-llm_model_select .stSelectbox{
     position: fixed;
     width: 200px;
     top: 0.7rem;
-    left: 6rem;
+    left: 8rem;
     background-color: transparent;
     z-index: 99999999999999 !important;
 }
