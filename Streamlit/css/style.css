@@ -47,6 +47,9 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
     background-color: var(--main-color);
 }
 
+button[data-baseweb = "tab"] > div > p {
+    font-size:1rem;
+}
 
 [data-baseweb = "input"]:focus-within,
 [data-baseweb = "textarea"]:focus-within{
@@ -74,8 +77,10 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
 }
 
 [data-testid="stDialog"] div[role="dialog"] {
+    /*position:fixed;
+    top:15rem;
+    width: 50rem;*/
     background-color: #161616;
-    width: 30rem;
     border: 1px solid var(--main-color);
     border-radius: 15px;
 }
@@ -109,6 +114,8 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
     color: rgb(255, 164, 33) !important;
     border: 1px solid rgb(255, 164, 33) !important;
 }
+
+
 
 /*우측 팝업창 css */
 @keyframes fadeSlideIn {
@@ -147,6 +154,11 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
 .stToast:has(span[style*="color: rgb(61, 213, 109)"])  {
     border: 1px solid var(--accept-color);
 }
+
+.stToast:has(span[style*="color: rgb(255, 75, 75)"]){
+    border:1px solid var(--error-color);
+}
+
 
 .stToast:has(span[style*="color: rgb(61, 213, 109)"])  [data-testid = "stToastDynamicIcon"]{
     color:var(--accept-color);

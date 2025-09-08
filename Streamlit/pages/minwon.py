@@ -27,7 +27,7 @@ def file_reselect():
 # 해당 부분 추가 함으로서 (벡터 db 를 생성후) home 을 출력 합니다
 def show_home():
     st.session_state['page'] = '홈'
-    manual_col, file_col = st.tabs(["단일 민원", "복수 민원"])#st.columns((8,1,8))
+    manual_col, file_col = st.tabs([":material/person: 단일 민원", ":material/table: 복수 민원"])#st.columns((8,1,8))
     def show_manual():
         if st.session_state.file_check is not True:
             st.write("#### 단일 민원")
@@ -166,22 +166,25 @@ def show_home():
 
 #페이지 표시
 #기존 양식 이름에 맞춰주는 기능 민원요지 생성 때 같이 생성되는것으로 이관처리
+
 def show_input():
     #format_set()
     #양식 선택 기능 임시 비활성화
     st.set_page_config(page_title = "민원 입력", page_icon=":material/input:", layout="wide", initial_sidebar_state="collapsed")
-    st.subheader("민원 입력 및 응답 생성")
-    
-    with st.container(key = "input_guide_container", horizontal=True):
-        st.write("- :red[답변 요지]를 :red[입력]해주셔야 답변을 생성할 수 있습니다. 복수 민원은 입력한 :red[모든 민원]에 기입해주시길 바랍니다.")
-        st.write("- 아이콘만 있는 버튼들은 좌측부터 각 :red[민원 카테고리, 민원 긴급도, 민원 양식 수정] 기능을 지원하는 버튼입니다.")
-        st.write("- 상단 선택창에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.")
+    @st.fragment
+    def show_input_comment():
+        st.subheader("민원 입력 및 응답 생성")
+        with st.container(key = "input_guide_container", horizontal=True):
+            st.write("- :red[답변 요지]를 :red[입력]해주셔야 답변을 생성할 수 있습니다. 복수 민원은 입력한 :red[모든 민원]에 기입해주시길 바랍니다.")
+            st.write("- 아이콘만 있는 버튼들은 좌측부터 각 :red[민원 카테고리, 민원 긴급도, 민원 양식 수정] 기능을 지원하는 버튼입니다.")
+            st.write("- 상단 선택창에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.")
     #st.session_state.layout_check = st.toggle("기능 테스트", key = f"inpuy_layout_check")
     #config = st.session_state.config
     minwon = st.session_state.df
+    @st.fragment
     def show_input_container(check):
         if check == "탭":
-            tab_list = [f"{i+1}번 민원" for i in range(len(minwon))]
+            tab_list = [f":material/comment: {i+1}번 민원" for i in range(len(minwon))]
             tabs = st.tabs(tab_list)
         for i, row in minwon.iterrows():
             if check == "탭":
@@ -249,13 +252,21 @@ def show_input():
                     if check == "탭":
                         st.write('''---''')   
                     else:
-                        st.write('''''')     
+                        st.write('''''')  
+    show_input_comment()
+    @st.fragment
+    def show_button():   
+        if st.button("처음으로",  key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary") :
+              show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
+    show_button()
     with st.container(key = f'main_container'):
         show_input_container(st.session_state.layout_check)
+    
+    #show_input_button()
     st.button("답변 생성", icon=":material/edit:", on_click=input_answer, key = f"input_minwon_generate")
-    st.button(
+    '''st.button(
              "처음으로", on_click = show_popup, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary"
-             , args = (':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))     
+             , args = (':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))   '''  
         
 
 
@@ -282,13 +293,15 @@ def show_result():
         if result.iloc[index]['test'] == True:
              result.at[index,'최종답변'] = result.iloc[index]['RAG']
 
+    
     def switch_result(index):
         temp = result.iloc[index]['test']
-        print(f"{index+1}번 컨테이너의 bool값이 {temp}로 변경되었습니다.")
+        show_popup(f":green[:material/check:]{index+1}번 민원 위치 교환",f"{index+1}번 민원 데이터 값이 서로 변경되었습니다.", None, True)
         if temp:
              result.at[index, 'test'] = False
         else:
              result.at[index, 'test'] = True
+
 
     def show_edit(index):
         edit_mode = True
@@ -346,8 +359,11 @@ def show_result():
             result.at[index, '답변요지']  = st.text_area(
                         "답변 요지를 입력해주세요.", height = 120, value = edit['답변요지'], key = f"answer_sub_{index}"
                     )
-        st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:", on_click=generate_answer, args = (index, True, False))
+        #st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:", on_click=generate_answer, args = (index, True, False))
+        if st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:"):
+            generate_answer(index, True, False)
     
+    @st.fragment
     def show_total_container(check):
         if check == "탭":
             tab_list = [f":material/question_answer:   {i+1}번 민원 답변 결과" for i in range(len(result))]
@@ -365,7 +381,9 @@ def show_result():
                     with spacer:
                         for j in range(11):
                             st.markdown('''''')
-                        st.button("위치 스위치", key = f"switch_option_{i}", icon = ":material/compare_arrows:", on_click=switch_result, args = (i, ), type = "tertiary")
+                        #st.button("위치 스위치", key = f"switch_option_{i}", icon = ":material/compare_arrows:", on_click=switch_result, args = (i, ), type = "tertiary")
+                        if st.button("위치 스위치", key = f"switch_option_{i}", icon = ":material/compare_arrows:", type = "tertiary"):
+                            switch_result(i )
                     with first:
                         first_edit = st.toggle("답변 수정", key = f"edit_firstanswer_{i}")
                         with st.container(key = f"first_answer_{i}"):
@@ -411,6 +429,7 @@ def show_result():
                          result.at[i, '수정'] = False
         if check == "탭":
             st.write('''---''')   
+    
     def show_total():
         st.subheader("답변 결과")
         with st.container(key = "minwon_result_guide_container", horizontal=True):
@@ -419,14 +438,21 @@ def show_result():
             st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 :red[교환]됩니다.")
         #st.session_state.layout_check = st.toggle("기능 테스트", key = "result_layout_check")
         show_total_container(st.session_state.layout_check)
+        show_fragment_button()
         show_button()
+        #if st.session_state.file_download is not True:
+        
 # index = 데이터프레임 열 번호, recreate = 민원 재생성 체크 여부, check = 민원 멀티 재생성 여부
+    @st.fragment
     def show_button():
-        if st.session_state.file_check:
-             st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다.", on_click=reinput_answer, args = ())
-        st.button(
+        '''if st.session_state.file_check:
+             if st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다."):
+                reinput_answer()'''
+        if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary"):
+            show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
+        '''st.button(
              "처음으로", on_click = show_popup, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary"
-             , args = (':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))     
+             , args = (':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))     '''
         
         #st.button("처음으로", on_click = minwon_clear, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary")
         if st.session_state.file_download:
@@ -444,10 +470,15 @@ def show_result():
         else:
             
             st.session_state.file_set = st.pills("다운받을 파일 확장자", options= ( "Excel", "CSV"), key = "file_format", help = "다운받을 파일의 확장자를 선택해주세요.", label_visibility="collapsed", default= "Excel")
-            st.button("파일 생성", key = "create_file", on_click = grade_check, icon = ":material/view_list:", type="tertiary")
+            if st.button("파일 생성", key = "create_file", icon = ":material/view_list:", type="tertiary"):
+                grade_check()
+            #st.button("파일 생성", key = "create_file", on_click = grade_check, icon = ":material/view_list:", type="tertiary")
             #st.button("파일 생성", key = "create_file", on_click = input_db, args = (), icon = ":material/view_list:", type="tertiary")
-
-    
+    #@st.fragment
+    def show_fragment_button():
+         if st.session_state.file_check:
+             if st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다."):
+                reinput_answer()
     show_total()
     
 
@@ -524,6 +555,19 @@ def input_db():#format):
     
     #st.success("데이터베이스에 등록이 완료되었습니다.")
 
+@st.fragment
+def change_model():
+    match (st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")):
+        case '기본 모델':
+            if st.session_state.model != '기본 모델':
+                st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[기본 모델]", icon = ":material/check:")
+            st.session_state.model = '기본 모델'
+        case '민원팩토리 모델':
+            if st.session_state.model != '민원팩토리 모델':
+                st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[민원팩토리 모델]", icon = ":material/check:")
+            st.session_state.model = '민원팩토리 모델'
+        case '사하아이 연동':
+            st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
 
 #각 페이지 호출
 def show_page():
@@ -539,19 +583,10 @@ def show_page():
             show_input()
         case 'result':
             show_result()
-    st.session_state.selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
-    match (st.session_state.selected):
-        case '기본 모델':
-            if st.session_state.model != '기본 모델':
-                st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[기본 모델]", icon = ":material/check:")
-            st.session_state.model = '기본 모델'
-        case '민원팩토리 모델':
-            if st.session_state.model != '민원팩토리 모델':
-                st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[민원팩토리 모델]", icon = ":material/check:")
-            st.session_state.model = '민원팩토리 모델'
-        case '사하아이 연동':
-            show_popup(":red[:material/block:]사용 불가", '''선택하신 설정은 현재 지원하지 않는 설정입니다.''', None, popup_check=True)
-    
+    change_model()
+    #st.session_state.selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
+
+            #st.session_state.selected = "기본 모델"
     
     
 def page_before():
