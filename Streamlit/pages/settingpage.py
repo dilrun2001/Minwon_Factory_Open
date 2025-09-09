@@ -2,6 +2,7 @@ import streamlit as st
 
 
 def show_lab():
+    st.session_state['page'] =  "setting"
     tab1, tab2, tab3 = st.tabs([':material/experiment: 실험실', '탭2', '탭3'])
     with tab1:
         st.write("### :material/experiment: 실험실")

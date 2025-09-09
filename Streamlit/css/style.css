@@ -188,24 +188,28 @@ button[data-baseweb = "tab"] > div > p {
 
 
 /*홈 버튼 css*/
-div.st-key-clear_btn [data-testid = "stBaseButton-tertiary"],
+/*div.st-key-clear_btn [data-testid = "stBaseButton-tertiary"]{
+    position: relative;
+    left:0.05rem;
+}*/
+/*div.st-key-clear_btn [data-testid = "stBaseButton-tertiary"],
 div.st-key-home_btn_setting_admin [data-testid = "stBaseButton-secondary"]{
     width: 150px;
     height: 15px;
     padding: 5px;
     position:fixed;
     top: 0.6rem;
-    left: 19rem;
+    left: 11rem;
     z-index: 999999999;
     /*color: #292929;*/
     /*background-color:transparent;
-    border: transparent;*/
+    border: transparent;
     font-size: 0.875rem;
 }
 div.st-key-clear_btn [data-testid = "stIconMaterial"],
 div.st-key-home_btn_setting_admin [data-testid = "stIconMaterial"] {
     font-size: 25px;
-}
+}*/
 
 /*div.st-key-clear_btn [data-testid = "stMarkdownContainer"] p,
 div.st-key-home_btn_setting_admin [data-testid = "stMarkdownContainer"] p{
@@ -380,13 +384,41 @@ div.st-key-file_format .stButtonGroup button:hover{
 
 
 /* 모델 선택창 */
-div.st-key-llm_model_select .stSelectbox{
+/*div.st-key-llm_model_select .stSelectbox{
     position: fixed;
     width: 200px;
     top: 0.7rem;
     left: 8rem;
     background-color: transparent;
     z-index: 99999999999999 !important;
+}*/
+div.st-key-llm_model_select{
+    position: fixed;
+    top: 0.6rem;
+    left: 8rem;
+    gap: 0.2rem;
+    border-color:transparent;
+    background-color: transparent;
+    z-index: 99999999 !important;
+}
+div.st-key-llm_model_select [data-testid = "stPopoverButton"]{
+    background-color: transparent;
+    border-color:transparent;
+}
+div.st-key-llm_model_select [data-testid="stPopoverButton"] > div[data-testid = "stMarkdownContainer"]{
+    display: none;
+}
+div.st-key-llm_model_select [data-testid="stPopoverButton"] > div svg{
+    display: none;
+}
+div.st-key-llm_model_select [data-testid = "stIconMaterial"]{
+    font-size: 25px;
+    font-weight: 100;
+}
+div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
+    background-color: transparent;
+    color : var(--main-color);
+    border-color: transparent;
 }
 /*#161616;*/
 div.st-key-llm_model_select .st-br{

@@ -73,7 +73,7 @@ def clear_state():
 
     #현재 페이지 위치 체크
     if "page" not in st.session_state:
-        st.session_state['page'] = "home"
+        st.session_state['page'] = "main"
 
     #데이터프레임 선택
     if "selected_row" not in st.session_state:
@@ -172,7 +172,9 @@ def clear_state():
         st.session_state.dialog_check = False
 
     if "layout_check" not in st.session_state:
-        st.session_state.layout_check = "확장형"
+        st.session_state.layout_check = "탭"
+
+    
 
 # AI, RAG ON/OFF 기능으로 인해 실시간 피드백 변경
 def ai_option_check():

@@ -26,7 +26,7 @@ def file_reselect():
 #메인 화면
 # 해당 부분 추가 함으로서 (벡터 db 를 생성후) home 을 출력 합니다
 def show_home():
-    st.session_state['page'] = '홈'
+    #st.session_state['page'] = '홈'
     manual_col, file_col = st.tabs([":material/person: 단일 민원", ":material/table: 복수 민원"])#st.columns((8,1,8))
     def show_manual():
         if st.session_state.file_check is not True:
@@ -149,17 +149,10 @@ def show_home():
                     
     with st.container(key = "result button"):
         if st.session_state['btn_show']:
-            """if st.session_state.manual:
-                st.toast("수동 입력이 완료되었습니다. :green[우측 아래] 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")
-            else:
-                st.session_state.file_check = True
-                #show_popup(":green[:material/done:] 파일 입력", "엑셀 파일이 입력되었습니다. :green[민원 요지 생성] 버튼을 눌러 민원 요지를 생성할 수 있습니다.", popup_check=True)
-                st.toast("엑셀 파일이 선택되었습니다. :green[우측 아래] 버튼을 눌러 민원 요지를 생성해주세요.", icon = ":material/done:")"""
-                
             st.button("민원 요지 생성", key = "input_page_show", on_click  = generate_answer, icon = ':material/edit:', args=(0,False,False,True))
-            st.button(
+            '''st.button(
              "처음으로", on_click = show_popup, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary"
-             , args = (':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))   
+             , args = (':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))   '''
 
 
 
@@ -258,12 +251,12 @@ def show_input():
     def show_button():   
         if st.button("처음으로",  key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary") :
               show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
-    show_button()
+    
     with st.container(key = f'main_container'):
         show_input_container(st.session_state.layout_check)
-    
     #show_input_button()
     st.button("답변 생성", icon=":material/edit:", on_click=input_answer, key = f"input_minwon_generate")
+    #show_button()
     '''st.button(
              "처음으로", on_click = show_popup, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary"
              , args = (':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))   '''  
@@ -448,8 +441,8 @@ def show_result():
         '''if st.session_state.file_check:
              if st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다."):
                 reinput_answer()'''
-        if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary"):
-            show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
+        '''if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary"):
+            show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)'''
         '''st.button(
              "처음으로", on_click = show_popup, key = "clear_btn", icon = ":material/refresh:", help = "그동안의 내역을 모두 초기화하고 처음 화면으로 진입합니다.  ", type = "tertiary"
              , args = (':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear))     '''
@@ -557,20 +550,41 @@ def input_db():#format):
 
 @st.fragment
 def change_model():
-    match (st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")):
-        case '기본 모델':
-            if st.session_state.model != '기본 모델':
-                st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[기본 모델]", icon = ":material/check:")
-            st.session_state.model = '기본 모델'
-        case '민원팩토리 모델':
-            if st.session_state.model != '민원팩토리 모델':
-                st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[민원팩토리 모델]", icon = ":material/check:")
-            st.session_state.model = '민원팩토리 모델'
-        case '사하아이 연동':
-            st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
+    with st.container(key = "llm_model_select", horizontal=True):
+        popover =  st.popover("라벨 테스트", icon= ":material/menu:")
+        model = popover.pills(":material/person: AI 모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], width = 450, default = '기본 모델')
+        match (model):#, key = "llm_model_select", width = 300)):
+            case '기본 모델':
+                if st.session_state.model != '기본 모델':
+                    st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[기본 모델]", icon = ":material/check:")
+                    st.session_state.model = '기본 모델'
+            case '민원팩토리 모델':
+                if st.session_state.model != '민원팩토리 모델':
+                    st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[민원팩토리 모델]", icon = ":material/check:")
+                    st.session_state.model = '민원팩토리 모델'
+            case '사하아이 연동':
+                st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
+        #popover.write('''---''')
+        layout_check = popover.pills(":material/desktop_windows: 화면 표시 방식", options = ('탭', '확장형'), width=450, default=st.session_state.layout_check)
+        match (layout_check):
+            case '탭':
+                if st.session_state.layout_check != '탭':
+                    st.session_state.layout_check = '탭'
+                    st.rerun()
+                else:
+                    pass
+                #st.rerun()
+            case '확장형':
+                if st.session_state.layout_check != '확장형':
+                    st.session_state.layout_check = '확장형'
+                    st.rerun()
+        if st.session_state.manual == True or st.session_state.file_check == True:
+            if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", type = "tertiary"):
+                show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
 
 #각 페이지 호출
 def show_page():
+    st.session_state.page = "main"
     match st.session_state['minwon_check']:
         case 'file_select':
             st.subheader("사하구청 새올민원전자생성기")
@@ -583,7 +597,7 @@ def show_page():
             show_input()
         case 'result':
             show_result()
-    change_model()
+    #change_model()
     #st.session_state.selected = st.selectbox("모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "llm_model_select", width = 300, label_visibility="collapsed")
 
             #st.session_state.selected = "기본 모델"

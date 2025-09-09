@@ -6,6 +6,7 @@ from util.state_copy import *
 import pages as pg
 from css.theme import * 
 from util.toml_edit import *
+from util.menu import *
 
 load_css()
 clear_state()
@@ -19,3 +20,4 @@ page = st.navigation(pages, position="top")
 
 
 page.run()
+set_menu()

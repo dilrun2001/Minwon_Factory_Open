@@ -137,7 +137,7 @@ def show_admin():
                                         if not db_data.empty:
                                                 st.dataframe(db_data)
                                         else:
-                                                st.toast("데이터베이스에 저장된 데이터가 없습니다.", icon = ":material/block:")
+                                                st.toast("데이터베이스에 저장된 :red[데이터가 없습니다.]", icon = ":material/block:")
         else:
                 with st.form("admin_login_form"):
                         password = st.text_input("관리자 비밀번호 입력", type="password")
@@ -153,6 +153,7 @@ def show_admin():
             
 
 def show_setting():
+        st.session_state['page'] = "adminpage"
         match (st.session_state['set_check']):
                 case 'admin':
                      show_admin()
@@ -160,7 +161,7 @@ def show_setting():
 #DB 옵션따라 리턴값 다르게 하려는 의도
 def check_db_option(date, name, grade, minwon, response, answer_yogi):
         start_date = date[0]
-        end_date = date[1]
+        end_date = date[1] + datetime.timedelta(days = 1)
         option_list = []
         if minwon:
                 option_list.append("minwon")
@@ -169,7 +170,7 @@ def check_db_option(date, name, grade, minwon, response, answer_yogi):
         if answer_yogi:
                 option_list.append("answer_yogi")
         if name != "":
-                return run_query(f"SELECT name, minwon, response, answer_yogi, grade FROM history WHERE grade >= {grade} AND name = {name}")
+                return run_query(f"SELECT timestamp, name, minwon, response, answer_yogi, grade FROM history WHERE grade >= {grade} AND name = '{name}' AND timestamp >= '{start_date}' AND timestamp < '{end_date}'")
         else:
-               return run_query(f"SELECT name, minwon, response, answer_yogi, grade FROM history WHERE grade >= {grade}")
+               return run_query(f"SELECT timestamp, name, minwon, response, answer_yogi, grade FROM history WHERE grade >= {grade} AND timestamp >= {start_date} AND timestamp < {end_date}")
         #return run_query(f"SELECT {option_list}")
