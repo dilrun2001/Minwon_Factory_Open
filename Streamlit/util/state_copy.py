@@ -174,6 +174,9 @@ def clear_state():
     if "layout_check" not in st.session_state:
         st.session_state.layout_check = "탭"
 
+    if "input_status" not in st.session_state:
+        st.session_state.input_status = ""
+
     
 
 # AI, RAG ON/OFF 기능으로 인해 실시간 피드백 변경
@@ -227,3 +230,4 @@ def minwon_clear():
     st.session_state.df = pd.DataFrame()
     st.session_state.ai_check = False
     st.session_state['btn_show'] = False
+    st.session_state.input_status = ""

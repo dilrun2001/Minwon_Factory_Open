@@ -30,7 +30,7 @@ def show_home():
     manual_col, file_col = st.tabs([":material/person: 단일 민원", ":material/table: 복수 민원"])#st.columns((8,1,8))
     def show_manual():
         if st.session_state.file_check is not True:
-            st.write("#### 단일 민원")
+            
             with st.container(key = "manual_select_guide", horizontal=True):
                 st.write('''- 이름, 부서명, 전화번호, 민원 내용을 입력해주세요. ''')
                 st.write('''- :red[복수 민원]을 이미 입력하신 경우 단일 민원은 :red[입력할 수 없습니다.]''')
@@ -91,7 +91,7 @@ def show_home():
 
     def show_file():
             if st.session_state.manual is not True:
-                st.write("#### 복수 민원")
+                
                 with st.container(key = "file_select_guide", horizontal=True):
                     st.write("- 엑셀 파일을 통해 :green[2개] 이상의 민원 데이터를 입력받을 수 있습니다.")
                     st.write("- :green[XLSX, CSV] 확장자를 지원합니다.")
@@ -169,14 +169,23 @@ def show_input():
         st.subheader("민원 입력 및 응답 생성")
         with st.container(key = "input_guide_container", horizontal=True):
             st.write("- :red[답변 요지]를 :red[입력]해주셔야 답변을 생성할 수 있습니다. 복수 민원은 입력한 :red[모든 민원]에 기입해주시길 바랍니다.")
-            st.write("- 아이콘만 있는 버튼들은 좌측부터 각 :red[민원 카테고리, 민원 긴급도, 민원 양식 수정] 기능을 지원하는 버튼입니다.")
+            #st.write("- 아이콘만 있는 버튼들은 좌측부터 각 :red[민원 카테고리, 민원 긴급도, 민원 양식 수정] 기능을 지원하는 버튼입니다.")
             st.write("- 상단 선택창에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.")
     #st.session_state.layout_check = st.toggle("기능 테스트", key = f"inpuy_layout_check")
     #config = st.session_state.config
     minwon = st.session_state.df
+    
+    st.session_state.input_status = [False] * len(minwon)    
     @st.fragment
     def show_input_container(check):
         if check == "탭":
+            tab_list = []
+            '''for i, tab in enumerate(st.session_state.input_status):
+                if st.session_state.input_status[i] is True:
+                    tab = f":green[:material/comment:] {i+1}번 민원"
+                else:
+                    tab = f":red[:material/comment:] {i+1}번 민원"
+                tab_list.append(tab)'''
             tab_list = [f":material/comment: {i+1}번 민원" for i in range(len(minwon))]
             tabs = st.tabs(tab_list)
         for i, row in minwon.iterrows():
@@ -200,7 +209,7 @@ def show_input():
                         with st.container(key = f"edit_btn_container_{i}", horizontal=True, gap="medium"):
                             preset = st.pills(
                                         "답변 요지 입력 방식", ["직접 입력", "완전 수용", "부분 수용", "수용 불가"],
-                                        key = f"minwon_sub_selecor_{i}", default = "직접 입력",
+                                        key = f"minwon_sub_selecor_{i}", default = "직접 입력",#    on_change=input_status_change, args=(i,), 
                                         help = "답변 요지 입력 방식을 선택해주세요."
                                         
                                 )                    
@@ -239,13 +248,16 @@ def show_input():
                                         "민원 긴급도", options = ("매우 낮음", "낮음", "보통", "높음", "매우 높음"), key = f"minwon_urgency_{i}", help = "민원 긴급도를 선택해주세요."
                                     )
                         minwon.at[i, '답변요지']  = st.text_area(
-                                    "답변 요지" , placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음.", height = 125, value = row['답변요지'], key = f"answer_sub_{i}"
+                                    "답변 요지" , placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음.", height = 125, value = row['답변요지'], key = f"answer_sub_{i}"#, on_change=input_status_change, args=(i,)
                                 )
+
                         #result.at[i, '최종답변'] = row['답변결과']
                     if check == "탭":
                         st.write('''---''')   
                     else:
                         st.write('''''')  
+    def input_status_change(index):
+        st.session_state.input_status[index] = True
     show_input_comment()
     @st.fragment
     def show_button():   
@@ -359,7 +371,7 @@ def show_result():
     @st.fragment
     def show_total_container(check):
         if check == "탭":
-            tab_list = [f":material/question_answer:   {i+1}번 민원 답변 결과" for i in range(len(result))]
+            tab_list = [f":primary-badge[:material/question_answer:]   {i+1}번 민원 답변 결과" for i in range(len(result))]
             tabs = st.tabs(tab_list)
         for i, row in result.iterrows():
             with st.container(key = f"result_response_container_{i}", gap = "medium"):

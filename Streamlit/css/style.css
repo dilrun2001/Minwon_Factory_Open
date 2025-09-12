@@ -1,3 +1,4 @@
+
 :root {
     --main-color: #2766c2;
     --background: rgba(13, 13, 13, 0);
@@ -31,6 +32,53 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
 [data-testid = "stFileUploaderDropzone"],
 [data-baseweb = "base-input"]{
     background-color: var(--background);
+}
+
+div.st-key-file_input > div[data-testid = "stElementContainer"]{ 
+    border: 1px solid transparent;
+}
+
+[data-testid = "stBaseButton-secondary"],
+[data-testid= "stBaseButton-secondaryFormSubmit"]{
+    border-radius: 3rem;
+}
+
+/*div.st-key-file_input > div[data-testid = "stElementContainer"] >div*/    
+
+
+/*[data-testid  = "stFileUploaderDropzoneInstructions"] > :has(span){
+    content: "이 곳에 파일을 끌어다 놔주세요.";
+}*/
+
+[data-testid = "stFileUploader"] section div span svg{
+    font-size: 3rem;
+}
+[data-testid = "stFileUploader"] [data-testid = "stBaseButton-secondary"]:hover{
+    background-color: transparent;
+    color: var(--main-color);
+    border: 1px solid var(--main-color);
+}
+[data-testid="stFileUploader"] section {
+        height:10rem;
+        position: relative; /* 자식 요소의 절대 위치 기준점 */
+    }
+[data-testid="stFileUploader"] section div div {
+        /* 기존의 'Drag and drop file here' 등 문구를 숨깁니다 */
+        visibility: hidden;
+    }
+[data-testid="stFileUploader"] section div div::before {
+    font-size: 1.2rem;
+    font-weight: 500;
+    /* 원하는 새 문구를 여기에 입력합니다 */
+    content: '여기에 파일을 끌어다 놓거나, 우측 버튼을 클릭하여 파일을 선택하세요. 파일 형식은 XLSX, CSV를 지원합니다.';
+    color:rgb(168, 166, 166);
+    /* 숨겨진 문구를 덮어쓰도록 스타일을 지정합니다 */
+    visibility: visible;
+    position: absolute;
+    top: 50%;
+    left: 47%;
+    transform: translate(-50%, -50%);
+    white-space: pre; /* 줄바꿈이 필요하다면 'pre-wrap' 사용 */
 }
 
 [aria-selected="true"] [data-testid="stMarkdownContainer"],
@@ -133,6 +181,7 @@ button[data-baseweb = "tab"] > div > p {
     position: fixed !important;
     top: 10%;
     left: 50%;
+    background-color: #161616;
     transform: translate(-50%, -50%) !important;
     animation: fadeSlideIn 0.6s ease-out !important;
     bottom: auto;
@@ -392,8 +441,13 @@ div.st-key-file_format .stButtonGroup button:hover{
     background-color: transparent;
     z-index: 99999999999999 !important;
 }*/
+[data-testid = "stPopoverBody"]{
+    background-color: #161616;
+    border: 1px solid var(--main-color);
+}
 div.st-key-llm_model_select{
     position: fixed;
+
     top: 0.6rem;
     left: 8rem;
     gap: 0.2rem;
@@ -445,7 +499,9 @@ div.st-key-llm_model_select .st-br{
 .rc-overflow .stSidebarNavLinkContainer {
     font-size: 28px !important;
 }
-
+[data-testid = "stStatusWidget"]{
+    display:none;
+}
 
 /*선택된 textarea 영역 */
 textarea.active-highlight {
