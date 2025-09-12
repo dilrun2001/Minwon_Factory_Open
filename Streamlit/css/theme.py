@@ -84,7 +84,7 @@ def show_loading_overlay(message = "로딩 중입니다.", page_title="처리 �
         overlay.empty()
 
 
-
+@st.fragment
 def show_popup(
         title: str ,
         text: str,
@@ -118,6 +118,7 @@ def show_popup(
                 st.rerun()
 
     @st.dialog(title)
+    #@st.fragment
     def popup_onebtn():
         st.write(text)
 
@@ -125,7 +126,6 @@ def show_popup(
         with center:
             if st.button("확인", use_container_width=True, key = "check_btn", icon = ":material/check:"):
                 st.rerun()
-
     if popup_check:
         popup_onebtn()
     else:

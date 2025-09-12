@@ -73,7 +73,7 @@ def clear_state():
 
     #현재 페이지 위치 체크
     if "page" not in st.session_state:
-        st.session_state['page'] = "home"
+        st.session_state['page'] = "main"
 
     #데이터프레임 선택
     if "selected_row" not in st.session_state:
@@ -87,9 +87,13 @@ def clear_state():
     if "minwon_select" not in st.session_state:
         st.session_state.minwon_select = False
 
-    # 현재 표시되는 페이지 체크
+    # 현재 표시되는 민원페이지 체크
     if "minwon_check" not in st.session_state:
         st.session_state['minwon_check'] = "file_select"
+
+    # 현재 표시되는 설정페이지 체크
+    if "set_check" not in st.session_state:
+        st.session_state['set_check'] = 'admin'
     
     if "admin_page" not in st.session_state:
         st.session_state['admin_page'] = False
@@ -167,6 +171,14 @@ def clear_state():
     if "dialog_check" not in st.session_state:
         st.session_state.dialog_check = False
 
+    if "layout_check" not in st.session_state:
+        st.session_state.layout_check = "탭"
+
+    if "input_status" not in st.session_state:
+        st.session_state.input_status = ""
+
+    
+
 # AI, RAG ON/OFF 기능으로 인해 실시간 피드백 변경
 def ai_option_check():
     #AI 옵션
@@ -217,3 +229,5 @@ def minwon_clear():
     st.session_state.db_check = False
     st.session_state.df = pd.DataFrame()
     st.session_state.ai_check = False
+    st.session_state['btn_show'] = False
+    st.session_state.input_status = ""

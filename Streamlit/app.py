@@ -6,17 +6,18 @@ from util.state_copy import *
 import pages as pg
 from css.theme import * 
 from util.toml_edit import *
+from util.menu import *
 
 load_css()
 clear_state()
-
 pages = [
     st.Page(pg.show_page, title = "민원 입력", icon = ":material/home:"),
-    st.Page(pg.show_admin, title = "설정", icon = ":material/settings:")
+    st.Page(pg.show_lab, title = "설정", icon = ":material/settings:"),
+    st.Page(pg.show_setting, title = "관리자 설정", icon = ":material/admin_panel_settings:"),
+    
 ]
-
-
 page = st.navigation(pages, position="top")
 
 
 page.run()
+set_menu()
