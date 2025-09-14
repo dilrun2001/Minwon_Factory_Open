@@ -14,4 +14,5 @@ langchain-huggingface==0.2.0
 xlsxwriter==3.2.3
 cryptography==45.0.4
 tomlkit==0.13.3
-
+python-dotenv==1.1.0
+ollama==0.4.8
