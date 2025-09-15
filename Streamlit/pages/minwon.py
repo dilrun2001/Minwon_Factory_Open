@@ -575,7 +575,10 @@ def change_model():
                     st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[민원팩토리 모델]", icon = ":material/check:")
                     st.session_state.model = '민원팩토리 모델'
             case '사하아이 연동':
-                st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
+                #st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
+                if st.session_state.model != '사하아이 연동':
+                    st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[사하아이 연동]", icon = ":material/check:")
+                    st.session_state.model = '사하아이 연동'
         #popover.write('''---''')
         layout_check = popover.pills(":material/desktop_windows: 화면 표시 방식", options = ('탭', '확장형'), width=450, default=st.session_state.layout_check)
         match (layout_check):
@@ -678,7 +681,10 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
             case (True, False, False):
                 if st.session_state.ai_option:
                         update(f"{index+1}번 민원의 답변을 재생성하는 중입니다.")
-                        answer = useAi.AI_print_answer(minwon=data.iloc[index]['민원내용'], answer=data.iloc[index]['답변요지'],answer_format=data.iloc[index]['답변양식'])
+                        if st.session_state.model == "사하아이 연동":
+                            answer = useAi.SahaAi_request(minwon=data.iloc[index]['민원내용'], answer=data.iloc[index]['답변요지'],answer_format=data.iloc[index]['답변양식'])
+                        else:
+                            answer = useAi.AI_print_answer(minwon=data.iloc[index]['민원내용'], answer=data.iloc[index]['답변요지'],answer_format=data.iloc[index]['답변양식'])
                         data.loc[index, '답변결과'] = answer
                 else:
                     timer = 5
@@ -693,7 +699,10 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                             if row['수정'] == True:
                                 cnt -= 1
                                 update(f"{i+1}번 민원의 답변을 재생성하는 중입니다. 남은 민원 수 : {cnt}")
-                                answer = useAi.AI_print_answer(minwon = row['민원내용'], answer = row['답변요지'], answer_format = row['답변양식'])
+                                if st.session_state.model == "사하아이 연동":
+                                    answer = useAi.SahaAi_request(minwon = row['민원내용'], answer = row['답변요지'], answer_format = row['답변양식'])
+                                else:
+                                    answer = useAi.AI_print_answer(minwon = row['민원내용'], answer = row['답변요지'], answer_format = row['답변양식'])
                                 data.at[i, '답변결과'] = answer
                     else:
                         for i, row in data.iterrows():
@@ -712,7 +721,10 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                     time.sleep(0.5)
                     for i, row in data.iterrows():
                         update(f"{i+1}번 민원에 대한 민원 요지를 생성 중입니다. 현재 진행 상황 {i+1}/{len(data)}")
-                        result_sub = useAi.AI_print_minwon_sub(row['민원내용'])
+                        if st.session_state.model == "사하아이 연동":
+                            result_sub = useAi.SahaAi_request_sub(row['민원내용'])
+                        else:
+                            result_sub = useAi.AI_print_minwon_sub(row['민원내용'])
                         results.append(result_sub)
                     data['민원요지'] = results
                 else:
@@ -727,7 +739,10 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                     if st.session_state.ai_option:
                         
                         update(f"{i+1}번 민원에 대한 답변을 생성중입니다. 현재 진행 상황 {i+1}/{len(data)}") #전체 민원 개수는 {len(data)}개 입니다.")
-                        answer = useAi.AI_print_answer(minwon=row['민원내용'], answer=row['답변요지'],answer_format=row['답변양식'])
+                        if st.session_state.model == "사하아이 연동":
+                            answer = useAi.SahaAi_request(minwon=row['민원내용'], answer=row['답변요지'],answer_format=row['답변양식'])
+                        else:
+                            answer = useAi.AI_print_answer(minwon=row['민원내용'], answer=row['답변요지'],answer_format=row['답변양식'])
                         update(f"{i+1}번 민원에 대한 유사 답변이 존재하는 지 확인합니다.")
                         
                         #ragai.find_similar_respond(minwon_summary=st.session_state.minwon_sub,answer_yogi=st.session_state.answer_sub)
