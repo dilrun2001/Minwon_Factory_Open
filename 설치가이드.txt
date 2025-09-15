@@ -1,0 +1,35 @@
+문제점 정리
+
+secrets.toml 의 아이디 비번 문제
+[mysql]
+host = "mysql"
+port = 3306
+user = "root"
+password = "1234"
+database = "minwon"
+
+.env생성
+OLLAMA_HOST=http://127.0.0.1:3000 아이피 바꾸고
+OLLAMA_MODEL=gpt-oss:20b
+
+history table grade 컬럼
+
+MySQL -u saha -p
+
+ALTER TABLE history
+  ADD COLUMN grade int AFTER response;
+
+타스크 큐 db 부재문제
+
+CREATE TABLE `task_queue` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(64) DEFAULT NULL,
+  `status` enum('waiting','processing','done') DEFAULT 'waiting',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+가상환경 실행
+source venv/bin/activate
+종료
+deactivate
