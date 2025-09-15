@@ -65,7 +65,7 @@ def clear_state():
 
     #일단 LLM 모델
     if "model" not in st.session_state:
-        st.session_state.model = "기본 모델"
+        st.session_state.model = "사하아이 연동"
 
     #답변
     if "response" not in st.session_state:
