@@ -444,7 +444,7 @@ def show_result():
         #st.session_state.layout_check = st.toggle("기능 테스트", key = "result_layout_check")
         show_total_container(st.session_state.layout_check)
         show_fragment_button()
-        show_button()
+        #show_button()
         #if st.session_state.file_download is not True:
         
 # index = 데이터프레임 열 번호, recreate = 민원 재생성 체크 여부, check = 민원 멀티 재생성 여부

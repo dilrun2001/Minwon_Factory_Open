@@ -70,7 +70,7 @@ def show_admin():
                                                         ai_option_check()
                                         #with st.expander("RAG 설정", expanded = True):
                                                 st.markdown("######  RAG 설정")
-                                                st.write("RAG 설정을 ON/OFF 할 수 있습니다.")
+                                                st.write("RAG(유사 답변 검색) 설정을 ON/OFF 할 수 있습니다. ")
                                                 rag = st.pills(
                                                         "RAG ON/OFF", ["on", "off"],
                                                         key = "rag_select_option", default = config['app']['rag'], label_visibility="collapsed"
@@ -172,5 +172,5 @@ def check_db_option(date, name, grade, minwon, response, answer_yogi):
         if name != "":
                 return run_query(f"SELECT timestamp, name, minwon, response, answer_yogi, grade FROM history WHERE grade >= {grade} AND name = '{name}' AND timestamp >= '{start_date}' AND timestamp < '{end_date}'")
         else:
-               return run_query(f"SELECT timestamp, name, minwon, response, answer_yogi, grade FROM history WHERE grade >= {grade} AND timestamp >= {start_date} AND timestamp < {end_date}")
+               return run_query(f"SELECT timestamp, name, minwon, response, answer_yogi, grade FROM history WHERE grade >= {grade} AND timestamp >= '{start_date}' AND timestamp < '{end_date}'")
         #return run_query(f"SELECT {option_list}")
