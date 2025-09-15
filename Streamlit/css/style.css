@@ -2,8 +2,8 @@
 :root {
     --main-color: #2766c2;
     --background: rgba(13, 13, 13, 0);
-    --error-color: #FF4B4B;
-    --accept-color: #35b85e;
+    --error-color: rgb(255,43,43);
+    --accept-color: rgb(21, 130, 55);
     --font-color: inherit;
 }
 
@@ -129,39 +129,39 @@ button[data-baseweb = "tab"] > div > p {
     /*position:fixed;
     top:15rem;
     width: 50rem;*/
-    background-color: #161616;
-    border: 1px solid var(--main-color);
+
+    border: 1.5px solid var(--main-color);
     border-radius: 15px;
 }
 
-[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 75, 75)"]) {
-    border: 1px solid var(--error-color);
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 43, 43)"]) {
+    border: 1.5px solid var(--error-color);
 }
 
-[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 75, 75)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
-    background-color: #161616 !important;
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 43, 43)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
+    background-color: transparent;
     color: var(--error-color)!important;
-    border: 1px solid var(--error-color) !important;
+    border: 1.5px solid var(--error-color) !important;
 }
 
-[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(61, 213, 109)"]) {
-    border: 1px solid var(--accept-color);
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(21, 130, 55)"]) {
+    border: 1.5px solid var(--accept-color);
 }
 
-[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(61, 213, 109)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
-    background-color: #161616 !important;
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(21, 130, 55)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
+    background-color: transparent;
     color: var(--accept-color)!important;
-    border: 1px solid var(--accept-color) !important;
+    border: 1.5px solid var(--accept-color) !important;
 }
 
 [data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 164, 33)"]) {
-    border: 1px solid rgb(255, 164, 33);
+    border: 1.5px solid rgb(255, 164, 33);
 }
 
 [data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 164, 33)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
-    background-color: #161616 !important;
+    background-color: transparent;
     color: rgb(255, 164, 33) !important;
-    border: 1px solid rgb(255, 164, 33) !important;
+    border: 1.5px solid rgb(255, 164, 33) !important;
 }
 
 
@@ -182,7 +182,6 @@ button[data-baseweb = "tab"] > div > p {
     position: fixed !important;
     top: 10%;
     left: 50%;
-    background-color: #161616;
     transform: translate(-50%, -50%) !important;
     animation: fadeSlideIn 0.6s ease-out !important;
     bottom: auto;
@@ -201,19 +200,19 @@ button[data-baseweb = "tab"] > div > p {
     top: 0.5rem;
     font-size: 15px;
 }
-.stToast:has(span[style*="color: rgb(61, 213, 109)"])  {
+.stToast:has(span[style*="color: rgb(21, 130, 55)"])  {
     border: 1px solid var(--accept-color);
 }
 
-.stToast:has(span[style*="color: rgb(255, 75, 75)"]){
+.stToast:has(span[style*="color: rgb(255, 43, 43)"]){
     border:1px solid var(--error-color);
 }
 
 
-.stToast:has(span[style*="color: rgb(61, 213, 109)"])  [data-testid = "stToastDynamicIcon"]{
+.stToast:has(span[style*="color: rgb(21, 130, 55)"])  [data-testid = "stToastDynamicIcon"]{
     color:var(--accept-color);
 }
-.stToast:has(span[style*="color: rgb(255, 75, 75)"])  [data-testid = "stToastDynamicIcon"]{
+.stToast:has(span[style*="color: rgb(255, 43, 43)"])  [data-testid = "stToastDynamicIcon"]{
     color:var(--error-color);
 }
 
@@ -321,7 +320,7 @@ div.st-key-edit_format_btn{
 }
 
 div.st-key-input_page_show [data-testid = "stBaseButton-secondary"]:hover{
-    background-color: #161616 !important;
+    /*background-color: #161616 !important;*/
     color: var(--main-color) !important;
     border:1px solid var(--main-color);
 }
@@ -340,7 +339,7 @@ div[class *= "second_answer_"]{
 
 div[class *= "result_first_"] [data-baseweb = "base-input"],
 div[class *= "result_second_"] [data-baseweb = "base-input"]{
-    background-color:#2d3c52;
+    background-color:#b2caee;
 }
 div[class *= "resilt_first_"] [data-testid = "stWidgetLabel"]{
     display : none;
@@ -376,7 +375,7 @@ div.st-key-total_regenerate_btn [data-testid="stBaseButton-secondary"]:hover,
 div.st-key-agree_btn [data-testid="stBaseButton-secondary"]:hover,
 div.st-key-disagree_btn [data-testid="stBaseButton-secondary"]:hover,
 div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
-    background-color: #161616 !important;
+    background-color: transparent !important;
     color: var(--main-color)!important;
     border: 1px solid var(--main-color) !important;
 }
@@ -443,7 +442,6 @@ div.st-key-file_format .stButtonGroup button:hover{
     z-index: 99999999999999 !important;
 }*/
 [data-testid = "stPopoverBody"]{
-    background-color: #161616;
     border: 1px solid var(--main-color);
 }
 div.st-key-llm_model_select{
@@ -488,7 +486,7 @@ div.st-key-llm_model_select .st-br{
 .rc-overflow [data-testid = "stIconMaterial"]{
     font-size: 25px;
     font-weight:100;
-    color:#dfe5ee;
+    color:dark;
 }
 .rc-overflow [data-testid = "stIconMaterial"]:hover{
     color:var(--main-color);

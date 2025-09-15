@@ -1,6 +1,6 @@
 [theme]
 
-base = "dark"
+base = "light"
 font = "nanum gothic"
 codeFont = "nanum gothic"
 headingFont = "nanum gothic"
