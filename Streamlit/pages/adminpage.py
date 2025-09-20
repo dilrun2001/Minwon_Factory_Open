@@ -82,7 +82,7 @@ def show_admin():
                                 #with right:
                                         with st.expander("관리자 비밀번호 변경", expanded = True, icon= ":material/key:"):
                                                 st.write("관리자 비밀번호를 변경할 수 있습니다.")
-                                                with st.form(key = "change_admin_password", height = 320):
+                                                with st.form(key = "change_admin_password", height = 320, border = False):
                                                         old = st.text_input("기존 비밀번호", key = "old_possword", placeholder="기존 비밀번호를 입력해주세요.", type = "password")
                                                         new = st.text_input("신규 비밀번호", key = "new_password", placeholder="신규 비밀번호를 입력해주세요.", type = "password")
                                                         repeat = st.text_input("신규 비밀번호", key = "new_password_repeat", placeholder="신규 비밀번호를 한번 더 입력해주세요.", type = "password")
@@ -139,7 +139,7 @@ def show_admin():
                                         else:
                                                 st.toast("데이터베이스에 저장된 :red[데이터가 없습니다.]", icon = ":material/block:")
         else:
-                with st.form("admin_login_form"):
+                with st.form("admin_login_form", border = False):
                         password = st.text_input("관리자 비밀번호 입력", type="password")
                         if st.form_submit_button("관리자 페이지 열기"):
                                 if password == config['app']['admin_password']:

@@ -4,11 +4,17 @@
     --background: rgba(13, 13, 13, 0);
     --error-color: rgb(255,43,43);
     --accept-color: rgb(21, 130, 55);
+    --warning-color: rgb(217, 90, 0);
     --font-color: inherit;
 }
 
 body{
     font-weight:300;
+}
+
+[data-testid = "stHeader"]{
+
+    background-color: #edf0f5;
 }
 
 
@@ -44,42 +50,102 @@ div.st-key-file_input > div[data-testid = "stElementContainer"]{
     border-radius: 3rem;
 }
 
-/*div.st-key-file_input > div[data-testid = "stElementContainer"] >div*/    
+[data-testid = "stBaseButton-secondary"]:hover,
+[data-testid= "stBaseButton-secondaryFormSubmit"]:hover
+[data-testid = "stBaseButton-secondary"]:focus,
+[data-testid= "stBaseButton-secondaryFormSubmit"]:focus
+{
+    border-color: var(--main-color);
+    color: var(--main-color);
+    background-color: transparent;
+}
+
+/*페이지 다음, 이전 버튼 css*/
+div.st-key-input_before_btn [data-testid = "stMarkdownContainer"] p,
+div.st-key-input_next_btn [data-testid = "stMarkdownContainer"] p{
+    display: none;
+}
+
+[data-testid="stCode"] > pre {
+    width:3rem;
+    background-color: transparent;
+    background-color:  var(--main-color);
+}
 
 
-/*[data-testid  = "stFileUploaderDropzoneInstructions"] > :has(span){
-    content: "이 곳에 파일을 끌어다 놔주세요.";
-}*/
+
+
+[data-testid="stCode"] > pre > div:first-child {
+    display: none !important;
+}
 
 [data-testid = "stFileUploader"] section div span svg{
     font-size: 3rem;
 }
+[data-testid = "stFileUploader"] [data-testid = "stBaseButton-secondary"]{
+    background-color: var(--main-color);
+    color: white;
+}
 [data-testid = "stFileUploader"] [data-testid = "stBaseButton-secondary"]:hover{
-    background-color: transparent;
-    color: var(--main-color);
-    border: 1px solid var(--main-color);
+    background-color: #2f7bec;
+} 
+[data-testid = "stVerticalBlock"]{
+    border-radius:3rem;
 }
 [data-testid="stFileUploader"] section {
-        height:10rem;
-        position: relative; /* 자식 요소의 절대 위치 기준점 */
-    }
-[data-testid="stFileUploader"] section div div {
-        /* 기존의 'Drag and drop file here' 등 문구를 숨깁니다 */
-        visibility: hidden;
-    }
+    height: 13rem;
+    position: relative; /* 매우 중요 */
+}
+
+[data-testid = "stFileUploader"]{
+    border: 2px dashed rgb(161, 160, 160);
+    border-radius: 3rem;
+}
+
+[data-testid = "stFileUploader"]:hover{
+    border: 2px dashed var(--main-color);
+    border-radius: 3rem;
+}
+
+[data-testid = "stFileUploaderFile"]{
+    position: relative;
+    left: 1rem;
+    width: 30rem;  
+}
+
+
+
+/* 2. 기존의 Streamlit 기본 안내 문구를 확실히 숨깁니다. (선택 사항이지만 권장) */
+/* 이렇게 하면 우리 텍스트와 겹치지 않습니다. */
+[data-testid="stFileUploader"] section div div span {
+    visibility: hidden;
+}
+
+/* 3. ::before 가상 요소를 사용해 새 텍스트를 만들고, 화면 중앙에 완벽하게 배치합니다. */
 [data-testid="stFileUploader"] section div div::before {
+    /* --- 기본 스타일 --- */
+    content: '여기에 파일을 끌어다 놓거나, 우측 버튼을 클릭하여 파일을 선택하세요. 파일 형식은 XLSX, CSV를 지원합니다.';
     font-size: 1.2rem;
     font-weight: 500;
-    /* 원하는 새 문구를 여기에 입력합니다 */
-    content: '여기에 파일을 끌어다 놓거나, 우측 버튼을 클릭하여 파일을 선택하세요. 파일 형식은 XLSX, CSV를 지원합니다.';
-    color:rgb(209, 205, 205);
-    /* 숨겨진 문구를 덮어쓰도록 스타일을 지정합니다 */
-    visibility: visible;
+    color: rgb(68, 68, 68);
+    visibility: visible; /* 숨겨진 경우를 대비해 항상 보이도록 설정 */
+
+    /* --- 핵심: 반응형 절대 중앙 정렬 --- */
     position: absolute;
     top: 50%;
-    left: 47%;
-    transform: translate(-50%, -50%);
-    white-space: pre; /* 줄바꿈이 필요하다면 'pre-wrap' 사용 */
+    left: 50%;
+    transform: translate(-50%, -50%); /* X축과 Y축으로 자신의 크기의 50%만큼 이동하여 정중앙 맞춤 */
+
+    /* 텍스트가 아이콘과 버튼을 침범하지 않도록 너비를 제한합니다. */
+    /* 이 값은 좌우 여백을 고려하여 조절할 수 있습니다. (예: 60%, 70% 등) */
+    width: 65%;
+    
+    /* 텍스트가 여러 줄일 경우를 대비해 가운데 정렬합니다. */
+    text-align: center;
+    white-space: pre-wrap; /* 필요에 따라 자동 줄바꿈 */
+
+    /* 가상 요소가 파일 선택 클릭을 방해하지 않도록 설정합니다. */
+    pointer-events: none;
 }
 
 [aria-selected="true"] [data-testid="stMarkdownContainer"],
@@ -112,7 +178,9 @@ button[data-baseweb = "tab"] > div > p {
 [data-baseweb="select"] > div:first-child:focus-within {
         border-color: var(--main-color) !important; 
     }
-
+[data-baseweb = "button-group"] [data-testid = "stBaseButton-pills"]{
+    background-color: transparent;
+}
 
 [data-baseweb = "button-group"] [ data-testid = "stBaseButton-pillsActive"],
 [data-baseweb = "button-group"] [data-testid = "stBaseButton-pills"]:hover{
@@ -122,7 +190,7 @@ button[data-baseweb = "tab"] > div > p {
 }
 
 [data-testid = "stDialog"]{
-    background-color: rgba(53, 53, 53, 0.315)
+    background-color: #2765c207
 }
 
 [data-testid="stDialog"] div[role="dialog"] {
@@ -130,32 +198,32 @@ button[data-baseweb = "tab"] > div > p {
     top:15rem;
     width: 50rem;*/
 
-    border: 1.5px solid var(--main-color);
+    border: 2px solid var(--main-color);
     border-radius: 15px;
 }
 
 [data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 43, 43)"]) {
-    border: 1.5px solid var(--error-color);
+    border: 2px solid var(--error-color);
 }
 
 [data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 43, 43)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
     background-color: transparent;
     color: var(--error-color)!important;
-    border: 1.5px solid var(--error-color) !important;
+    border: 2px solid var(--error-color) !important;
 }
 
 [data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(21, 130, 55)"]) {
-    border: 1.5px solid var(--accept-color);
+    border: 2px solid var(--accept-color);
 }
 
 [data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(21, 130, 55)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
     background-color: transparent;
     color: var(--accept-color)!important;
-    border: 1.5px solid var(--accept-color) !important;
+    border: 2px solid var(--accept-color) !important;
 }
 
 [data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 164, 33)"]) {
-    border: 1.5px solid rgb(255, 164, 33);
+    border: 2px solid rgb(255, 164, 33);
 }
 
 [data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 164, 33)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
@@ -208,6 +276,10 @@ button[data-baseweb = "tab"] > div > p {
     border:1px solid var(--error-color);
 }
 
+.stToast:has(span[style*="color: rgb(217, 90, 0)"]){
+    border:1px solid var(--warning-color);
+}
+
 
 .stToast:has(span[style*="color: rgb(21, 130, 55)"])  [data-testid = "stToastDynamicIcon"]{
     color:var(--accept-color);
@@ -216,6 +288,9 @@ button[data-baseweb = "tab"] > div > p {
     color:var(--error-color);
 }
 
+.stToast:has(span[style*="color: rgb(217, 90, 0)"])  [data-testid = "stToastDynamicIcon"]{
+    color:var(--warning-color);
+}
 
 
 
@@ -327,20 +402,20 @@ div.st-key-input_page_show [data-testid = "stBaseButton-secondary"]:hover{
 
 div[class *= "first_answer_"]{
     border-radius: 1.6rem;
-    background-color: #60b14c;
+    background-color: #70ce58;
     padding-right: 0.8rem;
 }
 
 div[class *= "second_answer_"]{
     border-radius: 1.6rem;
-    background-color: #b34949;
+    background-color: #cf5454;
     padding-right: 0.8rem;
 }
 
-div[class *= "result_first_"] [data-baseweb = "base-input"],
+/*div[class *= "result_first_"] [data-baseweb = "base-input"],
 div[class *= "result_second_"] [data-baseweb = "base-input"]{
-    background-color:#b2caee;
-}
+    background-color:#eef0f3;
+}*/
 div[class *= "resilt_first_"] [data-testid = "stWidgetLabel"]{
     display : none;
 }
@@ -389,7 +464,10 @@ div.st-key-input_minwon_generate [data-testid = "stBaseButton-secondary"]:hover{
     border: 1px solid var(--main-color) !important;
 }
 
-
+div.st-key-input_page_option [data-testid = "stHorizontalBlock"]{
+    position:fixed;
+    left: 25%;
+}
 
 
 div.st-key-FormSubmitter-admin_login_form----------- [data-testid = "stBaseButton-secondaryFormSubmit"]:hover,
