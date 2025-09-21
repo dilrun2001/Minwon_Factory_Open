@@ -13,7 +13,7 @@ def input_answer():
     print(data['답변요지'])
     #answers = []
     #raganswers = []
-    yogi_check =False#(data[data['답변요지'] == ""].index+1).tolist()
+    yogi_check =(data[data['답변요지'] == ""].index+1).tolist()
     print(yogi_check)
     if yogi_check:#((data['답변요지'] =="") ).any():
         show_popup(":red[:material/block:]  답변 생성 오류", f'''입력하신 민원에 대한 :red[답변 요지]를 전부 입력해주세요.    

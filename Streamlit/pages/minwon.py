@@ -262,25 +262,25 @@ def show_input():
 
                         preset = st.pills(  
                                             "답변 요지", ["직접 입력", "완전 수용", "부분 수용", "수용 불가"],
-                                            key = f"minwon_sub_selecor_{i}", default = "완전 수용",#    on_change=input_status_change, args=(i,), 
+                                            key = f"minwon_sub_selecor_{index}", default = "완전 수용",#    on_change=input_status_change, args=(i,), 
                                             help = "답변 요지 입력 방식을 선택해주세요."
                                             
                                     ) 
                         match (preset):
                             case "직접 입력":
-                                row['답변요지'] = ""
+                                minwon.at[index,'답변요지'] = ""
                             case "완전 수용":
                                 #st.toast(f"{i+1}번 민원 답변 요지 :orange[{preset}]을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", icon = ":material/warning:")
-                                row['답변요지'] = config['sub']['accept']
+                                minwon.at[index,'답변요지'] = config['sub']['accept']
                             case "부분 수용":
                                 #show_popup(":orange[:material/warning:] 답변 요지 프리셋", f"답변 요지 {preset}을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", None, popup_check=True)
-                                row['답변요지'] = config['sub']['particle_accept']
+                                minwon.at[index,'답변요지'] = config['sub']['particle_accept']
                             case "수용 불가":
                                 #show_popup(":orange[:material/warning:] 답변 요지 프리셋", f"답변 요지 {preset}을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", None, popup_check=True)
-                                row['답변요지'] = config['sub']['unaccept']
-                        minwon.at[i, '답변요지']  = st.text_area(
+                                minwon.at[index,'답변요지'] = config['sub']['unaccept']
+                        minwon.at[index, '답변요지']  = st.text_area(
                                 "답변 요지" ,label_visibility="collapsed", placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
-                                , height = 269, value = row['답변요지'], key = f"answer_sub_{i}"#, on_change=input_status_change, args=(i,)
+                                , height = 269, value =minwon.at[index,'답변요지'], key = f"answer_sub_{i}"#, on_change=input_status_change, args=(i,)
                             )     
                     with answer_column:                    
                         #with st.container(key = f"option_container_{i}", horizontal=True, gap="medium"):
@@ -423,15 +423,14 @@ def show_result():
                             #first_edit = st.toggle("답변 수정", key = f"edit_firstanswer_{i}")
                             #with st.container(key = f"first_answer_{i}"):        
                             if row['test'] is not True:
-                                copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")
+                                test = copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")
+                                if test:
+                                    st.toast(f"{index+1}번의 민원 답변이 복사되었습니다.", icon = ":material/done:")
                                 show_first(index)
                             else:
                                 copy_button(result.iloc[index]['RAG'], key = f"copy_rag_btn_{index}")
                                 show_second(index)
                             with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium"):
-                            #test1, test2, test3 = st.columns((,3,3))
-                            #with test1:
-                                
                             #with test2:
                                 row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")  
                             #with test3:
@@ -444,8 +443,6 @@ def show_result():
                                 row['답변 평점'] = 0
                             result.at[index, '최종평점'] = row['답변 평점']
                         with second:
-                            #rag_edit = st.toggle("답변 수정", key = f"edit_raganswer_{i}")
-                            #with st.container(key = f"second_answer_{i}"):
                                 if row['test'] is not True:
                                     copy_button(result.iloc[index]['RAG'], key = f"copy_rag_btn_{index}")
                                     show_second(index)

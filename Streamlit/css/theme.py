@@ -25,6 +25,7 @@ def copy_button(text_to_copy: str, key: str):
     textarea_id = f"text-to-copy-{key}"
     
     html_code = f"""
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
         html,body {{
@@ -92,7 +93,6 @@ def copy_button(text_to_copy: str, key: str):
         textArea.select();
         document.execCommand('copy');
 
-        // 사용자 피드백
         var originalbuttonhtml= btn.innerHTML;
         btn.innerHTML = '<span class = "material-symbols-outlined">check</span>';
         btn.disabled = true;
