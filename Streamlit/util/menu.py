@@ -60,18 +60,18 @@ def set_menu():
                 match (layout_check):
                     case '탭':
                         if st.session_state.layout_check != '탭':
-                            st.toast(f"화면 표시 방식이 변경됩니다. {st.session_state.layout_check} -> :green[탭]", icon = ":material/check:")
+                            #st.toast(f"화면 표시 방식이 변경됩니다. {st.session_state.layout_check} -> :green[탭]", icon = ":material/check:")
                             st.session_state.layout_check = '탭'
-                            time.sleep(2)
+                            time.sleep(0.05)
                             st.rerun()
                         else:
                             pass
                         #st.rerun()
                     case '확장형':
                         if st.session_state.layout_check != '확장형':
-                            st.toast(f"화면 표시 방식이 변경됩니다. {st.session_state.layout_check} -> :green[확장형]", icon = ":material/check:")
+                            #st.toast(f"화면 표시 방식이 변경됩니다. {st.session_state.layout_check} -> :green[확장형]", icon = ":material/check:")
                             st.session_state.layout_check = '확장형'
-                            time.sleep(2)
+                            time.sleep(0.05)
                             st.rerun()
             
             

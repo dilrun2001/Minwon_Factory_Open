@@ -26,10 +26,15 @@ def input_answer():
         generate_answer()
         st.session_state.current_page = 1
 
+
 #선택한 답변 재생성
 def reinput_answer():
     data = st.session_state.df
-    
+    # 인덱스 입력이 없어서 문제가 되는 상황?
+    recreate_list = []
+    for i, row in data.iterrows():
+        if row['수정']:
+            recreate_list.append(i)
     recreate_check = data['수정'].sum() 
     if recreate_check == 0:
         show_popup(":red[:material/block:]  답변 재생성 오류", f"""재생성할 답변이 존재하지 않습니다.\n답변 영역 내 민원 수정 체크 박스를 확인해주세요.""", popup_check = True)
@@ -72,6 +77,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                     data.loc[index, '답변결과'] = "해당 답변은 단일 민원 생성 테스트에 사용된 답변입니다."
                     time.sleep(timer)
                 end_task(task_id)
+                st.rerun()
             #답변 멀티 재생성            
             case (True, True, False):
                     if st.session_state.ai_option:
@@ -90,9 +96,10 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                             #cnt = row['수정']
                             if row['수정'] == True:
                                 update(f"{i+1}번 민원의 답변 재생성 테스트. 답변은 생성되지 않습니다.")
-                                data.loc[index, '답변결과'] = "해당 답변은 단일 민원 생성 테스트에 사용된 답변입니다."
+                                data.loc[i, '답변결과'] = "해당 답변은 단일 민원 생성 테스트에 사용된 답변입니다."
                                 time.sleep(1)
                     end_task(task_id)
+                    st.rerun()
             #답변 요지 생성
             case (False, False, True):
                 for i, row in data.iterrows():

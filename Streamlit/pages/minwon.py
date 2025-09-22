@@ -160,7 +160,7 @@ def show_home():
 def show_multi_page():
             
         if st.session_state.multimode:
-                left, main, right = st.columns((1,1.6,1))
+                left, main, right = st.columns((1,1,1))
                 with main:
                     with st.container(key = "input_page_option", horizontal=True, gap='small'):
                         if st.session_state.current_page > 1:
@@ -170,8 +170,19 @@ def show_multi_page():
                         else:
                             st.button("이전 페이지", key = "input_before_btn", icon = ":material/navigate_before:", disabled=True, type = 'tertiary')
                     #with spacer:
-                    
-                        page_selection = st.radio(
+                        start = max(1, st.session_state.current_page - 2)
+                        end = min(st.session_state.total_page, start + 4)
+                        for i in range(start, end+1):
+                            # 현재 페이지는 텍스트로, 나머지는 버튼으로 표시하여 구분
+                            if i == st.session_state.current_page:
+                                if st.button(str(i), key = f"current_page_{i}"):
+                                    st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                                #st.markdown(f"<div style='width: 40px; height: 40px; border-radius: 50%; background-color: #1976d2; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold;'>{i}</div>", unsafe_allow_html=True)
+                            else:
+                                if st.button(str(i), key=f"switch_page_{i}"):
+                                    st.session_state.current_page = i
+                                    st.rerun()
+                        """page_selection = st.radio(
                         "페이지를 선택하세요.",
                         range(1, st.session_state.total_page + 1),
                         key="page_selector",
@@ -181,7 +192,7 @@ def show_multi_page():
                     )
                         if page_selection != st.session_state.current_page:
                             st.session_state.current_page = page_selection
-                            st.rerun()
+                            st.rerun()"""
                 # with next:
                         if st.session_state.current_page < st.session_state.total_page:
                             if st.button("다음 페이지", key = "input_next_btn", icon = ":material/navigate_next:", type = 'tertiary'):
@@ -246,10 +257,10 @@ def show_input():
 
             with expander:
                 with st.container(key = f'tab_container_{i}', horizontal=True):
-                    minwon_column, spacer, answer_column = st.columns((5,9,9), gap = "medium") #8, 1.2,
+                    minwon_column, spacer, answer_column = st.columns((6,8,8), gap = "medium") #8, 1.2,
                     with minwon_column: 
                         minwon.at[i, '민원요지'] = st.text_area(
-                                                            "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =265  , value= row['민원요지'], key = f"minwon_sub_{i}"
+                                                            "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =269  , value= row['민원요지'], key = f"minwon_sub_{i}"
                         )
                         with st.container(key = f"test_{i}", horizontal=True):
                             minwon.at[i, '민원 카테고리'] = st.selectbox(
@@ -280,7 +291,7 @@ def show_input():
                                 minwon.at[index,'답변요지'] = config['sub']['unaccept']
                         minwon.at[index, '답변요지']  = st.text_area(
                                 "답변 요지" ,label_visibility="collapsed", placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
-                                , height = 269, value =minwon.at[index,'답변요지'], key = f"answer_sub_{i}"#, on_change=input_status_change, args=(i,)
+                                , height = 270, value =minwon.at[index,'답변요지'], key = f"answer_sub_{i}"#, on_change=input_status_change, args=(i,)
                             )     
                     with answer_column:                    
                         #with st.container(key = f"option_container_{i}", horizontal=True, gap="medium"):
@@ -411,7 +422,9 @@ def show_result():
                 else:
                     expander = st.expander(f"{i+1}번 민원 답변 생성 결과", icon = ":material/question_answer:", expanded=True)
                 with expander:#st.expander(f"{i+1}번 민원 답변 생성 결과", icon = ":material/question_answer:", expanded=True):
-                    if config['app']['rag'] == "off":
+
+                    #RAG 옵션 꺼질때 RAG 답변 창 자체가 등장하지 않게 수정
+                    if config['app']['rag'] == "on":
                         first, spacer, second = st.columns((6.8, 1.4, 6.8)) #8,1.2,8 6.8, 1.6, 6.8
                         with spacer:
                             for j in range(11):
@@ -458,6 +471,11 @@ def show_result():
                             result.at[index, '수정'] = False
                     else:
                         #edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{i}")
+                        
+                                
+                        
+                        copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")
+                        show_first(index)
                         with st.container(key = f"result_checkbox_container_{i}", horizontal=True, gap = "medium"):
                                 row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{i}")  
                                 edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{i}")
@@ -466,16 +484,12 @@ def show_result():
                                 else:
                                     row['답변 평점'] = 0
                                 result.at[index, '최종평점'] = row['답변 평점']
-                                copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")
+    
                         if edit:
                             result.at[index, '수정'] = True
                             show_edit(index)
                         else:
                             result.at[index, '수정'] = False
-                        show_first(index)
-                        
-    
-        
 
 
 
@@ -562,7 +576,7 @@ def show_page():
     st.session_state.page = "main"
     match st.session_state['minwon_check']:
         case 'file_select':
-            st.subheader("사하구청 새올민원전자생성기")
+            st.subheader("새올민원답변생성기")
             with st.container(key = "home_info_container", horizontal=True):
                 st.write("- 아래 탭 중 하나를 골라서 민원 데이터를 생성할 수 있습니다.")
                 st.write("- 복수, 단일 민원 둘 중 하나의 입력이 끝나면 처음으로 버튼을 눌러 초기화가 가능합니다.")

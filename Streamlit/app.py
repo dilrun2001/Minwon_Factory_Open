@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-st.set_page_config(page_title = "사하구청 새올전자민원생성기", page_icon=":material/edit_note:", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title ="새올민원답변생성기", page_icon=":material/edit_note:", layout="wide", initial_sidebar_state="collapsed")
 #from util.state import *
 from util.state_copy import *
 import pages as pg

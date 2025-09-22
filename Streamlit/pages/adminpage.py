@@ -118,22 +118,20 @@ def show_admin():
                                 st.write("민원이 저장된 데이터베이스 확인 및 데이터 추출")
                                 today = datetime.datetime.now()
                                 before_day = datetime.date(today.year, today.month-1, today.day)    
-                                date = st.date_input("날짜 범위 지정", (before_day, today),key = "db_datetime_check", format = "YYYY.MM.DD")
-                                print(date)
-                                with st.container(key = "DB_option_container_1", horizontal=True, gap  = "medium"):
+                                with st.container(key = "DB_option_container_1", horizontal=True, gap  = "large"):
+                                        date = st.date_input("날짜 범위 지정", (before_day, today),key = "db_datetime_check", format = "YYYY.MM.DD", width=450)
+                                        print(date)
                                        #date = st.date_input("날짜 범위 지정", (before_day, today),key = "db_datetime_check", format = "YYYY.MM.DD")
-                                       name = st.text_input("이름", key = "db_name_check", label_visibility="collapsed", placeholder="이름 입력, 전체 검색은 공백", width = 400, value = "")
-                                       grade = st.slider("답변 평점 기준", 1, 5, value = 3)
-                                       minwon = st.toggle("민원 내용 표시", value = True, key = "db_minwon_check")
-                                       response = st.toggle("답변 표시", key = "db_response_check", value = True)
-                                       answer_yogi = st.toggle("답변 요지 표시", key = "db_answer_yogi_check", value = True)
+                                        name = st.text_input("이름", key = "db_name_check", placeholder="이름 입력, 전체 검색은 공백", width = 450, value = "")
+                                        grade = st.slider("답변 평점 기준", 1, 5, value = 3, width = 450)
+
                                 
                                 #with st.container(key = "DB_option_container_2", horizontal=True):
                                         
                                         
 
                                 if st.button("데이터베이스 데이터 확인", key = "db_check", icon = ":material/database:"):
-                                        db_data = check_db_option(date,name, grade, minwon, response, answer_yogi)#run_query(f"SELECT {name},{grade}, {minwon}, {response}, {answer_yogi} FROM history")
+                                        db_data = check_db_option(date,name, grade)#run_query(f"SELECT {name},{grade}, {minwon}, {response}, {answer_yogi} FROM history")
                                         if not db_data.empty:
                                                 st.dataframe(db_data)
                                         else:
@@ -144,10 +142,7 @@ def show_admin():
                         if st.form_submit_button("관리자 페이지 열기"):
                                 if password == config['app']['admin_password']:
                                         st.session_state.admin = True
-                                        show_popup(":green[:material/admin_panel_settings:] 관리자 모드", "관리자 모드가 활성화되었습니다.",None, popup_check = True)
-                                        '''st.toast("관리자 모드가 활성화되었습니다", icon=":material/check:")
-                                        time.sleep(0.5)
-                                        st.rerun()'''
+                                        st.rerun()
                                 else:
                                         st.toast("비밀번호가 틀립니다.", icon = ":material/block:")
             
@@ -159,16 +154,9 @@ def show_setting():
                      show_admin()
 
 #DB 옵션따라 리턴값 다르게 하려는 의도
-def check_db_option(date, name, grade, minwon, response, answer_yogi):
+def check_db_option(date, name, grade):
         start_date = date[0]
         end_date = date[1] + datetime.timedelta(days = 1)
-        option_list = []
-        if minwon:
-                option_list.append("minwon")
-        if response:
-                option_list.append("response")
-        if answer_yogi:
-                option_list.append("answer_yogi")
         if name != "":
                 return run_query(f"SELECT timestamp, name, minwon, response, answer_yogi, grade FROM history WHERE grade >= {grade} AND name = '{name}' AND timestamp >= '{start_date}' AND timestamp < '{end_date}'")
         else:
