@@ -160,8 +160,8 @@ def show_home():
 def show_multi_page():
             
         if st.session_state.multimode:
-                left, main, right = st.columns((1,1,1))
-                with main:
+                #left, main, right = st.columns((1,1,1))
+                #with main:
                     with st.container(key = "input_page_option", horizontal=True, gap='small'):
                         if st.session_state.current_page > 1:
                             if st.button("이전 페이지", key = "input_before_btn", icon = ":material/navigate_before:", type = 'tertiary'):
@@ -548,19 +548,20 @@ def input_db():#format):
         
 
     def create_file(format):
-        if st.session_state.file_set == "CSV":
-            st.session_state.file =  st.session_state.save_df.to_csv().encode("utf-8-sig")
-        else:
-            output = BytesIO()
-            with pd.ExcelWriter(output, engine = "xlsxwriter") as writter:
+        match (st.session_state.file_set):
+            case("CSV"):
+                st.session_state.file =  st.session_state.save_df.to_csv().encode("utf-8-sig")
+            case ("Excel"):
+                output = BytesIO()
+                with pd.ExcelWriter(output, engine = "xlsxwriter") as writter:
 
-                st.session_state.save_df.to_excel(writter, index = False, sheet_name = '시트1')
-                workbook = writter.book
-                worksheet = writter.sheets['시트1']
-                wrap_format = workbook.add_format({'text_wrap' : True})
-                for col, value in enumerate(st.session_state.save_df.values):
-                    worksheet.set_column(col, col,  30, wrap_format)
-            st.session_state.file = output.getvalue()
+                    st.session_state.save_df.to_excel(writter, index = False, sheet_name = '시트1')
+                    workbook = writter.book
+                    worksheet = writter.sheets['시트1']
+                    wrap_format = workbook.add_format({'text_wrap' : True})
+                    for col, value in enumerate(st.session_state.save_df.values):
+                        worksheet.set_column(col, col,  30, wrap_format)
+                st.session_state.file = output.getvalue()
         st.session_state.file_download = True
         
 

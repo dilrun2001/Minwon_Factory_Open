@@ -40,9 +40,6 @@ def set_menu():
                     st.session_state.model = '기본 모델'
                 #st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
             case '민원팩토리 모델':
-                #if st.session_state.model != '민원팩토리 모델':
-                #    st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[민원팩토리 모델]", icon = ":material/check:")
-                #    st.session_state.model = '민원팩토리 모델'
                 st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
             case '사하아이 연동':
                 #st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")

@@ -11,14 +11,14 @@ import uuid # 고유한 ID 생성을 위해 import
 
     
 def load_css():
-    #1.46.1
-    """with open('./css/style.css', encoding = "UTF-8") as f:
-        css = f.read()"""
     #1.48.0
     with open('./css/style.css', encoding = "UTF-8") as f:
         css = f.read()
+    with open('./css/button.css', encoding = "UTF-8") as f:
+        btn = f.read()
 
-    st.html(f'<style>{css}</style>')#, unsafe_allow_html=True)
+    st.html(f'<style>{css}</style>')
+    st.html(f'<style>{btn}</style>')#, unsafe_allow_html=True)
 
 
 def copy_button(text_to_copy: str, key: str):

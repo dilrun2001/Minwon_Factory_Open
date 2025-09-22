@@ -14,7 +14,9 @@ def show_lab():
                     st.write("- 탭: 탭을 생성하여 ")
                     option =  st.pills("표기 방식 변경", ["탭", "확장형"], label_visibility="collapsed", default= st.session_state.layout_check)
                     if option != st.session_state.layout_check:
+                        st.toast(f"화면 표시 방식이 변경되었습니다. {st.session_state.layout_check} -> :green[{option}]", icon = ":material/check:")
                         st.session_state.layout_check = option
+                        
                     #st.session_state.layout_check = st.toggle("표기 방식 변경")
                     """, on_change = show_popup, args = (":orange[:material/experiment:] 테스트 기능", '''현재 테스트 중인 기능입니다.   
                                                                                                 해당 기능 사용 시 민원 입력창과 결과창의 UI가 변경됩니다.''', None, True))"""
