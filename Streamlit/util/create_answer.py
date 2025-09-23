@@ -6,6 +6,7 @@ from css.theme import *
 from util.page_convert import *
 
 
+
 #답변 생성
 def input_answer():
     global result_check
@@ -23,8 +24,9 @@ def input_answer():
         return
     else:    
         #show_popup("민원 입력", f"민원을 생성하겠습니까?", generate_answer)
-        generate_answer()
         st.session_state.current_page = 1
+        generate_answer()
+        
 
 
 #선택한 답변 재생성
@@ -154,6 +156,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                 data['RAG'] = raganswers
                 end_task(task_id)
                 page_convert()
+                st.rerun()
               
 
 

@@ -151,7 +151,7 @@ def custom_textarea():
 def show_loading_overlay(message = "로딩 중입니다.", page_title="처리 중...", dialog = False):
 
     with open('./css/spinner.css', encoding = "UTF-8") as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+        st.html(f"<style>{f.read()}</style>")
     overlay = st.empty()
 
     def update_message(msg):
@@ -177,6 +177,17 @@ def show_loading_overlay(message = "로딩 중입니다.", page_title="처리 �
     finally:
         overlay.empty()
 
+def scroll_to_top():
+    st.components.v1.html(
+        """
+        <script>
+            window.setTimeout(function() {
+                window.parent.scrollTo(0, 0);
+            }, 0);
+        </script>
+        """,
+        height=0,
+    )
 
 @st.fragment
 def show_popup(

@@ -86,7 +86,7 @@ def show_admin():
                                                         old = st.text_input("기존 비밀번호", key = "old_possword", placeholder="기존 비밀번호를 입력해주세요.", type = "password")
                                                         new = st.text_input("신규 비밀번호", key = "new_password", placeholder="신규 비밀번호를 입력해주세요.", type = "password")
                                                         repeat = st.text_input("신규 비밀번호", key = "new_password_repeat", placeholder="신규 비밀번호를 한번 더 입력해주세요.", type = "password")
-                                                        if st.form_submit_button("수정", key = "admin_login_btn", type = "secondary"):
+                                                        if st.form_submit_button("수정",  type = "secondary"):
                                                                 if old != new:
                                                                         if new == repeat:
                                                                                 change_toml('app', 'admin_password', new, "관리자 비밀번호")

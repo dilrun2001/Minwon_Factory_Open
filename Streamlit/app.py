@@ -21,3 +21,4 @@ page = st.navigation(pages, position="top")
 
 page.run()
 set_menu()
+scroll_to_top()

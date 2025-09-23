@@ -77,7 +77,7 @@ div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
 
 
 div.st-key-file_reselect [data-testid = "stBaseButton-tertiary"]{
-    width: 150px;
+    width: 9.375rem;
     height: 15px;
     padding: 5px;
     position:fixed;
@@ -94,7 +94,7 @@ div.st-key-file_reselect [data-testid = "stIconMaterial"] {
 div.st-key-create_file [data-testid = "stBaseButton-tertiary"],
 div.st-key-download_file [data-testid = "stBaseButton-tertiary"]
 {
-    width: 150px;
+    width: 9.375rem;
     height: 15px;
     padding: 5px;
     position: fixed;
