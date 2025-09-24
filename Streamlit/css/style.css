@@ -1,4 +1,5 @@
-
+/*폰트 임포트*/
+@import url('https://fonts.googleapis.com/css2?family=Gothic+A1&family=IBM+Plex+Sans+KR&display=swap');
 :root {
     --main-color: #2766c2;
     --background: rgba(13, 13, 13, 0);
@@ -15,6 +16,8 @@ body{
 [data-testid = "stHeader"]{
 
     background-color: #edf0f5;
+    border-bottom-left-radius: 1.2rem;
+    border-bottom-right-radius: 1.2rem;
 }
 
 
@@ -31,8 +34,6 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
 }
 
 .stApp,
-[data-testid = "stBaseButton-secondary"],
-[data-testid="stBaseButton-secondaryFormSubmit"],
 .stAppToolbar,
 .stMainBlockContainer,
 [data-testid = "stFileUploaderDropzone"],
@@ -44,29 +45,6 @@ div.st-key-file_input > div[data-testid = "stElementContainer"]{
     border: 1px solid transparent;
 }
 
-[data-testid = "stBaseButton-secondary"],
-[data-testid= "stBaseButton-secondaryFormSubmit"]{
-    
-    border-radius: 3rem;
-}
-
-
-
-[data-testid = "stBaseButton-secondary"]:hover,
-[data-testid= "stBaseButton-secondaryFormSubmit"]:hover
-[data-testid = "stBaseButton-secondary"]:focus,
-[data-testid= "stBaseButton-secondaryFormSubmit"]:focus
-{
-    border-color: var(--main-color);
-    color: var(--main-color);
-    background-color: transparent;
-}
-
-/*페이지 다음, 이전 버튼 css*/
-div.st-key-input_before_btn [data-testid = "stMarkdownContainer"] p,
-div.st-key-input_next_btn [data-testid = "stMarkdownContainer"] p{
-    display: none;
-}
 
 [data-testid="stCode"] > pre {
     width:3rem;
@@ -74,10 +52,13 @@ div.st-key-input_next_btn [data-testid = "stMarkdownContainer"] p{
     background-color:  var(--main-color);
 }
 
+
+
+
 [data-testid="stCode"] > pre > div:first-child {
     display: none !important;
 }
-/*파일 업로더 css*/
+
 [data-testid = "stFileUploader"] section div span svg{
     font-size: 3rem;
 }
@@ -86,7 +67,9 @@ div.st-key-input_next_btn [data-testid = "stMarkdownContainer"] p{
     color: white;
 }
 [data-testid = "stFileUploader"] [data-testid = "stBaseButton-secondary"]:hover{
-    background-color: #2f7bec;
+    background-color: var(--main-color);
+    border:1px solid white;
+    color:white;
 } 
 [data-testid = "stVerticalBlock"]{
     border-radius:3rem;
@@ -132,21 +115,20 @@ div.st-key-input_next_btn [data-testid = "stMarkdownContainer"] p{
     left: 50%;
     transform: translate(-50%, -50%); /* X축과 Y축으로 자신의 크기의 50%만큼 이동하여 정중앙 맞춤 */
 
-    /* 텍스트가 아이콘과 버튼을 침범하지 않도록 너비를 제한*/
+    /* 텍스트가 아이콘과 버튼을 침범하지 않도록 너비를 제한합니다. */
     /* 이 값은 좌우 여백을 고려하여 조절할 수 있습니다. (예: 60%, 70% 등) */
     width: 65%;
     
-    /* 텍스트가 여러 줄일 경우를 대비해 가운데 정렬 */
+    /* 텍스트가 여러 줄일 경우를 대비해 가운데 정렬합니다. */
     text-align: center;
     white-space: pre-wrap; /* 필요에 따라 자동 줄바꿈 */
 
-    /* 가상 요소가 파일 선택 클릭을 방해하지 않도록 설정*/
+    /* 가상 요소가 파일 선택 클릭을 방해하지 않도록 설정합니다. */
     pointer-events: none;
 }
 
 [aria-selected="true"] [data-testid="stMarkdownContainer"],
-[data-baseweb = "tab"] [data-testid="stMarkdownContainer"]:hover
-{
+[data-baseweb = "tab"] [data-testid="stMarkdownContainer"]:hover{
     color: var(--main-color);
 }
 
@@ -174,16 +156,6 @@ button[data-baseweb = "tab"] > div > p {
 [data-baseweb="select"] > div:first-child:focus-within {
         border-color: var(--main-color) !important; 
     }
-[data-baseweb = "button-group"] [data-testid = "stBaseButton-pills"]{
-    background-color: transparent;
-}
-
-[data-baseweb = "button-group"] [ data-testid = "stBaseButton-pillsActive"],
-[data-baseweb = "button-group"] [data-testid = "stBaseButton-pills"]:hover{
-    border: 1px solid var(--main-color);
-    background-color: var(--background);
-    color: var(--main-color);
-}
 
 [data-testid = "stDialog"]{
     background-color: #2765c207
@@ -299,101 +271,13 @@ button[data-baseweb = "tab"] > div > p {
 
 
 [data-testid = "stMainBlockContainer"]{
-    padding-left: 7rem;
-    padding-right: 7rem;
+    padding-left: 9rem;
+    padding-right: 9rem;
     padding-top: 6rem;
 
 }
 
 
-/*홈 버튼 css*/
-/*div.st-key-clear_btn [data-testid = "stBaseButton-tertiary"]{
-    position: relative;
-    left:0.05rem;
-}*/
-/*div.st-key-clear_btn [data-testid = "stBaseButton-tertiary"],
-div.st-key-home_btn_setting_admin [data-testid = "stBaseButton-secondary"]{
-    width: 150px;
-    height: 15px;
-    padding: 5px;
-    position:fixed;
-    top: 0.6rem;
-    left: 11rem;
-    z-index: 999999999;
-    /*color: #292929;*/
-    /*background-color:transparent;
-    border: transparent;
-    font-size: 0.875rem;
-}
-div.st-key-clear_btn [data-testid = "stIconMaterial"],
-div.st-key-home_btn_setting_admin [data-testid = "stIconMaterial"] {
-    font-size: 25px;
-}*/
-
-/*div.st-key-clear_btn [data-testid = "stMarkdownContainer"] p,
-div.st-key-home_btn_setting_admin [data-testid = "stMarkdownContainer"] p{
-    display: none;
-}*/
-
-/* 파일 형식 재선택 버튼 */
-div.st-key-file_reselect [data-testid = "stBaseButton-tertiary"],
-div.st-key-file_reselect [data-testid = "stBaseButton-tertiary"]:hover,
-div.st-key-file_reselect [data-testid = "stBaseButton-tertiary"]:focus{
-    width: 150px;
-    height: 15px;
-    padding: 5px;
-    position:fixed;
-    top: 0.6rem;
-    right: 9rem;
-    z-index: 999999999;
-    font-size: 0.875rem;
-}
-div.st-key-file_reselect [data-testid = "stIconMaterial"] {
-    font-size: 25px;
-}
-
-/*파일 생성, 파일 다운로드 버튼*/
-div.st-key-create_file [data-testid = "stBaseButton-tertiary"],
-div.st-key-create_file [data-testid = "stBaseButton-tertiary"]:hover,
-div.st-key-create_file [data-testid = "stBaseButton-tertiary"]:focus,
-div.st-key-download_file [data-testid = "stBaseButton-tertiary"],
-div.st-key-download_file [data-testid = "stBaseButton-tertiary"]:hover,
-div.st-key-download_file [data-testid = "stBaseButton-tertiary"]:focus
-{
-    width: 150px;
-    height: 15px;
-    padding: 5px;
-    position: fixed;
-    top: 0.6rem;
-    right: 0.5rem; 
-    z-index: 9999999999;
-}
-
-div.st-key-create_file [data-testid = "stIconMaterial"],
-div.st-key-download_file [data-testid = "stIconMaterial"] {
-    font-size: 25px;
-}
-/*민원 생성 버튼*/
-/*민원 요지 생성 버튼*/
-div.st-key-input_page_show,
-/*민원 재생성 버튼*/
-div[class *= "recreate_answer_"],
-div.st-key-total_regenerate_btn,
-div.st-key-input_minwon_generate,                       /*수동 입력 버튼 */
-div.st-key-FormSubmitter-admin_login_form-----------,
-div.st-key-FormSubmitter-manual_input------,    
-div.st-key-edit_particle_accept_btn,
-div.st-key-edit_accept_btn,
-div.st-key-edit_unaccept_btn,
-div.st-key-edit_format_btn{
-    margin-left: auto;
-}
-
-div.st-key-input_page_show [data-testid = "stBaseButton-secondary"]:hover{
-    /*background-color: #161616 !important;*/
-    color: var(--main-color) !important;
-    border:1px solid var(--main-color);
-}
 
 div[class *= "first_answer_"]{
     border-radius: 1.6rem;
@@ -420,30 +304,7 @@ div[class *= "resilt_first_"] [data-testid = "stWidgetLabel"]{
 }
 
 
-
-div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"]{
-    width:3rem !important;
-}
-
-div[class *= "current_page_"] [data-testid = "stBaseButton-secondary"]{
-    width:3rem !important;
-    background-color: var(--main-color);
-    color:#edf0f5;
-}
-
-
 /*답변 스위치 버튼*/
-
-
-div[class *= "switch_option_"] [data-testid="stBaseButton-tertiary"]{
-    width: 120px;
-
-}
-
-
-div[class *= "switch_option_"] [data-testid="stIconMaterial"]{
-    font-size: 50px;
-}
 
 
 /*답변 멀티 재생성 버튼*/
@@ -453,80 +314,12 @@ div[class *= "switch_option_"] [data-testid="stIconMaterial"]{
 }
 
 
-
-div.st-key-total_regenerate_btn [data-testid="stBaseButton-secondary"]:hover,
-div.st-key-agree_btn [data-testid="stBaseButton-secondary"]:hover,
-div.st-key-disagree_btn [data-testid="stBaseButton-secondary"]:hover,
-div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
-    background-color: transparent !important;
-    color: var(--main-color)!important;
-    border: 1px solid var(--main-color) !important;
-}
-
-
-
-
-div.st-key-input_minwon_generate [data-testid = "stBaseButton-secondary"]:hover{
-    background-color: transparent !important;
-    color: var(--main-color)!important;
-    border: 1px solid var(--main-color) !important;
-}
-
 div.st-key-input_page_option [data-testid = "stHorizontalBlock"]{
     position:fixed;
     left: 25%;
 }
 
 
-div.st-key-FormSubmitter-admin_login_form----------- [data-testid = "stBaseButton-secondaryFormSubmit"]:hover,
-div.st-key-FormSubmitter-admin_login_form----------- [data-testid = "stBaseButton-secondaryFormSubmit"]:focus,
-div.st-key-FormSubmitter-manual_input------ [data-testid="stBaseButton-secondaryFormSubmit"]:hover,
-div[class *= "recreate_answer_"] [data-testid="stBaseButton-secondary"]:hover,
-div.st-key-FormSubmitter-manual_input------ [data-testid="stBaseButton-secondaryFormSubmit"]:focus,
-div[class *= "recreate_answer_"] [data-testid="stBaseButton-secondary"]:focus
-{
-    background-color: transparent !important;
-    color: var(--main-color)!important;
-    border: 1px solid var(--main-color) !important;
-}
-
-
-/*파일 입력 버튼*/
-/*
-div.st-key-file_input [data-testid = "stBaseButton-secondary"]:hover{
-    color: #9C2333 !important;
-    border: 1px solid #9C2333 !important;
-}*/
-
-/* file-selector 마커 바로 다음에 나오는 stButtonGroup만 적용 */
-div.st-key-file_format .stButtonGroup{
-    position: fixed !important;
-    top: 0.8rem;
-    right: 8.5rem;
-    z-index: 9999999999 !important;
-    background: transparent;
-    gap: 8px;
-    padding: 2px 12px;
-}
-
-
-div.st-key-file_format .stButtonGroup button:hover{
-    color: var(--main-color);
-    background-color: transparent;
-    border-color: var(--main-color);
-}
-
-
-
-/* 모델 선택창 */
-/*div.st-key-llm_model_select .stSelectbox{
-    position: fixed;
-    width: 200px;
-    top: 0.7rem;
-    left: 8rem;
-    background-color: transparent;
-    z-index: 99999999999999 !important;
-}*/
 [data-testid = "stPopoverBody"]{
     border: 1px solid var(--main-color);
 }
@@ -534,57 +327,17 @@ div.st-key-llm_model_select{
     position: fixed;
 
     top: 0.6rem;
-    left: 8rem;
+    left: 5.5rem;
     gap: 0.2rem;
     background-color: transparent;
     z-index: 99999999 !important;
 }
-div.st-key-llm_model_select [data-testid = "stPopoverButton"]{
-    background-color: transparent;
-    border-color:transparent;
-}
-div.st-key-llm_model_select [data-testid="stPopoverButton"] > div[data-testid = "stMarkdownContainer"]{
-    display: none;
-}
-div.st-key-llm_model_select [data-testid="stPopoverButton"] > div svg{
-    display: none;
-}
-div.st-key-llm_model_select [data-testid = "stIconMaterial"]{
-    font-size: 25px;
-    font-weight: 100;
-}
-div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
-    background-color: transparent;
-    color : var(--main-color);
-    border-color: transparent;
-}
+
 /*#161616;*/
 div.st-key-llm_model_select .st-br{
     background-color: #161616;
 }
 
-    
-.rc-overflow [data-testid = "stTopNavLink"]{
-    
-    background-color: transparent;
-}
-
-.rc-overflow [data-testid = "stIconMaterial"]{
-    font-size: 25px;
-    font-weight:100;
-    color:dark;
-}
-.rc-overflow [data-testid = "stIconMaterial"]:hover{
-    color:var(--main-color);
-}
-.rc-overflow a[aria-current="page"] [data-testid="stIconMaterial"]{
-    color:var(--main-color);
-}
-
-
-.rc-overflow .stSidebarNavLinkContainer {
-    font-size: 28px !important;
-}
 [data-testid = "stStatusWidget"]{
     display:none;
 }

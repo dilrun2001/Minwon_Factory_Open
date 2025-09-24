@@ -9,6 +9,15 @@ import uuid # 고유한 ID 생성을 위해 import
 
 
 
+def load_font():
+    st.html(
+    """
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gothic+A1&family=IBM+Plex+Sans+KR&display=swap" rel="stylesheet">
+    """
+    ) 
+
     
 def load_css():
     #1.48.0
@@ -152,6 +161,7 @@ def show_loading_overlay(message = "로딩 중입니다.", page_title="처리 �
 
     with open('./css/spinner.css', encoding = "UTF-8") as f:
         st.html(f"<style>{f.read()}</style>")
+
     overlay = st.empty()
 
     def update_message(msg):

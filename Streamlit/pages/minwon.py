@@ -16,11 +16,6 @@ from util.AI_queue import *
 from util.create_answer import *
 #from st_copy import copy_button
 
-
-
-
-
-
 #메인 화면
 # 해당 부분 추가 함으로서 (벡터 db 를 생성후) home 을 출력 합니다
 def show_home():
@@ -302,12 +297,14 @@ def show_input():
 
     content_placeholder = st.container()
 
-    time.sleep(0.2)
+
     show_input_container(st.session_state.layout_check, content_placeholder)
-    if st.session_state.multimode:
-        show_multi_page()
+    
     st.write('''---''')
-    show_generate_btn()
+    with st.container(key = "input_under_ui_option", horizontal=True):
+        if st.session_state.multimode:
+            show_multi_page()
+        show_generate_btn()
 
 #결과창     
 #결과창 구조: show_total이라는 함수 안에 show_total_container를 호출, 이때 RAG가 켜져 있으면 show_first, show_second에서 각각 값을 리턴받아 실행
@@ -421,7 +418,7 @@ def show_result():
                 with expander:
                     #RAG가 on 상태일 경우 2개의 area가 등장하며 유사 답변이 존재할 경우 다른 area에 유사 답변이 담겨서 출력
                     #off 상태일 때는 답변 area만 출력
-                    if config['app']['rag'] == "off":
+                    if config['app']['rag'] == "on":
                         first, spacer, second = st.columns((6.8, 1.4, 6.8)) #8,1.2,8 6.8, 1.6, 6.8
                         with spacer:
                             for j in range(11):
@@ -472,7 +469,8 @@ def show_result():
                     else:
                         
                         copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")
-                        show_first(index)
+                        with st.container(key = f"first_answer_{index}"):
+                            show_first(index)
                         with st.container(key = f"result_checkbox_container_{i}", horizontal=True, gap = "medium"):
                                 row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{i}")  
                                 edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{i}")
@@ -498,10 +496,12 @@ def show_result():
             #st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 :red[교환]됩니다.")
         #st.session_state.layout_check = st.toggle("기능 테스트", key = "result_layout_check")
         show_total_container(st.session_state.layout_check)
-        if st.session_state.multimode:
-            show_multi_page()
+       
         st.write('''---''')
-        show_fragment_button()
+        with st.container(key = "result_under_ui_option", horizontal=True):
+            if st.session_state.multimode:
+                show_multi_page()
+            show_fragment_button()
           
         
     #복수 생성일 경우 해당 함수 실행

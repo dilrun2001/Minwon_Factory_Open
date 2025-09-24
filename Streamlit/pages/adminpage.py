@@ -38,8 +38,8 @@ def fetch_current_format(format_type):
 def show_admin():
         #st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)                           
         def test_spinner():
-            timer = 50
-            with show_loading_overlay(f"로딩 화면 테스트 중입니다 해당 화면이 {int(timer / 60)}분 동안 지속됩니다.", dialog = True):
+            timer = 10
+            with show_loading_overlay(f"로딩 화면 테스트 중입니다 해당 화면이 {int(timer / 60)}분 동안 지속됩니다."):
                 time.sleep(timer)
         if st.session_state.admin:
                         st.set_page_config(page_title = "관리자 페이지", page_icon=":material/admin_panel_settings:", layout="wide", initial_sidebar_state="collapsed")
