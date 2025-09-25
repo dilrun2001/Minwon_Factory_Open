@@ -6,6 +6,15 @@ from streamlit.components.v1 import html
 from pages.minwon import  input_db
 
 #파일 형식 재선택
+
+def start_download(file_set):
+ 
+    if file_set == "CSV":
+        st.session_state.file_set = "CSV"
+    elif file_set =="Excel":
+        st.session_state.file_set = "Excel"
+    grade_check()
+
 def file_reselect():
     global new_data
     if st.session_state.file_download:
@@ -100,6 +109,7 @@ def set_menu():
                             </script>
                         """
                     html(js_code, height=0, width=0)
+                    st.session_state.file = None
                     st.session_state.file_download = False
 
 
