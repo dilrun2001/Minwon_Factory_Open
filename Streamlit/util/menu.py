@@ -2,8 +2,8 @@ import streamlit as st
 import time
 from css.theme import *
 from util.state_copy import *
+from streamlit.components.v1 import html
 from pages.minwon import  input_db
-
 
 #파일 형식 재선택
 def file_reselect():
@@ -25,6 +25,7 @@ def grade_check():
         return False
     else:
         input_db()
+
 
 @st.fragment
 def set_menu():
@@ -73,26 +74,34 @@ def set_menu():
                 if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", type = "tertiary"):
                     show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
             if st.session_state['minwon_check'] == 'result':
+              
+                if st.button("다운로드 CSV",key = "download_CSV", type = "secondary",):
+                    start_download("CSV")
+                    
+                if st.button("다운로드 Excel",key = "download_Excel", type = "secondary", on_click = start_download, kwargs = {"file_set": "Excel"}):
+                    start_download("Excel")
+                    
                 if st.session_state.file_download:
-                    
                     st.download_button(
-                        label = "다운로드",
-                        data = st.session_state.file,
-                        file_name = f"민원 결과.csv" if st.session_state.file_set =="CSV" else f"민원 결과.xlsx",
-                        key = "download_file",
-                        icon = ":material/download:",
-                        on_click = input_db,
-                        type="tertiary",
-                    )
-                    #st.markdown('<span id = "reselect-button"></span>', unsafe_allow_html=True)
-                    st.button("파일 형식 재선택", key = "file_reselect", icon = ":material/edit_note:", on_click= file_reselect, help = "다운받을 파일의 형식을 재선택합니다.", type="tertiary")
+                        label="히든 다운로드 버튼",
+                        data=st.session_state.file,
+                        file_name=f"민원 결과.csv" if st.session_state.file_set =="CSV" else f"민원 결과.xlsx",
+                        key='hidden_download_file' 
+                     )
+                    js_code = f"""
+                            <script>
+                                const downloader = window.parent.document.querySelector('.st-key-hidden_download_file button');
+                                if (downloader) {{
+                                    downloader.click();
+                                    console.log('Downloader found and clicked!');
+                                }} else {{
+                                    console.error('Downloader element not found!');
+                                }}
+                            </script>
+                        """
+                    html(js_code, height=0, width=0)
+                    st.session_state.file_download = False
+
+
                 
-                else:
-                    
-                    file_set = st.pills("다운받을 파일 확장자", options= ( "Excel", "CSV"), key = "file_format", help = "다운받을 파일의 확장자를 선택해주세요.", label_visibility="collapsed", default= "Excel")
-                    if st.session_state.file_set != file_set:
-                        st.toast(f"다운로드 파일 확장자가 변경되었습니다. {st.session_state.file_set} -> :green[{file_set}]",icon = ":material/check:")
-                        st.session_state.file_set = file_set
-                    
-                    if st.button("파일 생성", key = "create_file", icon = ":material/view_list:", type="tertiary"):
-                        grade_check()
+

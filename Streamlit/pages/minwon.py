@@ -530,7 +530,6 @@ def show_result():
              if st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다."):
                 reinput_answer()
     show_total()
-
         
 
 #데이버베이스 입력
