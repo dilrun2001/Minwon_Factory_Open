@@ -174,8 +174,20 @@ def clear_state():
     if "layout_check" not in st.session_state:
         st.session_state.layout_check = "탭"
 
-    if "input_status" not in st.session_state:
-        st.session_state.input_status = ""
+    if "multimode" not in st.session_state:
+        st.session_state.multimode = False
+
+    if "total_page"not in st.session_state:
+        st.session_state.total_page = 1
+
+    if "first_page"not in st.session_state:
+        st.session_state.first_page = 1
+    
+    if "end_page" not in st.session_state:
+        st.session_state.end_page = 1
+
+    if "current_page" not in st.session_state:
+        st.session_state.current_page = 1
 
     
 
@@ -230,4 +242,6 @@ def minwon_clear():
     st.session_state.df = pd.DataFrame()
     st.session_state.ai_check = False
     st.session_state['btn_show'] = False
-    st.session_state.input_status = ""
+    st.session_state.current_page = 1
+    st.session_state.end_page = 1
+    st.session_state.multimode = False
