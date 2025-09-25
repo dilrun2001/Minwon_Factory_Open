@@ -13,6 +13,7 @@ from util.toml_edit import *
 import random
 import string
 from util.AI_queue import *
+from streamlit.components.v1 import html
 
 
 def file_reselect():
@@ -488,19 +489,28 @@ def show_result():
     
 
 
+def start_download(file_set):
+ 
+    if file_set == "CSV":
+        st.session_state.file_set = "CSV"
+    elif file_set =="Excel":
+        st.session_state.file_set = "Excel"
+    grade_check()
+
 def grade_check():
     data = st.session_state.df
     grade_check = (data[data['최종평점'] == 0].index+1).tolist()
 
     if grade_check:#(data['최종평점'] == 0).any():
         show_popup(":red[:material/block:]  파일 생성 오류", f'''답변들의 평점이 채점되지 않았습니다.    
-                   미입력 민원: :red[{'번, '.join(map(str, grade_check))}번]'''
+                    미입력 민원: :red[{'번, '.join(map(str, grade_check))}번]'''
                    , popup_check=True)
         #st.toast(f"다음과 같은 민원의 평점이 채점되지 않았습니다. :red[미입력 민원: {', '.join(map(str, grade_check))}]", icon =":material/block:")
         return False
     else:
-        show_popup(":material/view_list: 파일 생성", f"""선택한 답변으로 파일을 생성하시겠습니까?   
-                   현재 :blue[{st.session_state.file_set}] 형식을 선택하셨습니다.""", input_db, False,  {},)
+        input_db()
+        # show_popup(":material/view_list: 파일 생성", f"""선택한 답변으로 파일을 생성하시겠습니까?   
+        #            현재 :blue[{st.session_state.file_set}] 형식을 선택하셨습니다.""", input_db, False,  {},)
         
 #데이버베이스 입력
 #데이터프레임 임시 입력 작업 추가
