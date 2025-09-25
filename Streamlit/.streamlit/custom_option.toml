@@ -5,7 +5,7 @@
 ai = "on" #ai on/off 기능
 rag = "off" #ragai on/off 기능
 history = "on" #민원히스토리 on/off
-setting = "off" #설정 on/off
+setting = "on" #설정 on/off
 format = "off" #민원 설정 양식 on/off
 admin_password = "minfacadmin123"
 [sub]

@@ -1,15 +1,19 @@
 [theme]
 
 base = "light"
-font = "nanum gothic"
-codeFont = "nanum gothic"
-headingFont = "nanum gothic"
+font = "ibm plex sans kr"
+codeFont = "ibm plex sans kr"
+headingFont = "ibm plex sans kr"
 codeFontSize = "16px"
 primaryColor = "#2766C2"
 
 
 [server]
 runOnSave = true
+headless = true
+
+[browser]
+gatherUsageStats = false
 
 [client]
 showSidebarNavigation = false

@@ -1,0 +1,169 @@
+/* 파일 업로더, stdialog 같이 따로 작업해줘야 하는 버튼을 제외한 나머지 버튼들은 해당 css 파일에 이식되었습니다.*/
+:root {
+    --main-color: #2766c2;
+    --background: rgba(13, 13, 13, 0);
+    --error-color: rgb(255,43,43);
+    --accept-color: rgb(21, 130, 55);
+    --warning-color: rgb(217, 90, 0);
+    --font-color: inherit;
+}
+
+/*기본 테두리 버튼 css*/
+[data-testid = "stBaseButton-secondary"],
+[data-testid="stBaseButton-secondaryFormSubmit"]{
+    background-color: var(--background);
+    border-radius: 3rem;
+}
+
+[data-testid = "stBaseButton-secondary"]:hover,
+[data-testid= "stBaseButton-secondaryFormSubmit"]:hover
+[data-testid = "stBaseButton-secondary"]:focus,
+[data-testid= "stBaseButton-secondaryFormSubmit"]:focus,
+div.st-key-file_format .stButtonGroup button:hover,
+[data-baseweb = "button-group"] [ data-testid = "stBaseButton-pillsActive"],
+[data-baseweb = "button-group"] [data-testid = "stBaseButton-pills"]:hover
+{
+    border-color: var(--main-color);
+    color: var(--main-color);
+    background-color: transparent;
+}
+
+[data-testid = "stBaseButton-tertiary"]:hover{
+    color: var(--main-color);
+}
+/*st.pills 기본 css */
+[data-baseweb = "button-group"] [data-testid = "stBaseButton-pills"]{
+    background-color: transparent;
+}
+
+div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"]{
+    width:3rem !important;
+}
+
+div[class *= "current_page_"] [data-testid = "stBaseButton-secondary"]{
+    width:3rem !important;
+    background-color: var(--main-color);
+    color:#edf0f5;
+}
+
+div[class *= "switch_option_"] [data-testid="stBaseButton-tertiary"]{
+    width: 120px;
+
+}
+div[class *= "switch_option_"] [data-testid="stIconMaterial"]{
+    font-size: 50px;
+}
+
+/*llm을 포함한 모델 선택 메뉴 */
+div.st-key-llm_model_select [data-testid = "stPopoverButton"]{
+    background-color: transparent;
+    border-color:transparent;
+}
+div.st-key-llm_model_select [data-testid="stPopoverButton"] > div[data-testid = "stMarkdownContainer"]{
+    display: none;
+}
+div.st-key-llm_model_select [data-testid="stPopoverButton"] > div svg{
+    display: none;
+}
+div.st-key-llm_model_select [data-testid = "stIconMaterial"]{
+    font-size: 25px;
+    font-weight: 100;
+}
+div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
+    background-color: transparent;
+    color : var(--main-color);
+    border-color: transparent;
+}
+
+
+div.st-key-file_reselect [data-testid = "stBaseButton-tertiary"]{
+    width: 9.375rem;
+    height: 15px;
+    padding: 5px;
+    position:fixed;
+    top: 0.6rem;
+    right: 9rem;
+    z-index: 999999999;
+    font-size: 0.875rem;
+}
+div.st-key-file_reselect [data-testid = "stIconMaterial"] {
+    font-size: 25px;
+}
+
+/*파일 생성, 파일 다운로드 버튼*/
+div.st-key-create_file [data-testid = "stBaseButton-tertiary"],
+div.st-key-download_file [data-testid = "stBaseButton-tertiary"]
+{
+    width: 9.375rem;
+    height: 15px;
+    padding: 5px;
+    position: fixed;
+    top: 0.6rem;
+    right: 0.5rem; 
+    z-index: 9999999999;
+}
+
+div.st-key-input_page_show,
+/*민원 재생성 버튼*/
+div[class *= "recreate_answer_"],
+div.st-key-total_regenerate_btn,
+div.st-key-input_minwon_generate,                       /*수동 입력 버튼 */
+div.st-key-FormSubmitter-admin_login_form-----------,
+div.st-key-FormSubmitter-manual_input------,    
+div.st-key-edit_particle_accept_btn,
+div.st-key-edit_accept_btn,
+div.st-key-edit_unaccept_btn,
+div.st-key-edit_format_btn{
+    margin-left: auto;
+}
+
+/* file-selector 마커 바로 다음에 나오는 stButtonGroup만 적용 */
+div.st-key-file_format .stButtonGroup{
+    position: fixed !important;
+    top: 0.8rem;
+    right: 8.5rem;
+    z-index: 9999999999 !important;
+    background: transparent;
+    gap: 8px;
+    padding: 2px 12px;
+}
+
+
+div.st-key-file_format .stButtonGroup button:hover{
+    color: var(--main-color);
+    background-color: transparent;
+    border-color: var(--main-color);
+}
+
+/*페이지 다음, 이전 버튼 css*/
+div.st-key-input_before_btn [data-testid = "stMarkdownContainer"] p,
+div.st-key-input_next_btn [data-testid = "stMarkdownContainer"] p,
+div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p,
+.rc-overflow span[label="민원 입력"],
+.rc-overflow span[label="관리자 설정"],
+.rc-overflow span[label="설정"]
+{
+    display: none;
+}
+
+
+/*상단바 버튼 css*/
+.rc-overflow [data-testid = "stTopNavLink"]{
+    
+    background-color: transparent;
+}
+
+.rc-overflow [data-testid = "stIconMaterial"]{
+    font-size: 25px;
+    font-weight:100;
+    color:dark;
+}
+.rc-overflow [data-testid = "stIconMaterial"]:hover{
+    color:var(--main-color);
+}
+.rc-overflow a[aria-current="page"] [data-testid="stIconMaterial"]{
+    color:var(--main-color);
+}
+.rc-overflow .stSidebarNavLinkContainer {
+    font-size: 28px !important;
+}
