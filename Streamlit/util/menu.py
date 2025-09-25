@@ -24,14 +24,7 @@ def grade_check():
         #st.toast(f"다음과 같은 민원의 평점이 채점되지 않았습니다. :red[미입력 민원: {', '.join(map(str, grade_check))}]", icon =":material/block:")
         return False
     else:
-        with show_loading_overlay() as update:
-            update(f"{st.session_state.file_set} 파일을 생성중입니다.")
-            input_db()
-            time.sleep(1)
-            st.rerun()
-        #show_popup(":material/view_list: 파일 생성", f"""선택한 답변으로 파일을 생성하시겠습니까?   
-        #           현재 :blue[{st.session_state.file_set}] 형식을 선택하셨습니다.""", input_db, False,  {},)
-
+        input_db()
 
 @st.fragment
 def set_menu():

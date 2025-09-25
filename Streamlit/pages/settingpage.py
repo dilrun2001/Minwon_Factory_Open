@@ -17,7 +17,7 @@ def show_admin():
                 time.sleep(timer)
         if st.session_state.admin:
                         st.set_page_config(page_title = "관리자 페이지", page_icon=":material/admin_panel_settings:", layout="wide", initial_sidebar_state="collapsed")
-                        default, format, DB = st.tabs(['기본 설정', '양식', "DB 관리"])
+                        default, format, DB = st.tabs([':material/admin_panel_settings: 관리자 설정', ':material/edit: 양식', ":material/database: DB 관리"])
                         with default:
                                 st.subheader("관리자 페이지")
                                 #left, center, right = st.columns([6,6,6])
@@ -183,8 +183,8 @@ def show_lab():
 
 
 def show_setting():
-    
-    category = st.pills("설정 카테고리", options = ['기본 설정', '관리자 설정'], default='기본 설정')
+    st.session_state['page'] = 'setting'
+    category = st.pills("설정 카테고리", options = ['기본 설정', '관리자 설정'], default='기본 설정', label_visibility="collapsed")
     match category:
             case '기본 설정':
                   show_lab()

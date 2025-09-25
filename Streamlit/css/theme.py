@@ -54,8 +54,8 @@ def copy_button(text_to_copy: str, key: str):
         .copy-btn-{key} {{
 
             width: 2rem;
-            height: 1rem;
-            padding:0;
+            height: 1.5rem;
+            padding-top:0;
             gap:0;
             justify-content: center;
             display: inline-block;
@@ -113,7 +113,7 @@ def copy_button(text_to_copy: str, key: str):
     }}
     </script>
     """
-    components.html(html_code, height=25)
+    components.html(html_code, height=25, width = 25)
 
 
 def highlight_js(highlight_data):
