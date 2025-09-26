@@ -75,6 +75,18 @@ div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
     border-color: transparent;
 }
 
+div.st-key-llm_model_select > div.st-key-download_CSV{
+    position: absolute;
+    left: 85%;
+}
+div.st-key-llm_model_select > div.st-key-download_Excel{
+    position: absolute;
+    left: 90%;
+}
+
+div.st-key-llm_model_select > div.st-key-hidden_download_file{
+    left: -1000%;
+}
 
 div.st-key-file_reselect [data-testid = "stBaseButton-tertiary"]{
     width: 9.375rem;
