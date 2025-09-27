@@ -8,6 +8,7 @@ from util.state_copy import *
 from util.page_convert import *
 import util.llama3_korea_bllossomQ8 as useAi #우리가 만든 ai를 사용하기위한 임포트
 #import util.find_similar as ragai
+from io import BytesIO
 from util.toml_edit import *
 import random
 import string
@@ -54,7 +55,7 @@ def show_home():
                     '답변요지': "",
                     '민원요지': "",
                     '최종답변': "",
-                    '최종평점': "",
+                    '최종평점': 0,
                     '민원 카테고리': "일반",
                     '민원 긴급도': "매우 낮음",
                     '답변 평점': 0,
@@ -99,7 +100,7 @@ def show_home():
                         st.session_state.id = make_random_id()
                         st.session_state.df['답변요지'] = ""
                         st.session_state.df['최종답변'] = ""
-                        st.session_state.df['최종평점'] = ""
+                        st.session_state.df['최종평점'] = 0
                         st.session_state.df['민원 카테고리'] = "일반"
                         st.session_state.df['민원 긴급도'] = "매우 낮음"
                         st.session_state.df['답변 평점'] = 0
@@ -377,7 +378,7 @@ def show_result():
             if st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:"):
                 generate_answer(index, True, False)
     
-    # 메인 답변 구조 출력
+    #메인 답변 구조 출력
     # 메뉴 출력 방식에 따라 탭, 확장형 탭으로 구성
     # rag 옵션 on/off 여부에 따라 값이 달라지며 off일 경우 rag 창은 출력되지 않는다.
     # 9월 25일 추가 업데이트 반영-> 민원 내용 편집 시 기존에 화면 아래에 붙었던걸 이제 RAG를 죽이고 
@@ -419,7 +420,7 @@ def show_result():
                 with expander:
                     #RAG가 on 상태일 경우 2개의 area가 등장하며 유사 답변이 존재할 경우 다른 area에 유사 답변이 담겨서 출력
                     #off 상태일 때는 답변 area만 출력
-                    if config['app']['rag'] == "off":
+                    if config['app']['rag'] == "on":
                         first, spacer, second = st.columns((6.8, 1.4, 6.8)) #8,1.2,8 6.8, 1.6, 6.8
                         
                         with first:
@@ -484,12 +485,15 @@ def show_result():
                     else:
                         first, spacer, second = st.columns((6.8, 1.4, 6.8))
                         with first:
-                            copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")
+                            with st.container(key = f"result_checkbox_only_container_{index}", horizontal=True, gap = "medium", width=330):
+                                    copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")   
+                                    row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")
+                                    edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{i}")
                             with st.container(key = f"first_answer_{index}"):
                                 show_first(index)
                             with st.container(key = f"result_checkbox_container_{i}", horizontal=True, gap = "medium"):
-                                    row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{i}")  
-                                    edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{i}")
+                                    #row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{i}")  
+                                    #edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{i}")
                                     if row['답변 평점'] is not None:
                                         row['답변 평점'] = mapping[row['답변 평점']]
                                     else:
@@ -529,9 +533,63 @@ def show_result():
              if st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다."):
                 reinput_answer()
     show_total()
+
         
 
+#데이버베이스 입력
+#데이터프레임 임시 입력 작업 추가
+#6/11 선택한 답변 값이 들어가도록 수정
+#개편 반영전 현재 순서 : db 입력 -> 파일 생성
+def input_db():#format):
+    def insert_data():
+        global new_data
+        data = st.session_state.df
+        #grade_check = (data[data['최종평점'] == 0].index+1).tolist()
+        for i, row in data.iterrows():
+            print(f"{row['최종평점']}")
+            #print(row['최종답변'])
+            if st.session_state.db_check is not True:
+                run_query("INSERT INTO history (timestamp, name, category, urgency, minwon,answer_yogi,response, grade) VALUES (%s, %s, %s, %s, %s,%s,%s, %s)",
+                        (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), row['이름'], row['민원 카테고리'], row['민원 긴급도'], row['민원내용'],row['답변요지'],row['최종답변'], row['최종평점']),
+                            fetch = False
+                        )
 
+            new_data = pd.DataFrame([{
+                "민원내용": row['민원내용'],
+                "답변내용": row['최종답변'],
+            }])
+            st.session_state.save_df = pd.concat(
+                    [st.session_state.save_df, new_data],
+                    ignore_index=True
+            )
+        #print(st.session_state.save_df)
+        if st.session_state.db_check == False:
+            st.session_state.db_check = True
+        return True
+        
+
+    def create_file():
+        match (st.session_state.file_set):
+            case("CSV"):
+                st.session_state.file =  st.session_state.save_df.to_csv().encode("utf-8-sig")
+            case ("Excel"):
+                output = BytesIO()
+                with pd.ExcelWriter(output, engine = "xlsxwriter") as writter:
+
+                    st.session_state.save_df.to_excel(writter, index = False, sheet_name = '시트1')
+                    workbook = writter.book
+                    worksheet = writter.sheets['시트1']
+                    wrap_format = workbook.add_format({'text_wrap' : True})
+                    for col, value in enumerate(st.session_state.save_df.values):
+                        worksheet.set_column(col, col,  30, wrap_format)
+                st.session_state.file = output.getvalue()
+        st.session_state.file_download = True
+        
+
+              
+    if insert_data():
+        create_file()
+    
     #st.success("데이터베이스에 등록이 완료되었습니다.")
 
 
