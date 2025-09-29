@@ -1,6 +1,10 @@
 import json
+import matplotlib
 import matplotlib.pyplot as plt
 from bert_score import score
+
+# matplotlib 백엔드를 대화형으로 설정
+matplotlib.use('TkAgg') 
 
 plt.rcParams['font.family'] ='Malgun Gothic'
 plt.rcParams['axes.unicode_minus'] =False
@@ -39,7 +43,7 @@ with open(file_llama3, 'r', encoding='utf-8') as f:
 
         scores_llama3.append(compute_bertscore([llama3_answer], [gt]))
 
-# 🔥 3. 결과 저장 (JSONL)
+# 3. 결과 저장 (JSONL)
 with open("bertscore.jsonl", "w", encoding="utf-8") as f:
     for i in range(len(scores_finetuned)):
         item = {
@@ -53,7 +57,7 @@ with open("bertscore.jsonl", "w", encoding="utf-8") as f:
 # 4. 박스플롯 출력
 plt.figure(figsize=(8, 6))
 plt.boxplot([scores_finetuned, scores_q8, scores_llama3],
-            labels=["Fine-tuned", "Q8 양자화", "LLaMA3 원본"])
+            tick_labels=["Fine-tuned", "Q8 양자화", "LLaMA3 원본"]) # labels -> tick_labels로 변경
 plt.title("BERTScore 비교 (Fine-tuned vs Q8 vs LLaMA3)")
 plt.ylabel("BERTScore (F1)")
 plt.grid(axis='y')

@@ -1,25 +1,29 @@
-import matplotlib.pyplot as plt  # ← matplotlib.pyplot로 수정
+import matplotlib
+import matplotlib.pyplot as plt
 import json
 import numpy as np
 from matplotlib.cbook import boxplot_stats
 
-plt.rcParams['font.family'] ='Malgun Gothic'
-plt.rcParams['axes.unicode_minus'] =False
+# Set a backend that supports GUI display
+matplotlib.use('Qt5Agg') # For example, 'Qt5Agg' or 'TkAgg'
+
+plt.rcParams['font.family'] = 'Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] = False
 
 # 데이터 저장 리스트
 sim1_values = []
 sim2_values = []
 sim3_values = []
-time1_values =[]
-time2_values =[]
+time1_values = []
+time2_values = []
 
-llamaBest=0
-finetuneBest =0
-Q8Best=0
+llamaBest = 0
+finetuneBest = 0
+Q8Best = 0
 
-llamaWorst=1
-finetuneWorst=1
-Q8Worst=1
+llamaWorst = 1
+finetuneWorst = 1
+Q8Worst = 1
 
 input_file = 'compare_q8_vs_finetuned.jsonl'
 line_count = 0
@@ -38,28 +42,25 @@ with open(input_file, 'r', encoding='utf-8') as infile:
             time1 = data.get('runtime_finetuned', None)
             time2 = data.get('runtime_q8', None)
 
-
             if sim1 is not None and sim2 is not None:
                 sim1_values.append(sim1)
                 sim2_values.append(sim2)
-                if(finetuneBest < sim1):
-                    finetuneBest =sim1
-                    word1Best = data.get('answer_finetuned',None)
-                if(finetuneWorst > sim1):
+                if (finetuneBest < sim1):
+                    finetuneBest = sim1
+                    word1Best = data.get('answer_finetuned', None)
+                if (finetuneWorst > sim1):
                     finetuneWorst = sim1
-                    word1Worst = data.get('answer_finetuned',None)
-                if(Q8Best < sim2):
-                    Q8Best =sim2
-                    word2Best = data.get('answer_q8',None)
-                if(Q8Worst > sim2):
+                    word1Worst = data.get('answer_finetuned', None)
+                if (Q8Best < sim2):
+                    Q8Best = sim2
+                    word2Best = data.get('answer_q8', None)
+                if (Q8Worst > sim2):
                     Q8Worst = sim2
-                    word2Worst = data.get('answer_q8',None)
-
+                    word2Worst = data.get('answer_q8', None)
 
             if time1 is not None and time2 is not None:
                 time1_values.append(time1)
                 time2_values.append(time2)
-
 
             line_count += 1
 
@@ -82,14 +83,14 @@ with open(input_file, 'r', encoding='utf-8') as infile:
             data = json.loads(line)
             sim3 = data.get('sim1', None)
 
-            if sim1 is not None and sim2 is not None:
+            if sim3 is not None:
                 sim3_values.append(sim3)
-                if(llamaBest < sim3):
-                    llamaBest =sim3
-                    word3Best = data.get('answer1',None)
-                if(llamaWorst > sim3):
+                if (llamaBest < sim3):
+                    llamaBest = sim3
+                    word3Best = data.get('answer1', None)
+                if (llamaWorst > sim3):
                     llamaWorst = sim3
-                    word3Worst = data.get('answer1',None)                
+                    word3Worst = data.get('answer1', None)
 
             line_count += 1
 
@@ -104,7 +105,9 @@ print(f"\n총 {line_count}줄 처리 완료, 그래프 그리는 중...")
 plt.figure(figsize=(12, 6))
 plt.plot(sim1_values, label='LLaMA3 파인튜닝 모델', marker='o')
 plt.plot(sim2_values, label='LLaMA3 Q8', marker='x')
-plt.plot(sim3_values, label='원래모델', marker='x')
+# sim3_values는 '101-105Fight.jsonl'에서 추출한 값이며, 이 파일의 길이에 따라 시각화에 사용할 x축 범위가 달라질 수 있습니다.
+# 여기서는 각 리스트의 길이에 맞게 plotting 하도록 수정했습니다.
+plt.plot(range(len(sim3_values)), sim3_values, label='원래모델', marker='x')
 plt.xlabel('샘플 번호')
 plt.ylabel('유사도 점수')
 plt.title('모델별 민원 응답 유사도 비교')
@@ -113,9 +116,8 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
-
 data = [sim1_values, sim2_values, sim3_values]
-labels = ['LLaMA3 파인튜닝', 'Q8양자화', '원래 모델']
+labels = ['민원팩토리 모델', '민원팩토리 모델 Q8양자화', 'llama-3 bllossom']
 
 # 박스플롯 통계 추출
 stats = boxplot_stats(data)
@@ -131,13 +133,12 @@ for i, stat in enumerate(stats):
 
 # 박스플롯 그리기
 plt.figure(figsize=(8, 6))
-plt.boxplot(data, labels=labels)
+plt.boxplot(data, tick_labels=labels)  # labels -> tick_labels로 수정
 plt.ylabel('유사도 점수')
 plt.title('모델별 유사도 점수 분포 (Boxplot)')
 plt.grid(True, axis='y')
 plt.tight_layout()
 plt.show()
-
 
 plt.figure(figsize=(12, 6))
 plt.plot(time1_values, label='LLaMA3 파인튜닝 모델', marker='o')
