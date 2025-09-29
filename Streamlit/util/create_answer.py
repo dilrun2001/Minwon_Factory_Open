@@ -42,10 +42,11 @@ def reinput_answer():
         show_popup(":red[:material/block:]  답변 재생성 오류", f"""재생성할 답변이 존재하지 않습니다.\n답변 영역 내 민원 수정 체크 박스를 확인해주세요.""", popup_check = True)
         #st.toast(f"재생성할 민원을 체크해주세요. 답변 영역 내 :red[좌측 상단]을 확인해주세요.", icon = ":material/block:")
     else:
+        st.session_state.recreate_answer += 1
         generate_answer(recreate = True, multi=True)
 
 
-
+#답변 생성 함수
 def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
     enqueue_task(st.session_state.id)
     data = st.session_state.df

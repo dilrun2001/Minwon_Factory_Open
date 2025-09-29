@@ -61,9 +61,6 @@ def input_db():#format):
         create_file()
     
 
-
-
-
 #파일 형식 재선택
 
 def start_download(file_set):
@@ -145,9 +142,11 @@ def set_menu():
               
                 if st.button("CSV",key = "download_CSV", type = "tertiary", icon = ":material/download:"):
                     start_download("CSV")
+                    st.session_state.csv_count += 1
                     
                 if st.button("Excel",key = "download_Excel", type = "tertiary", icon = ":material/download:"):
                     start_download("Excel")
+                    st.session_state.xlsx_count += 1
                     
                 if st.session_state.file_download:
                     st.download_button(

@@ -167,25 +167,46 @@ def clear_state():
     if "db_check" not in st.session_state:
         st.session_state.db_check = False
     
-    #
+    #엑셀 사용 카운트
+    if "xlsx_count" not in st.session_state:
+        st.session_state.xlsx_count = 0
+    
+    #csv 사용 카운트
+    if "csv_count" not in st.session_state:
+        st.session_state.csv_count = 0
+
+    #AI 사용 카운트
+    if "ai_count" not in st.session_state:
+        st.session_state.ai_count = 0
+
+    #재생성 카운트
+    if "recreate_count" not in st.session_state:
+        st.session_state.recreate_count = 0
+    
     if "dialog_check" not in st.session_state:
         st.session_state.dialog_check = False
-
+    
+    #UI 레이아웃 체크
     if "layout_check" not in st.session_state:
         st.session_state.layout_check = "탭"
-
+    
+    #페이지네이션
     if "multimode" not in st.session_state:
         st.session_state.multimode = False
-
+    
+    #페이지네이션 총합페이지
     if "total_page"not in st.session_state:
         st.session_state.total_page = 1
-
+    
+    #페이지네이션 시작페이지
     if "first_page"not in st.session_state:
         st.session_state.first_page = 1
     
+    #페이지네이션 최종페이지
     if "end_page" not in st.session_state:
         st.session_state.end_page = 1
-
+    
+    #페이지네이션 현재페이지
     if "current_page" not in st.session_state:
         st.session_state.current_page = 1
 
@@ -245,3 +266,7 @@ def minwon_clear():
     st.session_state.current_page = 1
     st.session_state.end_page = 1
     st.session_state.multimode = False
+    st.session_state.recreate_count = 0
+    st.session_state.ai_count = 0
+    st.session_state.csv_count = 0
+    st.session_state.xlsx_count = 0

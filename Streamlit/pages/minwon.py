@@ -535,60 +535,6 @@ def show_result():
     show_total()
 
         
-
-#데이버베이스 입력
-#데이터프레임 임시 입력 작업 추가
-#6/11 선택한 답변 값이 들어가도록 수정
-#개편 반영전 현재 순서 : db 입력 -> 파일 생성
-def input_db():#format):
-    def insert_data():
-        global new_data
-        data = st.session_state.df
-        #grade_check = (data[data['최종평점'] == 0].index+1).tolist()
-        for i, row in data.iterrows():
-            print(f"{row['최종평점']}")
-            #print(row['최종답변'])
-            if st.session_state.db_check is not True:
-                run_query("INSERT INTO history (timestamp, name, category, urgency, minwon,answer_yogi,response, grade) VALUES (%s, %s, %s, %s, %s,%s,%s, %s)",
-                        (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), row['이름'], row['민원 카테고리'], row['민원 긴급도'], row['민원내용'],row['답변요지'],row['최종답변'], row['최종평점']),
-                            fetch = False
-                        )
-
-            new_data = pd.DataFrame([{
-                "민원내용": row['민원내용'],
-                "답변내용": row['최종답변'],
-            }])
-            st.session_state.save_df = pd.concat(
-                    [st.session_state.save_df, new_data],
-                    ignore_index=True
-            )
-        #print(st.session_state.save_df)
-        if st.session_state.db_check == False:
-            st.session_state.db_check = True
-        return True
-        
-
-    def create_file():
-        match (st.session_state.file_set):
-            case("CSV"):
-                st.session_state.file =  st.session_state.save_df.to_csv().encode("utf-8-sig")
-            case ("Excel"):
-                output = BytesIO()
-                with pd.ExcelWriter(output, engine = "xlsxwriter") as writter:
-
-                    st.session_state.save_df.to_excel(writter, index = False, sheet_name = '시트1')
-                    workbook = writter.book
-                    worksheet = writter.sheets['시트1']
-                    wrap_format = workbook.add_format({'text_wrap' : True})
-                    for col, value in enumerate(st.session_state.save_df.values):
-                        worksheet.set_column(col, col,  30, wrap_format)
-                st.session_state.file = output.getvalue()
-        st.session_state.file_download = True
-        
-
-              
-    if insert_data():
-        create_file()
     
     #st.success("데이터베이스에 등록이 완료되었습니다.")
 

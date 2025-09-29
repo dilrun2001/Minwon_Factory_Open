@@ -181,13 +181,19 @@ def show_lab():
         st.error("현재 사용할 수 없는 페이지입니다.")
         
 
+def show_static():
+       st.session_state['page'] = 'static'
+
 
 def show_setting():
     st.session_state['page'] = 'setting'
-    category = st.pills("설정 카테고리", options = ['기본 설정', '관리자 설정'], default='기본 설정', label_visibility="collapsed")
+    category = st.pills("설정 카테고리", options = ['기본 설정', '관리자 설정', '통계'], default='기본 설정', label_visibility="collapsed")
     match category:
-            case '기본 설정':
-                  show_lab()
-            case '관리자 설정':
-                  show_admin()
+        case '기본 설정':
+                show_lab()
+        case '관리자 설정':
+                show_admin()
+        case '통계':
+                show_static()
+        
         
