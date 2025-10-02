@@ -167,6 +167,7 @@ def set_menu():
                         file_name=f"민원 결과.csv" if st.session_state.file_set =="CSV" else f"민원 결과.xlsx",
                         key='hidden_download_file' , type = "tertiary"
                      )
+                    time.sleep(0.5)
                     js_code = f"""
                             <script>
                                 const downloader = window.parent.document.querySelector('.st-key-hidden_download_file button');
