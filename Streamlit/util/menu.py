@@ -15,6 +15,20 @@ def input_db():#format):
         global new_data
         data = st.session_state.df
         #grade_check = (data[data['최종평점'] == 0].index+1).tolist()
+        if st.session_state.db_check is not True:
+            run_query("""INSERT INTO createcount (`key`, ai_count,mf_count, saha_count, default_count, recreate_count, xlsx, csv, total_file) VALUES(%s, %s,%s, %s, %s,%s, %s,%s,%s) 
+                        ON DUPLICATE KEY UPDATE ai_count = ai_count + VALUES(ai_count),
+                        mf_count = mf_count + VALUES(mf_count),
+                        saha_count = saha_count + VALUES(saha_count),
+                        default_count = default_count + VALUES(default_count),
+                        recreate_count = recreate_count + VALUES(recreate_count),
+                        xlsx = xlsx + VALUES(xlsx),
+                        csv = csv + VALUES(csv),
+                        total_file = total_file + VALUES(total_file)""",
+                        (1, st.session_state.mf_count+st.session_state.saha_count+st.session_state.default_count,  #ai 총 사용 횟수
+                        st.session_state.mf_count, st.session_state.saha_count, st.session_state.default_count, #민원팩토리, 사하아이, 기본 모델
+                        st.session_state.recreate_count,st.session_state.xlsx_count, st.session_state.csv_count, st.session_state.xlsx_count+st.session_state.csv_count) #재생성, 엑셀, CSV, 파일 총합
+                        , fetch = False)
         for i, row in data.iterrows():
             print(f"{row['최종평점']}")
             #print(row['최종답변'])
@@ -23,7 +37,7 @@ def input_db():#format):
                         (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), row['이름'], row['민원 카테고리'], row['민원 긴급도'], row['민원내용'],row['답변요지'],row['최종답변'], row['최종평점']),
                             fetch = False
                         )
-
+                
             new_data = pd.DataFrame([{
                 "민원내용": row['민원내용'],
                 "답변내용": row['최종답변'],
@@ -96,7 +110,7 @@ def grade_check():
 def set_menu():
     with st.container(key = "llm_model_select", horizontal=True):
         popover =  st.popover("메뉴", icon= ":material/menu:")
-        model = popover.pills(":material/person: AI 모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], width = 450, default = '사하아이 연동')
+        model = popover.pills(":material/person: AI 모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], width = 450)#, default = '사하아이 연동')
         match (model):#, key = "llm_model_select", width = 300)):
             case '기본 모델':
                 if st.session_state.model != '기본 모델':
@@ -112,10 +126,6 @@ def set_menu():
                     st.session_state.model = '사하아이 연동'
         #popover.write('''---''')
         if st.session_state['page'] == "main":
-            option_map = {
-                "탭": ":material/tabs:",
-                "확장형": ":material/expand:"
-            }
             if st.session_state.manual == True or st.session_state.file_check == True:
                 layout_check = popover.pills(":material/desktop_windows: 화면 표시 방식", options = ('탭', '확장형'), width=450, default=st.session_state.layout_check)
                 match (layout_check):
@@ -141,12 +151,14 @@ def set_menu():
             if st.session_state['minwon_check'] == 'result':
               
                 if st.button("CSV",key = "download_CSV", type = "tertiary", icon = ":material/download:"):
-                    start_download("CSV")
                     st.session_state.csv_count += 1
+                    start_download("CSV")
+                    
                     
                 if st.button("Excel",key = "download_Excel", type = "tertiary", icon = ":material/download:"):
-                    start_download("Excel")
                     st.session_state.xlsx_count += 1
+                    start_download("Excel")
+                    
                     
                 if st.session_state.file_download:
                     st.download_button(

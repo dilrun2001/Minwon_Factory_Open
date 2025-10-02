@@ -485,10 +485,10 @@ def show_result():
                     else:
                         first, spacer, second = st.columns((6.8, 1.4, 6.8))
                         with first:
-                            with st.container(key = f"result_checkbox_only_container_{index}", horizontal=True, gap = "medium", width=330):
+                            with st.container(key = f"result_checkbox_only_container_{index}", horizontal=True, gap = "medium", width=400):
                                     copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")   
                                     row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")
-                                    edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{i}")
+                                    edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{i}")
                             with st.container(key = f"first_answer_{index}"):
                                 show_first(index)
                             with st.container(key = f"result_checkbox_container_{i}", horizontal=True, gap = "medium"):
@@ -497,13 +497,14 @@ def show_result():
                                     if row['답변 평점'] is not None:
                                         row['답변 평점'] = mapping[row['답변 평점']]
                                     else:
-                                        row['답변 평점'] = 0
+                                        row['답변 평점'] = 3
                                     result.at[index, '최종평점'] = row['답변 평점']
                         with second:
                             show_edit(index)
     
                         if edit:
                             result.at[index, '수정'] = True
+                            #st.toast(f"{index+1}번 민원의 답변이 재생성이 가능해집니다.")
                             #show_edit(index)
                         else:
                             result.at[index, '수정'] = False
@@ -513,7 +514,7 @@ def show_result():
     def show_total():
         st.subheader("답변 결과")
         with st.container(key = "minwon_result_guide_container", horizontal=True):
-            st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
+            #st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
             st.write("- 민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.")
             #st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 :red[교환]됩니다.")
         #st.session_state.layout_check = st.toggle("기능 테스트", key = "result_layout_check")

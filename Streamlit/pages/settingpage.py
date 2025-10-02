@@ -163,7 +163,7 @@ def show_lab():
                     match (model):#, key = "llm_model_select", width = 300)):
                         case '기본 모델':
                             if st.session_state.model != '기본 모델':
-                                st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[기본 모델]", icon = ":material/check:")
+                                st.toast(f"AI 모델이 변경되었습니다1. {st.session_state.model} -> :green[기본 모델]", icon = ":material/check:")
                                 st.session_state.model = '기본 모델'
                             #st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
                         case '민원팩토리 모델':
@@ -171,7 +171,7 @@ def show_lab():
                         case '사하아이 연동':
                             #st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
                             if st.session_state.model != '사하아이 연동':
-                                st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[사하아이 연동]", icon = ":material/check:")
+                                st.toast(f"AI 모델이 변경되었습니다1. {st.session_state.model} -> :green[사하아이 연동]", icon = ":material/check:")
                                 st.session_state.model = '사하아이 연동'
                         
                     #st.session_state.layout_check = st.toggle("표기 방식 변경")
@@ -180,9 +180,35 @@ def show_lab():
     else:
         st.error("현재 사용할 수 없는 페이지입니다.")
         
-
+#통계 페이지 테스트
 def show_static():
-       st.session_state['page'] = 'static'
+        st.session_state['page'] = 'static'
+        test = run_query("SELECT * FROM history_grade_test")
+        ai_count = run_query("SELECT * FROM AI_Static")
+        #answer, ai = st.tabs(['민원데이터', 'AI'])
+        #with answer:
+        st.write("### 민원 데이터 통계")
+        st.write(f"- DB 내 답변 데이터의 통계를 나타내는 지표입니다. 현재 서버 내 저장된 민원 답변 데이터 수는 {test.iloc[0]['total_count']}개 저장되어있습니다.")
+        with st.container(key = "answer_data_container", horizontal=True):
+                with st.expander("답변 데이터의 평점", expanded=True, icon = ":material/star:"):
+                
+                        test2 = test[['1점', '2점', '3점', '4점', '5점']]
+                        st.dataframe(test2)
+                with st.expander("답변 데이터의 민원 카테고리", expanded=True, icon = ":material/category:"):
+                        st.write(test[['일반','환경', '교통', '복지', '교육', '기타']])
+                with st.expander("답변 데이터의 긴급도", expanded=True, icon = ":material/siren:"):
+                        st.write(test[['매우 낮음', '낮음', '보통', '높음', '매우 높음']])
+        st.write('''---''')
+#with ai:
+        st.write("### AI 사용 데이터 통계")
+        st.write(f"- AI 사용, 파일 출력 관련 통계 지표입니다. 현재 서버에서 AI는 총 {ai_count.iloc[0]['AI 전체 사용 횟수']}번 사용되었습니다.")
+        with st.container(key = "AI_data_container", horizontal=True):
+                with st.expander("AI 통계", expanded=True):
+                        ai_static = ai_count[['민원팩토리 모델 횟수', '사하아이 요청 횟수', '기본 모델 횟수', '답변 재생성 횟수']]
+                        st.write(ai_static)
+                with st.expander("파일 통계", expanded=True):
+                        file_static = ai_count[['엑셀 파일 생성 횟수', 'CSV 파일 생성 횟수']]
+                        st.write(file_static)
 
 
 def show_setting():

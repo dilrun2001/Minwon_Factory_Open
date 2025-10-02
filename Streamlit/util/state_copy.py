@@ -175,16 +175,29 @@ def clear_state():
     if "csv_count" not in st.session_state:
         st.session_state.csv_count = 0
 
-    #AI 사용 카운트
-    if "ai_count" not in st.session_state:
-        st.session_state.ai_count = 0
+    #단일 민원 카운트
+    if "manual_count" not in st.session_state:
+        st.session_state.manual_count = 0
+
+    #복합 민원 카운트
+    if "multi_count" not in st.session_state:
+        st.session_state.multi_count = 0
+
+    #민원팩토리 모델 카운트
+    if "mf_count" not in st.session_state:
+        st.session_state.mf_count = 0
+        
+    #사하아이 요청 카운트
+    if "saha_count" not in st.session_state:
+        st.session_state.saha_count = 0
+    
+    #기본 모델 카운트
+    if "default_count" not in st.session_state:
+        st.session_state.default_count = 0
 
     #재생성 카운트
     if "recreate_count" not in st.session_state:
         st.session_state.recreate_count = 0
-    
-    if "dialog_check" not in st.session_state:
-        st.session_state.dialog_check = False
     
     #UI 레이아웃 체크
     if "layout_check" not in st.session_state:
@@ -267,6 +280,10 @@ def minwon_clear():
     st.session_state.end_page = 1
     st.session_state.multimode = False
     st.session_state.recreate_count = 0
-    st.session_state.ai_count = 0
     st.session_state.csv_count = 0
     st.session_state.xlsx_count = 0
+    st.session_state.mf_count = 0
+    st.session_state.saha_count = 0
+    st.session_state.manual_count = 0
+    st.session_state.multi_count = 0
+    st.session_state.default_count = 0

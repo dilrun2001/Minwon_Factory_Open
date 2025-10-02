@@ -38,11 +38,14 @@ def reinput_answer():
         if row['수정']:
             recreate_list.append(i)
     recreate_check = data['수정'].sum() 
+    print(recreate_check)
+    st.session_state.recreate_count = recreate_check
+    print(st.session_state.recreate_count)
     if recreate_check == 0:
         show_popup(":red[:material/block:]  답변 재생성 오류", f"""재생성할 답변이 존재하지 않습니다.\n답변 영역 내 민원 수정 체크 박스를 확인해주세요.""", popup_check = True)
         #st.toast(f"재생성할 민원을 체크해주세요. 답변 영역 내 :red[좌측 상단]을 확인해주세요.", icon = ":material/block:")
     else:
-        st.session_state.recreate_answer += 1
+        
         generate_answer(recreate = True, multi=True)
 
 
@@ -94,6 +97,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                                 else:
                                     answer = useAi.AI_print_answer(minwon = row['민원내용'], answer = row['답변요지'], answer_format = row['답변양식'])
                                 data.at[i, '답변결과'] = answer
+                                
                     else:
                         for i, row in data.iterrows():
                             #cnt = row['수정']
@@ -103,12 +107,20 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                                 time.sleep(1)
                     end_task(task_id)
                     st.rerun()
-            #답변 요지 생성
+            #민원 요지 생성
             case (False, False, True):
                 for i, row in data.iterrows():
                     format = change_text(config['format']['format'], row['부서명'], row['이름'], row['전화번호'])
                     formats.append(format)
                 data['답변양식'] = formats  
+                match(st.session_state.model):
+                    case "기본 모델":
+                        st.session_state.default_count += len(data)
+                    case "민원팩토리 모델":
+                        st.session_state.mf_count += len(data)
+                    case "사하아이 연동":
+                        st.session_state.saha_count += len(data)
+                print(f"default: {st.session_state.default_count}, minwon factory: {st.session_state.mf_count}, sahaAI: {st.session_state.saha_count}" )
                 if st.session_state.ai_option:
                     time.sleep(0.5)
                     for i, row in data.iterrows():
@@ -127,6 +139,14 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                 page_convert()
             #답변 생성
             case (False, False, False):
+                match(st.session_state.model):
+                    case "기본 모델":
+                        st.session_state.default_count += len(data)
+                    case "민원팩토리 모델":
+                        st.session_state.mf_count += len(data)
+                    case "사하아이 연동":
+                        st.session_state.saha_count += len(data)
+                print(f"default: {st.session_state.default_count}, minwon factory: {st.session_state.mf_count}, sahaAI: {st.session_state.saha_count}" )
                 for i, row in data.iterrows():
                     if st.session_state.ai_option:
                         

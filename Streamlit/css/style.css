@@ -45,20 +45,6 @@ div.st-key-file_input > div[data-testid = "stElementContainer"]{
     border: 1px solid transparent;
 }
 
-
-[data-testid="stCode"] > pre {
-    width:3rem;
-    background-color: transparent;
-    background-color:  var(--main-color);
-}
-
-
-
-
-[data-testid="stCode"] > pre > div:first-child {
-    display: none !important;
-}
-
 [data-testid = "stFileUploader"] section div span svg{
     font-size: 3rem;
 }
