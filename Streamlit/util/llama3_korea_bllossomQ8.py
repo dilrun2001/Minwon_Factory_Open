@@ -38,6 +38,7 @@ def SahaAi_request(minwon,answer,answer_format,model_name: str = "gpt-oss:20b"):
             stream=False,
         )
         content = response.get("message", {}).get("content", "")
+        st.session_state.saha_count += 1
         print(content)
         return content
     except ResponseError as e:
@@ -68,6 +69,7 @@ def SahaAi_request_sub(minwon,model_name: str = "gpt-oss:20b"):
             stream=False,
         )
         content = response.get("message", {}).get("content", "")
+        st.session_state.saha_count += 1
         print(content)
         return content
     except ResponseError as e:
@@ -89,8 +91,10 @@ def AI_print_answer(minwon,answer,answer_format):
         repo_id="QuantFactory/llama-3-Korean-Bllossom-8B-GGUF",
         filename="llama-3-Korean-Bllossom-8B.Q8_0.gguf"
         )
+        #st.session_state.default_count += 1
     elif(st.session_state.model == '민원팩토리 모델'):
         model_path = "./util/llm_models/llama3_minwon_factory_q8_0/Llama3_Minwon_Factory-8.0B-Q8_0.gguf"
+        #st.session_state.mf_count += 1
 
     
 
@@ -190,6 +194,6 @@ def AI_print_minwon_sub(minwon):
         top_p=0.9,
         max_tokens=512,
     )
-
+    st.session_state.default_count += 1
     print(output['choices'][0]['message']['content'])
     return output['choices'][0]['message']['content']  #output['choices'][0]['message']['content']
