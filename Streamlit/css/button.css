@@ -77,11 +77,11 @@ div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
 
 div.st-key-llm_model_select > div.st-key-download_CSV{
     position: absolute;
-    left: 85%;
+    left: 83%;
 }
 div.st-key-llm_model_select > div.st-key-download_Excel{
     position: absolute;
-    left: 90%;
+    left:88%;
 }
 
 div.st-key-llm_model_select > div.st-key-hidden_download_file{

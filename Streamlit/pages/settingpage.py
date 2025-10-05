@@ -17,7 +17,7 @@ def show_admin():
                 time.sleep(timer)
         if st.session_state.admin:
                         st.set_page_config(page_title = "관리자 페이지", page_icon=":material/admin_panel_settings:", layout="wide", initial_sidebar_state="collapsed")
-                        default, format, DB = st.tabs([':material/admin_panel_settings: 관리자 설정', ':material/edit: 양식', ":material/database: DB 관리"])
+                        default, format, DB, static = st.tabs([':material/admin_panel_settings: 관리자 설정', ':material/edit: 양식', ":material/database: DB 관리", ":material/analytics: 통계"])
                         with default:
                                 st.subheader("관리자 페이지")
                                 #left, center, right = st.columns([6,6,6])
@@ -110,6 +110,9 @@ def show_admin():
                                                 st.dataframe(db_data)
                                         else:
                                                 st.toast("데이터베이스에 저장된 :red[데이터가 없습니다.]", icon = ":material/block:")
+
+                        with static:
+                               show_static()
         else:
                 with st.form("admin_login_form", border = False):
                         password = st.text_input("관리자 비밀번호 입력", type="password")
@@ -182,8 +185,8 @@ def show_lab():
         
 #통계 페이지 테스트
 def show_static():
-        st.session_state['page'] = 'static'
-        test = run_query("SELECT * FROM history_grade_test")
+        #st.session_state['page'] = 'static'
+        test = run_query("SELECT * FROM history_grade")
         ai_count = run_query("SELECT * FROM AI_Static")
         #answer, ai = st.tabs(['민원데이터', 'AI'])
         #with answer:
@@ -213,13 +216,12 @@ def show_static():
 
 def show_setting():
     st.session_state['page'] = 'setting'
-    category = st.pills("설정 카테고리", options = ['기본 설정', '관리자 설정', '통계'], default='기본 설정', label_visibility="collapsed")
+    category = st.pills("설정 카테고리", options = ['기본 설정', '관리자 설정'], default='기본 설정', label_visibility="collapsed")
     match category:
         case '기본 설정':
                 show_lab()
         case '관리자 설정':
                 show_admin()
-        case '통계':
-                show_static()
+
         
         

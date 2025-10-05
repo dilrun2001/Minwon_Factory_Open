@@ -110,7 +110,7 @@ def grade_check():
 def set_menu():
     with st.container(key = "llm_model_select", horizontal=True):
         popover =  st.popover("메뉴", icon= ":material/menu:")
-        model = popover.pills(":material/person: AI 모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], width = 450)#, default = '사하아이 연동')
+        model = popover.pills(":material/person: AI 모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], width = 450, default = '사하아이 연동')
         match (model):#, key = "llm_model_select", width = 300)):
             case '기본 모델':
                 if st.session_state.model != '기본 모델':
@@ -167,6 +167,7 @@ def set_menu():
                         file_name=f"민원 결과.csv" if st.session_state.file_set =="CSV" else f"민원 결과.xlsx",
                         key='hidden_download_file' , type = "tertiary"
                      )
+                    st.toast(f":green[{st.session_state.file_set}] 파일을 다운로드 중입니다 잠시만 기다려주세요.", icon = ":material/download:")
                     time.sleep(0.5)
                     js_code = f"""
                             <script>
