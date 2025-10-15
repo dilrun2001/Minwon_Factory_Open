@@ -127,7 +127,14 @@ def set_menu():
         #popover.write('''---''')
         if st.session_state['page'] == "main":
             if st.session_state.manual == True or st.session_state.file_check == True:
-                layout_check = popover.pills(":material/desktop_windows: 화면 표시 방식", options = ('탭', '확장형'), width=450, default=st.session_state.layout_check)
+                layout_option = {
+                    0: ":material/tab: 탭",
+                    1:  ":material/expand 확장형"
+                }
+                layout_check = popover.pills(":material/desktop_windows: 화면 표시 방식",
+                
+                options = ('탭', '확장형'),
+                width=450, default=st.session_state.layout_check)
                 match (layout_check):
                     case '탭':
                         if st.session_state.layout_check != '탭':
@@ -144,6 +151,7 @@ def set_menu():
                             st.session_state.layout_check = '확장형'
                             time.sleep(0.05)
                             st.rerun()
+                    
             
             
                 if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", type = "tertiary"):

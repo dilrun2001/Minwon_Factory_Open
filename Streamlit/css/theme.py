@@ -28,35 +28,25 @@ def load_css():
 
     st.html(f'<style>{css}</style>')
     st.html(f'<style>{btn}</style>')#, unsafe_allow_html=True)
-
-
-def copy_button(text_to_copy: str, key: str):
-    textarea_id = f"text-to-copy-{key}"
+def copy_button(target_key: str, button_key: str):
+    textarea_id = f"text-to-copy-{button_key}"
     
     html_code = f"""
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
-        html,body {{
-            width:2rem;
-            
-            margin: 0; /* 브라우저 기본 여백 제거 */
-            display: flex; /* Flexbox 레이아웃 사용 */
-            align-items: center; /* 수직 중앙 정렬 */
-            justify-content: center; /* 수평 중앙 정렬 */
-            height: 100%; /* body 높이를 iframe 높이에 맞춤 */
-        }}
-        body {{
+        html, body {{
+            width: 2rem;
+            margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            height: 100%;
         }}
-        .copy-btn-{key} {{
-
+        .copy-btn-{button_key} {{
             width: 2rem;
             height: 1.5rem;
-            padding-top:0;
-            gap:0;
+            padding-top: 0;
+            gap: 0;
             justify-content: center;
             display: inline-block;
             font-size: 0.9rem;
@@ -69,41 +59,157 @@ def copy_button(text_to_copy: str, key: str):
             background-color: transparent;
             transition: all 0.2s ease-in-out;
         }}
-        .copy-btn-{key} span{{
+        .copy-btn-{button_key} span {{
             font-size: 1.2rem;
         }}
-        /* 버튼에 마우스를 올렸을 때의 스타일 */
-        .copy-btn-{key}:hover {{
+        .copy-btn-{button_key}:hover {{
             color: #2766c2;
         }}
-        /* 버튼을 클릭했을 때의 스타일 */
-        .copy-btn-{key}:active {{
+        .copy-btn-{button_key}:active {{
             transform: scale(0.95);
         }}
-        .copy-btn-{key} .material-symbols-outlined {{
+        .copy-btn-{button_key} .material-symbols-outlined {{
             font-family: 'Material Symbols Outlined';
-            font-size: 1.25rem; 
+            font-size: 1.25rem;
         }}
         
+        .copied-highlight {{
+            border: 2px solid #4CAF50 !important;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5) !important;
+            transition: all 0.3s ease-in-out !important;
+        }}
     </style>
 
-    <textarea id="{textarea_id}" style="position: absolute; left: -9999px;">{text_to_copy}</textarea>
+    <textarea id="{textarea_id}" style="position: absolute; left: -9999px;"></textarea>
     
-    <button class="copy-btn-{key}" onclick="copyToClipboard_{key}()"> 
-        <span class = "material-symbols-outlined">content_copy</span>
+    <button class="copy-btn-{button_key}" onclick="copyToClipboard_{button_key}()"> 
+        <span class="material-symbols-outlined">content_copy</span>
     </button>
 
     <script>
-    // 각 버튼이 고유한 JavaScript 함수를 갖도록 함수 이름에도 key를 사용.
-    function copyToClipboard_{key}() {{
-        var textArea = document.getElementById("{textarea_id}");
-        var btn = document.querySelector(".copy-btn-{key}");
+    (function() {{
+        const hiddenTextArea = document.getElementById("{textarea_id}");
+        const doc = window.parent.document;
+        let sourceTextArea = null;
+        let syncInterval = null;
+        
+        // 원본 textarea 찾기 함수
+        function findSourceTextArea() {{
+            // 방법 1: st-key로 찾기
+            let container = doc.querySelector('[st-key="{target_key}"]');
+            if (container) {{
+                sourceTextArea = container.querySelector('textarea');
+                if (sourceTextArea) return true;
+            }}
+            
+            // 방법 2: aria-label로 찾기
+            sourceTextArea = doc.querySelector('textarea[aria-label="{target_key}"]');
+            if (sourceTextArea) return true;
+            
+            // 방법 3: iframe 위치 기반으로 찾기
+            const iframeInParent = Array.from(doc.querySelectorAll('iframe')).find(
+                iframe => iframe.contentWindow === window
+            );
+            
+            if (iframeInParent) {{
+                let currentElement = iframeInParent;
+                while (currentElement && currentElement.parentElement) {{
+                    const siblings = currentElement.parentElement.children;
+                    for (let sibling of siblings) {{
+                        const foundTextArea = sibling.querySelector('textarea');
+                        if (foundTextArea) {{
+                            sourceTextArea = foundTextArea;
+                            return true;
+                        }}
+                    }}
+                    currentElement = currentElement.parentElement;
+                }}
+            }}
+            
+            return false;
+        }}
+        
+        // 주기적으로 동기화 시도
+        function startSync() {{
+            if (syncInterval) return;
+            
+            syncInterval = setInterval(() => {{
+                if (!sourceTextArea) {{
+                    findSourceTextArea();
+                }}
+                
+                if (sourceTextArea) {{
+                    hiddenTextArea.value = sourceTextArea.value;
+                }}
+            }}, 100); // 100ms마다 동기화
+        }}
+        
+        // 초기 동기화 시작
+        setTimeout(() => {{
+            if (findSourceTextArea()) {{
+                hiddenTextArea.value = sourceTextArea.value;
+                
+                // input 이벤트 리스너 추가 (더 즉각적인 동기화)
+                sourceTextArea.addEventListener('input', () => {{
+                    hiddenTextArea.value = sourceTextArea.value;
+                }});
+                
+                // change 이벤트 리스너 추가
+                sourceTextArea.addEventListener('change', () => {{
+                    hiddenTextArea.value = sourceTextArea.value;
+                }});
+            }}
+            startSync();
+        }}, 100);
+    }})();
+    
+    function copyToClipboard_{button_key}() {{
+        const textArea = document.getElementById("{textarea_id}");
+        const btn = document.querySelector(".copy-btn-{button_key}");
+        const doc = window.parent.document;
+        
+        // 복사 전 마지막으로 한 번 더 동기화 시도
+        let sourceTextArea = doc.querySelector('[st-key="{target_key}"] textarea') ||
+                            doc.querySelector('textarea[aria-label="{target_key}"]');
+        
+        if (!sourceTextArea) {{
+            const iframeInParent = Array.from(doc.querySelectorAll('iframe')).find(
+                iframe => iframe.contentWindow === window
+            );
+            if (iframeInParent) {{
+                let currentElement = iframeInParent;
+                while (currentElement && currentElement.parentElement) {{
+                    const siblings = currentElement.parentElement.children;
+                    for (let sibling of siblings) {{
+                        sourceTextArea = sibling.querySelector('textarea');
+                        if (sourceTextArea) break;
+                    }}
+                    if (sourceTextArea) break;
+                    currentElement = currentElement.parentElement;
+                }}
+            }}
+        }}
+        
+        if (sourceTextArea) {{
+            textArea.value = sourceTextArea.value;
+            
+            // 원본에 하이라이트 효과
+            const originalBorder = sourceTextArea.style.border;
+            const originalBoxShadow = sourceTextArea.style.boxShadow;
+            sourceTextArea.classList.add('copied-highlight');
+            
+            setTimeout(() => {{
+                sourceTextArea.classList.remove('copied-highlight');
+                sourceTextArea.style.border = originalBorder;
+                sourceTextArea.style.boxShadow = originalBoxShadow;
+            }}, 2000);
+        }}
         
         textArea.select();
         document.execCommand('copy');
 
-        var originalbuttonhtml= btn.innerHTML;
-        btn.innerHTML = '<span class = "material-symbols-outlined">check</span>';
+        const originalbuttonhtml = btn.innerHTML;
+        btn.innerHTML = '<span class="material-symbols-outlined">check</span>';
         btn.disabled = true;
         
         setTimeout(function() {{
@@ -113,7 +219,7 @@ def copy_button(text_to_copy: str, key: str):
     }}
     </script>
     """
-    components.html(html_code, height=25, width = 25)
+    components.html(html_code, height=25, width=25)
 
 
 def highlight_js(highlight_data):
