@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime
 import time
 from css.theme import *
+from css.button import *
 from util.database import *
 from util.state_copy import *
 from util.page_convert import *
@@ -426,7 +427,7 @@ def show_result():
                         with first:
                             if row['test'] is not True:
                                 with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium", width=330):
-                                    copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}")
+                                    copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
                                     #copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")   
                                     row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")   #답변 평점 -> 최종 평점 이부분은 추후 수정 예정
                                 #with test3:
@@ -436,7 +437,7 @@ def show_result():
 
                             else:
                                 with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium", width=330):
-                                    copy_button(target_key=f"result_second_{index}", button_key = f"copy_rag_btn_{index}")
+                                    copy_button(target_key=f"result_second_{index}", button_key = f"copy_rag_btn_{index}", area_number=index)
                                     row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")   #답변 평점 -> 최종 평점 이부분은 추후 수정 예정
                                 #with test3:
                                     edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{index}")
@@ -457,7 +458,7 @@ def show_result():
                             if row['답변 평점'] is not None:
                                 row['답변 평점'] = mapping[row['답변 평점']]
                             else:
-                                row['답변 평점'] = 3
+                                row['답변 평점'] = 0
                             result.at[index, '최종평점'] = row['답변 평점']
                         with second:
                                 match edit:
@@ -487,7 +488,7 @@ def show_result():
                         first, spacer, second = st.columns((6.8, 1.4, 6.8))
                         with first:
                             with st.container(key = f"result_checkbox_only_container_{index}", horizontal=True, gap = "medium", width=400):
-                                    copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}")
+                                    copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
                                     #copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")   
                                     row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")
                                     edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{i}")

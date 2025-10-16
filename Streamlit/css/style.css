@@ -9,9 +9,7 @@
     --font-color: inherit;
 }
 
-body{
-    font-weight:300;
-}
+
 
 [data-testid = "stHeader"]{
     top: 0.5rem;
@@ -68,12 +66,12 @@ div.st-key-file_input > div[data-testid = "stElementContainer"]{
 }
 
 [data-testid = "stFileUploader"]{
-    border: 2px dashed rgb(161, 160, 160);
+    border: 1px dashed rgb(161, 160, 160);
     border-radius: 3rem;
 }
 
 [data-testid = "stFileUploader"]:hover{
-    border: 2px dashed var(--main-color);
+    border: 1px dashed var(--main-color);
     border-radius: 3rem;
 }
 
@@ -90,21 +88,20 @@ div.st-key-file_input > div[data-testid = "stElementContainer"]{
 }
 
 [data-testid="stFileUploader"] section div div::before {
-    /* --- 기본 스타일 --- */
+
     content: '여기에 파일을 끌어다 놓거나, 우측 버튼을 클릭하여 파일을 선택하세요. 파일 형식은 XLSX, CSV를 지원합니다.';
     font-size: 1.2rem;
     font-weight: 500;
     color: rgb(68, 68, 68);
     visibility: visible; /* 숨겨진 경우를 대비해 항상 보이도록 설정 */
 
-    /* --- 핵심: 반응형 절대 중앙 정렬 --- */
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); /* X축과 Y축으로 자신의 크기의 50%만큼 이동하여 정중앙 맞춤 */
 
-    /* 텍스트가 아이콘과 버튼을 침범하지 않도록 너비를 제한합니다. */
-    /* 이 값은 좌우 여백을 고려하여 조절할 수 있습니다. (예: 60%, 70% 등) */
+    /* 텍스트가 아이콘과 버튼을 침범하지 않도록 너비를 제한 */
+    /* 좌우 여백을 고려하여 조절 (예: 60%, 70% 등) */
     width: 65%;
     
     /* 텍스트가 여러 줄일 경우를 대비해 가운데 정렬합니다. */
@@ -131,6 +128,16 @@ div.st-key-file_input > div[data-testid = "stElementContainer"]{
 button[data-baseweb = "tab"] > div > p {
     font-size:1rem;
 }
+
+button[data-baseweb="tab"] {
+    white-space: nowrap;
+    min-width: fit-content !important;
+    width: auto !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+}
+
+
 
 [data-baseweb = "input"]:focus-within,
 [data-baseweb = "textarea"]:focus-within{
@@ -309,6 +316,7 @@ div.st-key-input_page_option [data-testid = "stHorizontalBlock"]{
 
 
 [data-testid = "stPopoverBody"]{
+   
     border: 1px solid var(--main-color);
 }
 div.st-key-llm_model_select{
@@ -329,6 +337,7 @@ div.st-key-llm_model_select .st-br{
 [data-testid = "stStatusWidget"]{
     display:none;
 }
+
 
 /*선택된 textarea 영역 */
 textarea.active-highlight {
