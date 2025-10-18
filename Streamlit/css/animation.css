@@ -1,0 +1,268 @@
+@import url('https://fonts.googleapis.com/css2?family=Gothic+A1&family=IBM+Plex+Sans+KR&display=swap');
+:root {
+    --main-color: #2766c2;
+    --background: rgba(13, 13, 13, 0);
+    --error-color: rgb(255,43,43);
+    --accept-color: rgb(21, 130, 55);
+    --warning-color: rgb(217, 90, 0);
+    --font-color: inherit;
+}
+/* 페이지 전환 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.main,
+body {
+    font-weight:400;
+    animation: pageReload 0.3s ease-out;
+}
+.stApp {
+    animation: pageReload 0.3s ease-out;
+}
+[data-testid = "stHeader"]{
+    animation: pageReload 0.3s ease-out;
+}
+div.block-container {
+    animation: pageReload 0.3s ease-out;
+}
+
+section.main > div {
+    animation: pageReload 0.3s ease-out;
+}
+
+div[data-testid="stAppViewContainer"] {
+    animation: pageReload 0.3s ease-out;
+}
+
+div[data-testid="stMainBlockContainer"] {
+    animation: pageReload 0.3s ease-out;
+}
+
+/*div[data-testid = "stMarkdownContainer"]{
+    animation: pageReload 0.3s ease-out;
+}*/
+
+/* 페이지 리로드 애니메이션 - 부드러운 페이드 */
+@keyframes pageReload {
+    0% { 
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* 버튼 호버 애니메이션 */
+[data-testid = "stBaseButton-secondary"],
+[data-testid = "stBaseButton-tertiary"],
+[data-testid = "stBaseButton-pills"] {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+[data-testid = "stIconMaterial"]{
+    transition: all 0.4s ease;
+    
+}
+.stDataFrame{
+    transition: all 0.3s ease;
+}
+[data-testid = "stVerticalBlock"]{
+    transition: all 0.3s ease;
+}
+
+[data-testid = "stBaseButton-secondary"]:hover,
+[data-testid = "stBaseButton-pills"]:hover
+{
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stButton > button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+
+
+/* Textarea 포커스 애니메이션 */
+.stTextArea > div > div > textarea {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.stTextArea > div > div > textarea:hover {
+    border: 2px solid transparent;
+}
+
+.stTextArea > div > div > textarea:focus {
+    box-shadow: 0 0 0 3px rgba(255, 75, 75, 0.1);
+
+}
+
+/* Input 필드 애니메이션 */
+.stTextInput > div > div{
+    transition: all 0.3s ease;
+}
+.stTextInput > div>div:hover {
+
+    transition: all 0.3s ease;
+}
+
+.stTextInput > div > div:focus {
+    box-shadow: 0 0 0 3px rgba(255, 75, 75, 0.1);
+}
+
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+
+.stTabs [data-baseweb="tab-panel"] {
+    animation: fadeIn 0.4s ease-out;
+    
+}
+
+.stTabs [data-baseweb="tab-list"] {
+    animation: fadeIn 0.4s ease-out;
+    
+}
+
+.stTabs [data-baseweb="tab"] {
+    transition: all 0.3s ease;
+    
+}
+
+.stTabs [data-baseweb="tab"]:hover,
+.stTabs [data-baseweb="tab"][aria-selected="true"]{
+    transform: translateY(-0.2rem);
+}
+
+.stSelectbox > div > div {
+    transition: all 0.3s ease;
+}
+
+.stSelectbox > div > div:hover {
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+
+.stFileUploader {
+    transition: all 0.3s ease;
+}
+
+.stFileUploader:hover {
+    box-shadow: 0.25rem 0.rem rgba(0, 0, 0, 0.08);
+}
+
+
+.stToast {
+    transform: translateX(-50%) !important;
+
+}
+
+
+
+/* Toast 사라지기 애니메이션 (fade out) */
+.stToast[data-animation="fade-out"] {
+    animation: toastFadeOut 0.3s ease-out forwards;
+}
+
+@keyframes toastFadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px) scale(0.95);
+    }
+}
+
+/* Toast 호버시 효과 */
+.stToast:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateX(-50%) scale(1.02);
+    transition: all 0.3s ease;
+}
+
+.stSlider {
+    transition: all 0.3s ease;
+}
+
+
+div.st-key-AI_total_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;   
+}
+div.st-key-AI_total_count:hover{
+    background-color: #4ac254;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+div.st-key-AI_most_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;
+}
+div.st-key-AI_most_count:hover{
+    background-color: #c1d35a;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+div.st-key-AI_recreate_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;
+}
+div.st-key-AI_recreate_count:hover{
+    background-color: #5479ca;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+div.st-key-AI_file_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;
+}
+div.st-key-AI_file_count:hover{
+    background-color: #cad0dd;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+div.st-key-AI_category_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;
+}
+div.st-key-AI_category_count:hover{
+    background-color: #80c453;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+div.st-key-AI_urgency_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;
+}
+div.st-key-AI_urgency_count:hover{
+    background-color: #ad4a58;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}

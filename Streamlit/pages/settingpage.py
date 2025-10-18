@@ -1,5 +1,6 @@
 import streamlit as st
 from util.database import *
+
 from util.state_copy import *
 from util.AI_queue import clear_queue
 import time
@@ -216,7 +217,8 @@ def show_static():
 
 def show_setting():
     st.session_state['page'] = 'setting'
-    category = st.pills("설정 카테고리", options = ['기본 설정', '관리자 설정'], default='기본 설정', label_visibility="collapsed")
+    with st.container(key = "setting_page_option"):
+        category = st.pills("설정 카테고리", options = ['기본 설정', '관리자 설정'], default='기본 설정', label_visibility="collapsed")
     match category:
         case '기본 설정':
                 show_lab()
