@@ -196,7 +196,7 @@ def show_popup(
                 # '예'를 누르면 전달받은 함수를 실행
                 btn_action(**action_args)
                 st.session_state.dialog_counter += 1
-                st.rerun(scope = "fragment")
+                st.rerun()
 
         with col2:
             if st.button(disagree_button_txt, use_container_width=True, key = "disagree_btn", icon = ":material/close:"):

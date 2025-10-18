@@ -269,7 +269,7 @@ def paste_button(target_key: str, button_key: str):
         }}
     </style>
 
-    <!-- 클립보드 내용을 받을 임시 textarea -->
+    <!-- Fallback용 임시 textarea -->
     <textarea id="temp-paste-{button_key}"></textarea>
 
     <button class="paste-btn-{button_key}" onclick="pasteToTextArea_{button_key}()"> 
@@ -277,25 +277,22 @@ def paste_button(target_key: str, button_key: str):
     </button>
 
     <script>
-    function pasteToTextArea_{button_key}() {{
+    async function pasteToTextArea_{button_key}() {{
         const doc = window.parent.document;
         const btn = document.querySelector(".paste-btn-{button_key}");
         const tempTextArea = document.getElementById("temp-paste-{button_key}");
         let targetTextArea = null;
         
-        // 대상 textarea 찾기 (여러 방법 시도)
-        // 방법 1: st-key로 찾기
+        // 대상 textarea 찾기
         let container = doc.querySelector('[st-key="{target_key}"]');
         if (container) {{
             targetTextArea = container.querySelector('textarea');
         }}
         
-        // 방법 2: aria-label로 찾기
         if (!targetTextArea) {{
             targetTextArea = doc.querySelector('textarea[aria-label="{target_key}"]');
         }}
         
-        // 방법 3: iframe 위치 기반으로 찾기
         if (!targetTextArea) {{
             const iframeInParent = Array.from(doc.querySelectorAll('iframe')).find(
                 iframe => iframe.contentWindow === window
@@ -324,56 +321,64 @@ def paste_button(target_key: str, button_key: str):
             return;
         }}
         
-        // 현대적인 방법 시도 (HTTPS에서)
+        // Clipboard API 시도
         if (navigator.clipboard && navigator.clipboard.readText) {{
-            navigator.clipboard.readText()
-                .then(text => {{
-                    applyPaste(targetTextArea, text, btn);
-                }})
-                .catch(err => {{
-                    console.log('Clipboard API failed, trying fallback method:', err);
-                    useFallbackMethod(targetTextArea, tempTextArea, btn);
-                }});
-        }} else {{
-            // HTTP 환경이나 구형 브라우저를 위한 fallback
-            useFallbackMethod(targetTextArea, tempTextArea, btn);
+            try {{
+                const text = await navigator.clipboard.readText();
+                applyPastedText(targetTextArea, text, btn);
+                return;
+            }} catch (err) {{
+                console.log('Clipboard API failed, trying fallback:', err);
+            }}
         }}
-    }}
-    
-    function useFallbackMethod(targetTextArea, tempTextArea, btn) {{
-        // 임시 textarea를 포커스하고 paste 명령 실행
+        
+        // Fallback: execCommand 사용
         tempTextArea.value = '';
         tempTextArea.focus();
         tempTextArea.select();
         
-        // execCommand('paste')는 사용자 제스처가 있어야 작동
         const success = document.execCommand('paste');
         
         if (success) {{
-            // 약간의 지연 후 값 가져오기 (paste 완료 대기)
             setTimeout(() => {{
                 const pastedText = tempTextArea.value;
                 if (pastedText) {{
-                    applyPaste(targetTextArea, pastedText, btn);
+                    applyPastedText(targetTextArea, pastedText, btn);
                 }} else {{
-                    alert('클립보드가 비어있거나 붙여넣기 권한이 없습니다.\\n\\n수동으로 붙여넣으려면:\\n1. 대상 텍스트 영역을 클릭\\n2. Ctrl+V (또는 Cmd+V)를 누르세요');
+                    showManualPasteInstruction();
                 }}
             }}, 100);
         }} else {{
-            alert('자동 붙여넣기가 지원되지 않습니다.\\n\\n수동으로 붙여넣으려면:\\n1. 대상 텍스트 영역을 클릭\\n2. Ctrl+V (또는 Cmd+V)를 누르세요');
+            showManualPasteInstruction();
         }}
     }}
     
-    function applyPaste(targetTextArea, text, btn) {{
-        // textarea에 붙여넣기
-        targetTextArea.value = text;
+    function applyPastedText(targetTextArea, text, btn) {{
+        // 기존 값 완전히 교체 (이어붙이기 아님)
+        const newValue = text;
         
-        // React/Streamlit의 상태 업데이트를 위해 이벤트 트리거
-        const inputEvent = new Event('input', {{ bubbles: true }});
+        // Native setter 사용 (React 우회)
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+            window.parent.HTMLTextAreaElement.prototype, 
+            'value'
+        ).set;
+        nativeInputValueSetter.call(targetTextArea, newValue);
+        
+        // React의 input 이벤트 트리거
+        const inputEvent = new Event('input', {{ bubbles: true, cancelable: true }});
         targetTextArea.dispatchEvent(inputEvent);
         
+        // change 이벤트도 트리거
         const changeEvent = new Event('change', {{ bubbles: true }});
         targetTextArea.dispatchEvent(changeEvent);
+        
+        // blur/focus로 강제 업데이트
+        targetTextArea.blur();
+        setTimeout(() => {{
+            targetTextArea.focus();
+            // 커서를 맨 끝으로
+            targetTextArea.setSelectionRange(newValue.length, newValue.length);
+        }}, 10);
         
         // 시각적 피드백
         const originalBorder = targetTextArea.style.border;
@@ -391,6 +396,10 @@ def paste_button(target_key: str, button_key: str):
             targetTextArea.style.border = originalBorder;
             targetTextArea.style.boxShadow = originalBoxShadow;
         }}, 2000);
+    }}
+    
+    function showManualPasteInstruction() {{
+        alert('자동 붙여넣기가 지원되지 않습니다.\\n\\n수동으로 붙여넣으려면:\\n1. 텍스트 영역을 클릭\\n2. Ctrl+V (또는 Cmd+V)를 누르세요');
     }}
     </script>
     """

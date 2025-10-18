@@ -27,7 +27,9 @@ body {
 .stApp {
     animation: pageReload 0.3s ease-out;
 }
-
+[data-testid = "stHeader"]{
+    animation: pageReload 0.3s ease-out;
+}
 div.block-container {
     animation: pageReload 0.3s ease-out;
 }
@@ -71,6 +73,13 @@ div[data-testid="stMainBlockContainer"] {
 }
 [data-testid = "stIconMaterial"]{
     transition: all 0.4s ease;
+    
+}
+.stDataFrame{
+    transition: all 0.3s ease;
+}
+[data-testid = "stVerticalBlock"]{
+    transition: all 0.3s ease;
 }
 
 [data-testid = "stBaseButton-secondary"]:hover,
@@ -102,7 +111,6 @@ div[data-testid="stMainBlockContainer"] {
 }
 
 .stTextArea > div > div > textarea:hover {
-    transform: scale(1.003);
     border: 2px solid transparent;
 }
 
@@ -116,7 +124,7 @@ div[data-testid="stMainBlockContainer"] {
     transition: all 0.3s ease;
 }
 .stTextInput > div>div:hover {
-    transform: scale(1.003);
+
     transition: all 0.3s ease;
 }
 
@@ -124,10 +132,6 @@ div[data-testid="stMainBlockContainer"] {
     box-shadow: 0 0 0 3px rgba(255, 75, 75, 0.1);
 }
 
-/* 사이드바 애니메이션 */
-.css-1d391kg {
-    animation: slideIn 0.4s ease-out;
-}
 
 @keyframes slideIn {
     from {
@@ -207,3 +211,58 @@ div[data-testid="stMainBlockContainer"] {
     transition: all 0.3s ease;
 }
 
+.stSlider {
+    transition: all 0.3s ease;
+}
+
+
+div.st-key-AI_total_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;   
+}
+div.st-key-AI_total_count:hover{
+    background-color: #4ac254;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+div.st-key-AI_most_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;
+}
+div.st-key-AI_most_count:hover{
+    background-color: #c1d35a;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+div.st-key-AI_recreate_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;
+}
+div.st-key-AI_recreate_count:hover{
+    background-color: #5479ca;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+div.st-key-AI_file_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;
+}
+div.st-key-AI_file_count:hover{
+    background-color: #cad0dd;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+div.st-key-AI_category_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;
+}
+div.st-key-AI_category_count:hover{
+    background-color: #80c453;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+div.st-key-AI_urgency_count {
+    animation: pageReload 0.3s ease-out;
+    transition: all 0.3s ease;
+}
+div.st-key-AI_urgency_count:hover{
+    background-color: #ad4a58;
+    box-shadow: 0 .125rem 0.5rem rgba(0, 0, 0, 0.1);
+}
