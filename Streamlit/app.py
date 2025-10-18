@@ -17,9 +17,10 @@ st.html(
 load_css()
 clear_state()
 pages = [
-    st.Page(pg.show_page, title = "민원 입력", icon = ":material/home:"),
+    st.Page(pg.show_home, title = "홈", icon = ":material/home:"),
+    st.Page(pg.show_page, title = "민원 입력", icon = ":material/input:"),
     st.Page(pg.show_setting, title = "설정", icon = ":material/settings:"),
-   # st.Page(pg.show_setting, title = "관리자 설정", icon = ":material/admin_panel_settings:"),
+   
     
 ]
 page = st.navigation(pages, position="top")
