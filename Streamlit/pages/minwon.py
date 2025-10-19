@@ -3,11 +3,13 @@ import pandas as pd
 from datetime import datetime
 import time
 from css.theme import *
+from css.button import *
 from util.database import *
 from util.state_copy import *
 from util.page_convert import *
 import util.llama3_korea_bllossomQ8 as useAi #우리가 만든 ai를 사용하기위한 임포트
 #import util.find_similar as ragai
+from io import BytesIO
 from util.toml_edit import *
 import random
 import string
@@ -30,8 +32,11 @@ def show_home():
                     name = st.text_input("이름", placeholder="이름")
                     department = st.text_input("부서명", placeholder="사하구청")
                     tel = st.text_input("전화번호", placeholder="000-000-0000")
-                minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300)
-                manual_btn = st.form_submit_button("민원 입력", icon = ':material/edit_note:')
+                minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300, key = "minwon_input_area")
+                with st.container(key = f"copy_paste_manual", horizontal=True):
+                    #copy_button(target_key="minwon_input_area", button_key = f"copy_btn_minwon", area_number=0)
+                    #paste_button(target_key="minwon_input_area", button_key = f"paste_btn_minwon")
+                    manual_btn = st.form_submit_button("민원 입력", icon = ':material/edit_note:')
 
 
             if manual_btn:
@@ -54,7 +59,7 @@ def show_home():
                     '답변요지': "",
                     '민원요지': "",
                     '최종답변': "",
-                    '최종평점': "",
+                    '최종평점': 0,
                     '민원 카테고리': "일반",
                     '민원 긴급도': "매우 낮음",
                     '답변 평점': 0,
@@ -99,7 +104,7 @@ def show_home():
                         st.session_state.id = make_random_id()
                         st.session_state.df['답변요지'] = ""
                         st.session_state.df['최종답변'] = ""
-                        st.session_state.df['최종평점'] = ""
+                        st.session_state.df['최종평점'] = 0
                         st.session_state.df['민원 카테고리'] = "일반"
                         st.session_state.df['민원 긴급도'] = "매우 낮음"
                         st.session_state.df['답변 평점'] = 0
@@ -259,7 +264,7 @@ def show_input():
 
                         preset = st.pills(  
                                             "답변 요지", ["직접 입력", "완전 수용", "부분 수용", "수용 불가"],
-                                            key = f"minwon_sub_selecor_{index}", default = "완전 수용",#    on_change=input_status_change, args=(i,), 
+                                            key = f"minwon_sub_selecor_{index}", default = "직접 입력",#    on_change=input_status_change, args=(i,), 
        
                                             
                                     ) 
@@ -353,11 +358,13 @@ def show_result():
         #                                                    "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =265  , value= edit['민원요지'], key = f"minwon_sub_{index}"
         #                )
         #with right:
-        preset = st.pills(
-                    "답변 요지", ["직접 입력", "완전 수용", "부분 수용", "수용 불가"],
-                    key = f"minwon_sub_selecor_{index}", default = "직접 입력"
-                    
-            )                    
+        with st.container(key=f"test_container_{index}", horizontal=True):
+            preset = st.pills(
+                        "답변 요지", ["직접 입력", "완전 수용", "부분 수용", "수용 불가"],
+                        key = f"minwon_sub_selecor_{index}", default = "직접 입력"
+                        
+                )               
+            #edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{index}")     
         match (preset):
             case "직접 입력":
                 pass
@@ -377,10 +384,11 @@ def show_result():
             if st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:"):
                 generate_answer(index, True, False)
     
-    # 메인 답변 구조 출력
+    #메인 답변 구조 출력
     # 메뉴 출력 방식에 따라 탭, 확장형 탭으로 구성
     # rag 옵션 on/off 여부에 따라 값이 달라지며 off일 경우 rag 창은 출력되지 않는다.
-    # 9월 25일 추가 업데이트 반영-> 민원 내용 편집 시 기존에 화면 아래에 붙었던걸 이제 RAG를 죽이고 
+    # 9월 25일 추가 업데이트 반영-> 민원 내용 편집 시 기존에 화면 아래에 붙었던걸 이제 RAG를 죽이고     )
+
     @st.fragment
     def show_total_container(check):
         mapping = [1,2,3,4,5]
@@ -424,20 +432,21 @@ def show_result():
                         
                         with first:
                             if row['test'] is not True:
-                                with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium", width=330):
-                                    copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")   
+                                with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium", width=500):
+                                    copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
+                                    #copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")   
                                     row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")   #답변 평점 -> 최종 평점 이부분은 추후 수정 예정
                                 #with test3:
-                                    edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{index}")
+                                    edit =  st.toggle("민원 수정 및 재생성", key = f"edit_answer_sub_{index}")
                                 with st.container(key = f"first_answer_{index}"):
                                     show_first(index)
 
                             else:
-                                with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium", width=330):
-                                    copy_button(result.iloc[index]['RAG'], key = f"copy_rag_btn_{index}")
+                                with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium", width=500):
+                                    copy_button(target_key=f"result_second_{index}", button_key = f"copy_rag_btn_{index}", area_number=index)
                                     row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")   #답변 평점 -> 최종 평점 이부분은 추후 수정 예정
                                 #with test3:
-                                    edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{index}")
+                                    edit =  st.toggle("민원 수정 및 재생성", key = f"edit_answer_sub_{index}")
                                 with st.container(key = f"first_answer_{index}"):
                                     show_second(index)
                             """with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium"):
@@ -455,7 +464,7 @@ def show_result():
                             if row['답변 평점'] is not None:
                                 row['답변 평점'] = mapping[row['답변 평점']]
                             else:
-                                row['답변 평점'] = 3
+                                row['답변 평점'] = 0
                             result.at[index, '최종평점'] = row['답변 평점']
                         with second:
                                 match edit:
@@ -464,12 +473,12 @@ def show_result():
                                     case False:
                                         if row['test'] is not True:
                                             #with st.container(key = f"result_checkbox_rag_container_{index}", horizontal=True, gap = "medium", width=330):
-                                            copy_button(result.iloc[index]['RAG'], key = f"copy_rag_btn_{index}")
+                                            copy_button(target_key=f"result_second_{index}", button_key = f"copy_rag_btn_{index}", area_number=index)
                                             with st.container(key = f"second_answer_{index}"):
                                                 show_second(index)
                                         else:
                                             #with st.container(key = f"result_checkbox_rag_container_{index}", horizontal=True, gap = "medium", width=330):
-                                            copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")
+                                            copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
                                             with st.container(key = f"second_answer_{index}"):
                                                 show_first(index)
                     
@@ -484,18 +493,27 @@ def show_result():
                     else:
                         first, spacer, second = st.columns((6.8, 1.4, 6.8))
                         with first:
-                            copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")
+                            with st.container(key = f"result_checkbox_only_container_{index}", horizontal=True, gap = "medium", width=400):
+                                    #copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
+                                    #copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")   
+                                    row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")
+                                    edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{i}")
                             with st.container(key = f"first_answer_{index}"):
                                 show_first(index)
+                            with st.container(key = f"copy_paste_{i}", horizontal=True):
+                                copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
+                                #paste_button(target_key=f"result_first_{index}", button_key = f"paste_btn_{index}")
+                            #edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{i}")
                             with st.container(key = f"result_checkbox_container_{i}", horizontal=True, gap = "medium"):
-                                    row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{i}")  
-                                    edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{i}")
+                                    #row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{i}")  
+                                    #edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{i}")
                                     if row['답변 평점'] is not None:
                                         row['답변 평점'] = mapping[row['답변 평점']]
                                     else:
                                         row['답변 평점'] = 0
                                     result.at[index, '최종평점'] = row['답변 평점']
                         with second:
+                            #edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{i}")
                             show_edit(index)
     
                         if edit:
@@ -504,12 +522,11 @@ def show_result():
                         else:
                             result.at[index, '수정'] = False
 
-
     #show_result 안에 있는 모든 함수들이 모여서 실행시키는 함수
     def show_total():
         st.subheader("답변 결과")
         with st.container(key = "minwon_result_guide_container", horizontal=True):
-            st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
+            #st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
             st.write("- 민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.")
             #st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 :red[교환]됩니다.")
         #st.session_state.layout_check = st.toggle("기능 테스트", key = "result_layout_check")
@@ -519,19 +536,21 @@ def show_result():
         with st.container(key = "result_under_ui_option", horizontal=True):
             if st.session_state.multimode:
                 show_multi_page()
+
             show_fragment_button()
           
         
     #복수 생성일 경우 해당 함수 실행
     #수정 토글이 켜져 있는 민원들에 한해 재생성 기능 사용
     def show_fragment_button():
-         if st.session_state.file_check:
-             if st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다."):
+        
+        if st.session_state.file_check:
+            if st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다."):
                 reinput_answer()
     show_total()
+
         
-
-
+    
     #st.success("데이터베이스에 등록이 완료되었습니다.")
 
 

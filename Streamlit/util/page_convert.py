@@ -29,6 +29,7 @@ def page_convert():
             st.session_state.before = False
 
     st.session_state['btn_show'] = False
+    
 
 def convert_home():
     #st.toast("민원 입력 버튼에서 기존 화면으로 넘어갈 수 있습니다.", icon = ":material/check:")
