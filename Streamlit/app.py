@@ -7,7 +7,7 @@ import pages as pg
 from css.theme import * 
 from util.toml_edit import *
 from util.menu import *
-
+from util.info import *
 st.html(
     """
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;700&display=swap" as="style">
@@ -17,8 +17,9 @@ st.html(
 load_css()
 clear_state()
 pages = [
-    st.Page(pg.show_home, title = "홈", icon = ":material/home:"),
     st.Page(pg.show_page, title = "민원 입력", icon = ":material/input:"),
+    st.Page(pg.show_home, title = "홈", icon = ":material/analytics:"),
+
     st.Page(pg.show_setting, title = "설정", icon = ":material/settings:"),
    
     
@@ -28,4 +29,4 @@ page = st.navigation(pages, position="top")
 
 page.run()
 set_menu()
-scroll_to_top()
+#show_copyright()

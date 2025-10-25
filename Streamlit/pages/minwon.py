@@ -20,25 +20,32 @@ from util.create_answer import *
 #메인 화면
 # 해당 부분 추가 함으로서 (벡터 db 를 생성후) home 을 출력 합니다
 def show_home():
+    ui_change = True
     #st.session_state['page'] = '홈'
-    manual_col, file_col = st.tabs([":material/person: 단일 민원", ":material/table: 복수 민원"])#st.columns((8,1,8))
+    #manual_col, file_col = st.tabs([":material/person: 직접 입력", ":material/table: 파일 입력"])#st.columns((8,1,8))
     #단일 입력
     def show_manual():
         if st.session_state.file_check is not True:
-            
-            
+            if ui_change:
+                with st.container(key = "reset_btn_container", horizontal=True):
+                    if st.button("파일 입력으로 전환", key = "change_file", help = "파일 입력으로 전환할 수 있습니다.", icon = ":material/compare_arrows:"):
+                        st.session_state.home_manual_show = False
+                        st.session_state.home_file_show = True
+                        st.rerun()
+                    if st.button("이전 화면으로", key = "change_defaut", help = "처음 화면으로 전환할 수 있습니다.", icon = ":material/arrow_back:"):
+                        st.session_state.home_manual_show = False
+                        st.session_state.home_input_btn = False
+                        st.rerun()
             with st.form(key = "manual_input", border = False):
                 with st.container(horizontal=True, key = "manual_input_infor"):
-                    name = st.text_input("이름", placeholder="이름")
-                    department = st.text_input("부서명", placeholder="사하구청")
-                    tel = st.text_input("전화번호", placeholder="000-000-0000")
+                    name = st.text_input("이름", placeholder="이름을 입력해주세요.")
+                    department = st.text_input("부서명", placeholder="부서명을 입력해주세요. ex) 사하구청")
+                    tel = st.text_input("전화번호", placeholder="전화번호를 입력해주세요. ex) 000-000-0000")
                 minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300, key = "minwon_input_area")
                 with st.container(key = f"copy_paste_manual", horizontal=True):
                     #copy_button(target_key="minwon_input_area", button_key = f"copy_btn_minwon", area_number=0)
                     #paste_button(target_key="minwon_input_area", button_key = f"paste_btn_minwon")
                     manual_btn = st.form_submit_button("민원 입력", icon = ':material/edit_note:')
-
-
             if manual_btn:
                 if name != '' and department != '' and tel != '' and minwon != '':
                     if st.session_state.file_check:
@@ -85,8 +92,16 @@ def show_home():
         
     def show_file():
             if st.session_state.manual is not True:
-                
-            
+                if ui_change:
+                    with st.container(key = "change_display", horizontal=True):
+                        if st.button("직접 입력으로 전환", key = "change_manual", help = "파일 입력으로 전환할 수 있습니다.", icon = ":material/compare_arrows:"):
+                            st.session_state.home_file_show = False
+                            st.session_state.home_manual_show = True
+                            st.rerun()
+                        if st.button("이전 화면으로", key = "change_defaut_file", help = "처음 화면으로 전환할 수 있습니다.", icon = ":material/arrow_back:"):
+                            st.session_state.home_file_show = False
+                            st.session_state.home_input_btn = False
+                            st.rerun()
                 with st.container(key = "file_input", border = True):
 
                     upload_files = st.file_uploader(
@@ -139,11 +154,54 @@ def show_home():
     #ai 왔다갔다 할 떄 AI 한번만 돌리게
     st.session_state.ai_check = False
     # 수동 입력 칸
-    with manual_col:
-        show_manual()
-    with file_col:
-        show_file()
+    #with manual_col:
+    
+    if ui_change:
+        with st.container(key = "home_text_container"):
+                st.write("# 새올민원답변생성기")
+        if st.session_state.home_input_btn is not True:
+            with st.container(key = "home_info_container"):
+                st.write('''
+                        입력된 민원을 정해진 양식, AI를 활용하여 답변을 생성하는 시스템입니다.
+                        민원 입력은 직접 입력, 파일 입력을 통해 가능합니다. 
+                        단, 파일 입력과 달리 직접 입력은 민원 :red[한개]만 입력이 가능합니다.
+                        ''')
+                #st.write("해당 웹사이트는 새올민원전자창구와 같은 민원의 답변을 AI가 생성해주는 시스템입니다.")
+                #st.write("이때 복수, 단일 민원 둘 중 하나의 입력이 끝나면 버튼을 눌러 초기화가 가능합니다.")
+                #st.write("단일 민원은 민원 내용을 직접 입력해주셔야 하고 복수 민원은 엑셀 파일을 활용하여 입력이 가능합니다.")
 
+            with st.container(key = "input_btn_container", horizontal=True, gap="small"):
+                #with st.container(key = "test_manual_btn_container", width = 550):
+                    if st.button("직접 입력", key = "test_manual_btn",help = "이름, 전화번호와 같은 인적사항과 민원 내용을 직접 입력합니다. 이때 민원은 하나만 입력이 가능합니다.", icon = ":material/new_window:"):
+                        st.session_state.home_manual_show = True
+                        st.session_state.home_input_btn = True
+                        st.rerun()
+                    #show_manual()
+                #with st.container(key = "test_file_btn_container", width = 550):
+                    if st.button("파일 입력", key = "test_file_btn", help = "XLSX, CSV 파일을 사용하여 민원을 입력할 수 있습니다. 파일 입력은 1개 이상의 민원을 입력이 가능합니다.", icon = ":material/file_open:"):
+                        st.session_state.home_file_show = True
+                        st.session_state.home_input_btn = True
+                        st.rerun()
+                    #show_file()
+        else:
+            match (st.session_state.home_manual_show, st.session_state.home_file_show):
+                case (True, False):
+                    show_manual()
+                
+                case (False, True):
+                    show_file()
+    else:
+        st.write("# 새올민원답변생성기")
+        with st.container(key = "old_ui_container", horizontal=True):
+            st.write('''- 입력된 민원을 정해진 양식, AI를 활용하여 답변을 생성하는 시스템입니다.''')
+            st.write('''- 민원 입력은 직접 입력, 파일 입력을 통해 가능합니다. ''')
+            st.write('''- 단, 파일 입력과 달리 직접 입력은 민원 :red[한개]만 입력이 가능합니다.''')
+        manual_col, file_col = st.tabs([":material/new_window: 직접 입력", ":material/table: 파일 입력"])
+        
+        with manual_col:
+            show_manual()
+        with file_col:
+            show_file()
                     
     with st.container(key = "result button"):
         
@@ -199,10 +257,14 @@ def show_multi_page():
 def show_input():
     st.set_page_config(page_title = "민원 입력", page_icon=":material/input:", layout="wide", initial_sidebar_state="collapsed")
     def show_input_comment():
-        st.subheader("민원 입력 및 응답 생성")
+        with st.container(key = "input_title_container"):
+            st.write("### 민원 입력 및 응답 생성")
         with st.container(key = "input_guide_container", horizontal=True):
-            st.write("- :red[답변 요지]를 :red[입력]해주셔야 답변을 생성할 수 있습니다. 복수 민원은 입력한 :red[모든 민원]에 기입해주시길 바랍니다.")
-            st.write("- 상단 선택창에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.")
+            st.write('''
+                     입력하신 민원의 :red[답변 요지]를 :red[입력]해주셔야 답변을 생성할 수 있습니다.
+                     상단 선택 메뉴(:material/menu: 모양 아이콘)에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.
+                     ''')
+            #st.write("상단 선택창에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.")
     #st.session_state.layout_check = st.toggle("기능 테스트", key = f"inpuy_layout_check")
     #config = st.session_state.config
     minwon = st.session_state.df
@@ -247,49 +309,51 @@ def show_input():
 
                 with expander:
                 
-                    minwon_column, spacer, answer_column = st.columns((7,8,8), gap = "medium") #8, 1.2,
+                    minwon_column, spacer, answer_column = st.columns((7,8,8)) #8, 1.2,
                     with minwon_column:
-                        with st.container(key = f"test_{index}", horizontal=True):
-                            minwon.at[index, '민원 카테고리'] = st.selectbox(
-                                    "민원 카테고리 및 민원 긴급도", options = ["일반", "환경", "교통", "복지", "교육", "기타"], key = f"minwon_category_{index}"
-                                )
-                            minwon.at[index, '민원 긴급도'] = st.selectbox(
-                                "민원 긴급도", options = ("매우 낮음", "낮음", "보통", "높음", "매우 높음"), key = f"minwon_urgency_{index}", help = "민원 긴급도를 선택해주세요.", label_visibility="hidden"
-                            ) 
-                        minwon.at[index, '민원요지'] = st.text_area(
-                                                            "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =262  , value= minwon.iloc[index]['민원요지'], key = f"minwon_sub_{index}"
-                        )
-                        
-                    with spacer:
-
-                        preset = st.pills(  
-                                            "답변 요지", ["직접 입력", "완전 수용", "부분 수용", "수용 불가"],
-                                            key = f"minwon_sub_selecor_{index}", default = "직접 입력",#    on_change=input_status_change, args=(i,), 
-       
-                                            
-                                    ) 
-                        match (preset):
-                            case "직접 입력":
-                                minwon.at[index,'답변요지'] = ""
-                            case "완전 수용":
-                                #st.toast(f"{i+1}번 민원 답변 요지 :orange[{preset}]을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", icon = ":material/warning:")
-                                minwon.at[index,'답변요지'] = config['sub']['accept']
-                            case "부분 수용":
-                                #show_popup(":orange[:material/warning:] 답변 요지 프리셋", f"답변 요지 {preset}을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", None, popup_check=True)
-                                minwon.at[index,'답변요지'] = config['sub']['particle_accept']
-                            case "수용 불가":
-                                #show_popup(":orange[:material/warning:] 답변 요지 프리셋", f"답변 요지 {preset}을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", None, popup_check=True)
-                                minwon.at[index,'답변요지'] = config['sub']['unaccept']
-                        minwon.at[index, '답변요지']  = st.text_area(
-                                "답변 요지" ,label_visibility="collapsed", placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
-                                , height = 270, value =minwon.at[index,'답변요지'], key = f"answer_sub_{index}"#, on_change=input_status_change, args=(i,)
-                            )     
-                    with answer_column:                    
+                    #with st.container(key = f"total_input_container_{index}", horizontal=True):
+                    #    with st.container(key = f"input_left_container_{index}", width = 490):
+                            with st.container(key = f"test_{index}", horizontal=True):
+                                minwon.at[index, '민원 카테고리'] = st.selectbox(
+                                        "민원 카테고리 및 민원 긴급도", options = ["일반", "환경", "교통", "복지", "교육", "기타"], key = f"minwon_category_{index}"
+                                    )
+                                minwon.at[index, '민원 긴급도'] = st.selectbox(
+                                    "민원 긴급도", options = ("매우 낮음", "낮음", "보통", "높음", "매우 높음"), key = f"minwon_urgency_{index}", help = "민원 긴급도를 선택해주세요.", label_visibility="hidden"
+                                ) 
+                            minwon.at[index, '민원요지'] = st.text_area(
+                                                                "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =277  , value= minwon.iloc[index]['민원요지'], key = f"minwon_sub_{index}"
+                            )
                             
-                        minwon.at[index,'답변양식'] = st.text_area(
-                                    "답변 양식", height = 345, value = minwon.at[index, '답변양식'], key = f"answer_format_{index}"
-                                )    
-   
+                    with spacer:
+                    #    with st.container(key = f"input_center_container_{index}", width = 550):
+                            preset = st.pills(  
+                                                "답변 요지", ["직접 입력", "완전 수용", "부분 수용", "수용 불가"],
+                                                key = f"minwon_sub_selecor_{index}", default = "직접 입력",#    on_change=input_status_change, args=(i,), 
+        
+                                                
+                                        ) 
+                            match (preset):
+                                case "직접 입력":
+                                    minwon.at[index,'답변요지'] = ""
+                                case "완전 수용":
+                                    #st.toast(f"{i+1}번 민원 답변 요지 :orange[{preset}]을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", icon = ":material/warning:")
+                                    minwon.at[index,'답변요지'] = config['sub']['accept']
+                                case "부분 수용":
+                                    #show_popup(":orange[:material/warning:] 답변 요지 프리셋", f"답변 요지 {preset}을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", None, popup_check=True)
+                                    minwon.at[index,'답변요지'] = config['sub']['particle_accept']
+                                case "수용 불가":
+                                    #show_popup(":orange[:material/warning:] 답변 요지 프리셋", f"답변 요지 {preset}을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", None, popup_check=True)
+                                    minwon.at[index,'답변요지'] = config['sub']['unaccept']
+                            minwon.at[index, '답변요지']  = st.text_area(
+                                    "답변 요지" ,label_visibility="collapsed", placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
+                                    , height = 286, value =minwon.at[index,'답변요지'], key = f"answer_sub_{index}"#, on_change=input_status_change, args=(i,)
+                                )     
+                    with answer_column:                    
+                    #    with st.container(key = f"input_right_container_{index}", width = 580):#width = 580
+                            minwon.at[index,'답변양식'] = st.text_area(
+                                        "답변 양식", height = 360, value = minwon.at[index, '답변양식'], key = f"answer_format_{index}"
+                                    )    
+
     #@st.fragment
     def show_generate_btn():
 
@@ -304,7 +368,7 @@ def show_input():
 
     show_input_container(st.session_state.layout_check, content_placeholder)
     
-    st.write('''---''')
+    st.divider()
     with st.container(key = "input_under_ui_option", horizontal=True):
         if st.session_state.multimode:
             show_multi_page()
@@ -524,10 +588,10 @@ def show_result():
 
     #show_result 안에 있는 모든 함수들이 모여서 실행시키는 함수
     def show_total():
-        st.subheader("답변 결과")
+        st.write("### 답변 결과")
         with st.container(key = "minwon_result_guide_container", horizontal=True):
             #st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
-            st.write("- 민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.")
+            st.write("민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.")
             #st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 :red[교환]됩니다.")
         #st.session_state.layout_check = st.toggle("기능 테스트", key = "result_layout_check")
         show_total_container(st.session_state.layout_check)
@@ -559,11 +623,8 @@ def show_page():
     st.session_state.page = "main"
     match st.session_state['minwon_check']:
         case 'file_select':
-            st.subheader("새올민원답변생성기")
-            with st.container(key = "home_info_container", horizontal=True):
-                st.write("- 아래 탭 중 하나를 골라서 민원 데이터를 생성할 수 있습니다.")
-                st.write("- 복수, 단일 민원 둘 중 하나의 입력이 끝나면 처음으로 버튼을 눌러 초기화가 가능합니다.")
-                st.write("- 민원이 입력된 순간 다른 민원으로의 설정은 :red[불가능]합니다.")
+                #st.write("복수, 단일 민원 둘 중 하나의 입력이 끝나면 처음으로 버튼을 눌러 초기화가 가능합니다.")
+                #st.write("민원이 입력된 순간 다른 민원으로의 설정은 :red[불가능]합니다.")
             show_home()
         case 'minwon_input':
             show_input()

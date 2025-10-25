@@ -48,61 +48,12 @@ div[class *= "current_page_"] [data-testid = "stBaseButton-secondary"]{
 }
 
 div[class *= "switch_option_"] [data-testid="stBaseButton-tertiary"]{
-    width: 7.5rem; /* 120px -> 7.5rem */
+    width: 120px;
 
 }
 div[class *= "switch_option_"] [data-testid="stIconMaterial"]{
-    font-size: 3.125rem; /* 50px -> 3.125rem */
+    font-size: 50px;
 }
-
-div.st-key-display_off,
-div.st-key-ai_set_btn_off,
-div.st-key-admin_queue_btn_off,
-div.st-key-admin_password_btn_off,
-div.st-key-admin_db_btn_off,
-div.st-key-admin_static_btn_off,
-div.st-key-admin_format_btn_off,
-div.st-key-admin_set_btn{
-    text-align: left;
-    width: 100%;
-    border-radius:1rem;
-}
-
-div.st-key-display_off:hover,
-div.st-key-ai_set_btn_off:hover,
-div.st-key-admin_queue_btn_off:hover,
-div.st-key-admin_password_btn_off:hover,
-div.st-key-admin_db_btn_off:hover,
-div.st-key-admin_static_btn_off:hover,
-div.st-key-admin_format_btn_off:hover,
-div.st-key-admin_set_btn:hover{
-    background-color: #dfe5ee;
-}
-
-div.st-key-display_on,
-div.st-key-ai_set_btn_on,
-div.st-key-admin_queue_btn_on,
-div.st-key-admin_password_btn_on,
-div.st-key-admin_db_btn_on,
-div.st-key-admin_static_btn_on,
-div.st-key-admin_format_btn_on{
-    background-color:#dfe5ee;
-    color:var(--main-color);
-    text-align: left;
-    width: 100%;
-    border-radius:1rem;
-}
-
-div.st-key-option_tab_btn_on [data-testid = "stBaseButton-secondary"],
-div.st-key-option_expand_btn_on [data-testid = "stBaseButton-secondary"],
-div.st-key-normal_model_on [data-testid = "stBaseButton-secondary"],
-div.st-key-mf_model_on [data-testid = "stBaseButton-secondary"],
-div.st-key-sahaai_model_on [data-testid = "stBaseButton-secondary"]{
-    border: 1px solid var(--main-color);
-    color:var(--main-color);
-    background-color: #dfe5ee;
-}
-
 
 /*llm을 포함한 모델 선택 메뉴 */
 div.st-key-llm_model_select [data-testid = "stPopoverButton"]{
@@ -116,7 +67,7 @@ div.st-key-llm_model_select [data-testid="stPopoverButton"] > div svg{
     display: none;
 }
 div.st-key-llm_model_select [data-testid = "stIconMaterial"]{
-    font-size: 1.5625rem; /* 25px -> 1.5625rem */
+    font-size: 25px;
     font-weight: 100;
 }
 div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
@@ -127,12 +78,10 @@ div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
 
 div.st-key-llm_model_select > div.st-key-download_CSV{
     position: absolute;
-    width:5rem;
     left: 82%;
 }
 div.st-key-llm_model_select > div.st-key-download_Excel{
     position: absolute;
-    width:5rem;
     left:87%;
 }
 
@@ -142,8 +91,8 @@ div.st-key-llm_model_select > div.st-key-hidden_download_file{
 
 div.st-key-file_reselect [data-testid = "stBaseButton-tertiary"]{
     width: 9.375rem;
-    height: 0.9375rem; /* 15px -> 0.9375rem */
-    padding: 0.3125rem; /* 5px -> 0.3125rem */
+    height: 15px;
+    padding: 5px;
     position:fixed;
     top: 0.6rem;
     right: 9rem;
@@ -151,7 +100,7 @@ div.st-key-file_reselect [data-testid = "stBaseButton-tertiary"]{
     font-size: 0.875rem;
 }
 div.st-key-file_reselect [data-testid = "stIconMaterial"] {
-    font-size: 1.5625rem; /* 25px -> 1.5625rem */
+    font-size: 25px;
 }
 
 /*파일 생성, 파일 다운로드 버튼*/
@@ -159,8 +108,8 @@ div.st-key-create_file [data-testid = "stBaseButton-tertiary"],
 div.st-key-download_file [data-testid = "stBaseButton-tertiary"]
 {
     width: 9.375rem;
-    height: 0.9375rem; /* 15px -> 0.9375rem */
-    padding: 0.3125rem; /* 5px -> 0.3125rem */
+    height: 15px;
+    padding: 5px;
     position: fixed;
     top: 0.6rem;
     right: 0.5rem; 
@@ -188,8 +137,8 @@ div.st-key-file_format .stButtonGroup{
     right: 8.5rem;
     z-index: 9999999999 !important;
     background: transparent;
-    gap: 0.5rem; /* 8px -> 0.5rem */
-    padding: 0.125rem 0.75rem; /* 2px 12px -> 0.125rem 0.75rem */
+    gap: 8px;
+    padding: 2px 12px;
 }
 
 
@@ -212,8 +161,8 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p,
 
 div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"],
 div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"]{
-    width: 30rem;
-    height: 10rem;
+    width: 31.25rem;
+    height: 12.5rem;
 }
 
 div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"] > div > p,
@@ -231,7 +180,7 @@ div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > span >[data-
 
 /*상단바 버튼 css*/
 .rc-overflow{
-    height: 1.875rem; /* 30px -> 1.875rem */
+    height:30px;
 }
 .rc-overflow [data-testid = "stTopNavLink"]{
     
@@ -239,7 +188,7 @@ div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > span >[data-
 }
 
 .rc-overflow [data-testid = "stIconMaterial"]{
-    font-size: 1.5625rem; /* 25px -> 1.5625rem */
+    font-size: 25px;
     font-weight:500;
     color:dark;
 }
@@ -250,5 +199,5 @@ div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > span >[data-
     color:var(--main-color);
 }
 .rc-overflow .stSidebarNavLinkContainer {
-    font-size: 1.75rem !important; /* 28px -> 1.75rem */
+    font-size: 28px !important;
 }
