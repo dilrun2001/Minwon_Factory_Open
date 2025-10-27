@@ -354,7 +354,6 @@ div.st-key-input_page_option [data-testid = "stHorizontalBlock"]{
 
 
 [data-testid = "stPopoverBody"]{
-    width: 35rem;
     border: 0.0625rem solid var(--main-color); /* 1px -> 0.0625rem */
 }
 div.st-key-llm_model_select{
@@ -371,10 +370,12 @@ div.st-key-home_text_container{
     text-align: center;
 
 }
-div.st-key-setting_menu_container{
+div.st-key-setting_menu_container,
+div.st-key-input_menu_container_test{
     align-items: left;
     border-radius:1.2rem;
 }
+
 
 div.st-key-total_set_container{
     gap: 3rem;

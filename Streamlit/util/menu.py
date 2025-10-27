@@ -94,7 +94,8 @@ def file_reselect():
 #평점 입력했는지 체크
 def grade_check():
     data = st.session_state.df
-    grade_check = (data[data['최종평점'] == 0].index+1).tolist()
+    #grade_check = (data[data['최종평점'] == 0].index+1).tolist()
+    grade_check = (data[data['평점 수정'] == True].index+1).tolist()
 
     if grade_check:#(data['최종평점'] == 0).any():
         show_popup(":red[:material/block:]  파일 생성 오류", f'''답변들의 평점이 채점되지 않았습니다.    
@@ -111,36 +112,39 @@ def set_menu():
     if st.session_state['page'] == 'main':
         with st.container(key = "llm_model_select", horizontal=True):
             popover =  st.popover("메뉴", icon= ":material/menu:")
-
-            popover.write(":material/person: AI 모델 선택")
-
-            match st.session_state.model:
-                    case '기본 모델':
-                            if popover.button("기본 모델", key = "normal_popover_on", type = "secondary"):
+            with popover.container(key = "popover_llm_select"):
+                st.write(":material/person: AI 모델 선택")
+                with st.container(key = "popover_llm_main", horizontal=True):
+                    match st.session_state.model:
+                        case '기본 모델':
+                                if st.button("기본 모델", key = "normal_popover_on", type = "secondary", width = 150):
                                     st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
-                            if popover.button("민원팩토리 모델", key = "mf_popover_off", type = "secondary"):
+                                if st.button("민원팩토리 모델", key = "mf_popover_off", type = "secondary", width = 150):
                                     st.session_state.model = '민원팩토리 모델'
                                     st.rerun()
-                            if popover.button("사하아이 연동", key = "sahaai_popover_off", type = "secondary"):
+                                if st.button("사하아이 연동", key = "sahaai_popover_off", type = "secondary", width = 150):
                                     st.session_state.model = '사하아이 연동'
                                     st.rerun()
-                    case '민원팩토리 모델':
-                            if popover.button("기본 모델", key = "normal_popover_off", type = "secondary"):
-                                        st.session_state.model = '기본 모델'
-                                        st.rerun()
-                            if popover.button("민원팩토리 모델", key = "mf_popover_on", type = "secondary"):
+
+                        case '민원팩토리 모델':
+                                if st.button("기본 모델", key = "normal_popover_off", type = "secondary", width = 150):
+                                    st.session_state.model = '기본 모델'
+                                    st.rerun()
+
+                                if st.button("민원팩토리 모델", key = "mf_popover_on", type = "secondary", width = 150):
                                     st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
-                            if popover.button("사하아이 연동", key = "sahaai_popover_off", type = "secondary"):
+                                if st.button("사하아이 연동", key = "sahaai_popover_off", type = "secondary", width = 150):
                                     st.session_state.model = '사하아이 연동'
                                     st.rerun()
-                    case '사하아이 연동':
-                            if popover.button("기본 모델", key = "normal_popover_off", type = "secondary"):
-                                        st.session_state.model = '기본 모델'
-                                        st.rerun()
-                            if popover.button("민원팩토리 모델", key = "mf_popover_off", type = "secondary"):
+
+                        case '사하아이 연동':
+                                if st.button("기본 모델", key = "normal_popover_off", type = "secondary", width = 150):
+                                    st.session_state.model = '기본 모델'
+                                    st.rerun()
+                                if st.button("민원팩토리 모델", key = "mf_popover_off", type = "secondary", width = 150):
                                         st.session_state.model = '민원팩토리 모델'
                                         st.rerun()
-                            if popover.button("사하아이 연동", key = "sahaai_popover_on", type = "secondary"):
+                                if st.button("사하아이 연동", key = "sahaai_popover_on", type = "secondary", width = 150):
                                     st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
             """model = popover.pills(":material/person: AI 모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], width = 450, default = '사하아이 연동')
             match (model):#, key = "llm_model_select", width = 300)):
@@ -159,7 +163,39 @@ def set_menu():
             #popover.write('''---''')
             if st.session_state['page'] == "main":
                 if st.session_state.manual == True or st.session_state.file_check == True:
-                    layout_option = {
+                    with popover.container(key = "display_option_container"):
+                        st.write(":material/desktop_windows: 화면 표시 방식")
+                        with st.container(key = "option_btn_container", horizontal=True):
+                        
+                            match st.session_state.layout_check:
+                                case "탭":
+                                        if st.button("탭", key = "option_tab_btn_on", type = "secondary", width = 100):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("확장형", key = "option_expand_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "확장형"
+                                                st.rerun()
+                                        """if st.button("탭(세로형)", key = "option_new_tab_off", type = "secondary", width = 150):
+                                            st.session_state.layout_check = "탭(세로형)"
+                                            st.rerun()"""
+                                case "확장형":
+                                        if st.button("탭", key = "option_tab_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "탭"
+                                                st.rerun()
+                                        if st.button("확장형", key = "option_expand_btn_on", type = "secondary", width = 100):
+                                                 st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("탭(세로형)", key = "option_new_tab_off", type = "secondary", width = 150):
+                                            st.session_state.layout_check = "탭(세로형)"
+                                            st.rerun()
+                                case "탭(세로형)":
+                                        if st.button("탭", key = "option_tab_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "탭"
+                                                st.rerun()
+                                        if st.button("확장형", key = "option_expand_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "확장형"
+                                #                st.rerun()
+                                #        if st.button("탭(세로형)", key = "option_new_tab_on", type = "secondary", width = 150):
+                                #             st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                    '''layout_option = {
                         0: ":material/tab: 탭",
                         1:  ":material/expand 확장형"
                     }
@@ -182,7 +218,7 @@ def set_menu():
                                 #st.toast(f"화면 표시 방식이 변경됩니다. {st.session_state.layout_check} -> :green[확장형]", icon = ":material/check:")
                                 st.session_state.layout_check = '확장형'
                                 time.sleep(0.05)
-                                st.rerun()
+                                st.rerun()'''
                         
                 
                 

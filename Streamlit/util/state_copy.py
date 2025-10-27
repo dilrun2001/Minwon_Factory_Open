@@ -235,6 +235,9 @@ def clear_state():
     if "setting_display" not in st.session_state:
         st.session_state["setting_display"] = "display"
     
+    if "input_show_index" not in st.session_state:
+        st.session_state["input_show_index"] = 0
+    
 
 # AI, RAG ON/OFF 기능으로 인해 실시간 피드백 변경
 def ai_option_check():
@@ -301,3 +304,4 @@ def minwon_clear():
     st.session_state.home_file_show = False
     st.session_state.home_manual_show = False
     st.session_state.home_input_btn = False
+    st.session_state["input_show_index"] = 0

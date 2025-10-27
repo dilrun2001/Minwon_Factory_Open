@@ -52,6 +52,10 @@ div[data-testid="stMainBlockContainer"],
 }
 
 
+
+
+
+
 /* 버튼 호버 애니메이션 */
 [data-testid = "stBaseButton-secondary"],
 [data-testid = "stBaseButton-tertiary"],

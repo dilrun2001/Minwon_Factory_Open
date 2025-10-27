@@ -128,15 +128,12 @@ def show_display():
                                         if st.button("탭", key = "option_tab_btn_on", type = "secondary", width = 100):
                                                 st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
                                         if st.button("확장형", key = "option_expand_btn_off", type = "secondary", width = 100):
-                                                st.toast(f"화면 표시 방식이 변경되었습니다. {st.session_state.layout_check} -> :green[확장형]", icon = ":material/check:")
                                                 st.session_state.layout_check = "확장형"
-                                                time.sleep(1)
+
                                                 st.rerun()
                                 case "확장형":
                                         if st.button("탭", key = "option_tab_btn_off", type = "secondary", width = 100):
-                                                st.toast(f"화면 표시 방식이 변경되었습니다. {st.session_state.layout_check} -> :green[탭]", icon = ":material/check:")
                                                 st.session_state.layout_check = "탭"
-                                                time.sleep(1)
                                                 st.rerun()
                                         if st.button("확장형", key = "option_expand_btn_on", type = "secondary", width = 100):
                                                  st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
@@ -207,6 +204,47 @@ def show_ai_set():
                                 if rag != config['app']['rag']:
                                         change_toml('app', 'rag', rag, f"RAG 설정 {rag}")
                                         ai_option_check()
+
+#실험실
+def show_lab():
+        st.write("## :material/experiment: 실험실")
+        st.divider()
+        with st.container(key = "setting_lab_container", gap="medium", border = True):
+                st.write("#### 화면 표시 방식(실험실)")
+                st.write("- :red[아직 정식으로 들어가지 않은 기능]이 포함된 선택 방식입니다. 주의해주시길 바랍니다.")
+                st.write("- 확장형: 최대 10개의 확장 및 축소가 가능한 탭을 세로로 배열")
+                st.write("- 탭: 최대 10개의 확장 및 축소가 불가능하지만 탭으로 구분하여 가로로 배열")
+                st.write("- 탭(세로형) : 최대 10개의 탭이 한 페이지에 화면 왼쪽에 표시하여 배열")
+                with st.container(key = "option_btn_container", horizontal=True, gap = "medium"):
+                        match st.session_state.layout_check:
+                                case "탭":
+                                        if st.button("탭", key = "option_tab_btn_on", type = "secondary", width = 100):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("확장형", key = "option_expand_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "확장형"
+                                                st.rerun()
+                                        if st.button("탭(세로형)", key = "option_new_tab_off", type = "secondary", width = 150):
+                                                st.session_state.layout_check = "탭(세로형)"
+                                                st.rerun()
+                                case "확장형":
+                                        if st.button("탭", key = "option_tab_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "탭"
+                                                st.rerun()
+                                        if st.button("확장형", key = "option_expand_btn_on", type = "secondary", width = 100):
+                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("탭(세로형)", key = "option_new_tab_off", type = "secondary", width = 150):
+                                                st.session_state.layout_check = "탭(세로형)"
+                                                st.rerun()
+                                case "탭(세로형)":
+                                        if st.button("탭", key = "option_tab_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "탭"
+                                                st.rerun()
+                                        if st.button("확장형", key = "option_expand_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "확장형"
+                                                st.rerun()
+                                        if st.button("탭(세로형)", key = "option_new_tab_on", type = "secondary", width = 150):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+
 #통계 페이지 테스트
 def show_static():
         st.write("## :material/analytics: 통계")
@@ -256,9 +294,18 @@ def show_setting():
                         if st.button("AI", key = "ai_set_btn_off", type = "tertiary", icon = ":material/robot:"):
                                 st.session_state["setting_display"] = "ai"
                                 st.rerun()
+                #실험실
+                if st.session_state["setting_display"] == "lab":
+                        if st.button("실험실", key = "lab_btn_on", type = "tertiary", icon = ":material/experiment:"):
+                                st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                else:
+                        if st.button("실험실", key = "lab_btn_off", type = "tertiary", icon = ":material/experiment:"):
+                                #st.toast("현재 :red[지원하지 않는 기능]입니다.", icon = ":material/block:")
+                                st.session_state["setting_display"] = "lab"
+                                st.rerun()
                 #관리자 패널 
                 if st.session_state.admin is not True:
-                        if st.button("관리자", key = "admin_set_btn", type = "tertiary", icon = ":material/admin_panel_settings:"):
+                        if st.button("관리자 로그인", key = "admin_set_btn", type = "tertiary", icon = ":material/admin_panel_settings:"):
                                 show_login_admin()
                 else:
                         #대기열
@@ -309,6 +356,8 @@ def show_setting():
                               show_display()
                         case "ai":
                               show_ai_set()
+                        case "lab":
+                                show_lab()
                         case "static":
                               show_static()
                         case "admin_password":

@@ -55,7 +55,7 @@ def show_home():
                         st.session_state.df = pd.DataFrame(columns=[
                         '이름', '부서명', '전화번호', '민원내용',
                         '답변요지', '민원요지', '최종답변', '최종평점',
-                        '민원 카테고리', '민원 긴급도', '답변 평점', 'RAG 평점', 'test', '수정'
+                        '민원 카테고리', '민원 긴급도', '답변 평점', 'RAG 평점', 'test', '수정','평점 수정','평점 알림', '재생성', '답변요지 방식'
                     ])
 
                         st.session_state.df.loc[0] = {
@@ -72,7 +72,11 @@ def show_home():
                     '답변 평점': 0,
                     'RAG 평점': 0,
                     'test': False, 
-                    '수정': False
+                    '수정': False,
+                    '평점 수정': True,
+                    '평점 알림': True,
+                    '답변요지 방식': "직접 입력",
+                    '재생성': False
                 }
                         
 
@@ -126,6 +130,10 @@ def show_home():
                         st.session_state.df['RAG 평점'] = 0
                         st.session_state.df['test'] = False
                         st.session_state.df['수정'] = False
+                        st.session_state.df['평점 수정'] = True
+                        st.session_state.df['평점 알림'] = True
+                        st.session_state.df['답변요지 방식'] = "직접 입력"
+                        st.session_state.df['재생성'] = False
                         #print(st.session_state.df)
                         #st.markdown(f"##### {len(st.session_state.df)}개의 민원 데이터가 입력되었습니다.")
                         #print(st.session_state.df)
@@ -223,6 +231,7 @@ def show_multi_page():
                         if st.session_state.current_page > 1:
                             if st.button("이전 페이지", key = "input_before_btn", icon = ":material/navigate_before:", type = 'tertiary'):
                                 st.session_state.current_page -= 1
+                                    #st.session_state["input_show_check"]
                                 st.rerun()
                         else:
                             st.button("이전 페이지", key = "input_before_btn", icon = ":material/navigate_before:", disabled=True, type = 'tertiary')
@@ -253,9 +262,11 @@ def show_multi_page():
 #답변요지 입력 창
 #구조
 #show_input_comment(멘트 및 간단 설명), show_input_container(메인 컨테이너), 페이지네이션 상태일때 show_multi_page 사용
-
+@st.fragment
 def show_input():
     st.set_page_config(page_title = "민원 입력", page_icon=":material/input:", layout="wide", initial_sidebar_state="collapsed")
+    
+    @st.fragment
     def show_input_comment():
         with st.container(key = "input_title_container"):
             st.write("### 민원 입력 및 응답 생성")
@@ -264,115 +275,183 @@ def show_input():
                      입력하신 민원의 :red[답변 요지]를 :red[입력]해주셔야 답변을 생성할 수 있습니다.
                      상단 선택 메뉴(:material/menu: 모양 아이콘)에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.
                      ''')
-            #st.write("상단 선택창에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.")
-    #st.session_state.layout_check = st.toggle("기능 테스트", key = f"inpuy_layout_check")
-    #config = st.session_state.config
     minwon = st.session_state.df
-    
-    #st.session_state.input_status = [False] * len(minwon)    
 
-    def show_input_container(check, container):
-        container.empty()
-        with container:
+
+    #좌측 입력창
+    @st.fragment
+    def input_left_container(index):
+        with st.container(key = f"test_{index}", horizontal=True):
+            minwon.at[index, '민원 카테고리'] = st.selectbox(
+                    "민원 카테고리 및 민원 긴급도", options = ["일반", "환경", "교통", "복지", "교육", "기타"], key = f"minwon_category_{index}"
+                )
+            minwon.at[index, '민원 긴급도'] = st.selectbox(
+                "민원 긴급도", options = ("매우 낮음", "낮음", "보통", "높음", "매우 높음"), key = f"minwon_urgency_{index}", help = "민원 긴급도를 선택해주세요.", label_visibility="hidden"
+            ) 
+        minwon.at[index, '민원요지'] = st.text_area(
+                                            "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =277  , value= minwon.iloc[index]['민원요지'], key = f"minwon_sub_{index}"
+        )
+    
+    #중앙 입력창
+    @st.fragment
+    def input_center_container(index):
+        with st.container(key = f"answer_sub_pills_{index}"):
+            with st.container(key = f"answer_sub_title_{index}"):
+                st.write("답변 요지")
+            with st.container(key = f"answer_sub_btngroup_{index}", horizontal=True):
+                if minwon.iloc[index]['답변요지 방식'] == "직접 입력":
+                    if st.button("직접 입력", key = f"manual_input_btn_on_{index}"):
+                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                else:
+                    if st.button("직접 입력", key = f"manual_input_btn_{index}"):
+                        minwon.at[index, '답변요지 방식'] = "직접 입력"
+                        minwon.at[index,'답변요지'] = ""
+                        st.rerun(scope="fragment")
+                if minwon.iloc[index]['답변요지 방식'] == "완전 수용":
+                    if st.button("완전 수용", key = f"manual_accept_btn_on_{index}"):
+                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                else:
+                    if st.button("완전 수용", key = f"manual_accept_btn_{index}"):
+                        minwon.at[index, '답변요지 방식'] = "완전 수용"
+                        minwon.at[index,'답변요지'] = config['sub']['accept']
+                        st.rerun(scope="fragment")
+                if minwon.iloc[index]['답변요지 방식'] == "부분 수용":
+                    if st.button("부분 수용", key = f"manual_particle_btn_on_{index}"):
+                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                else:
+                    if st.button("부분 수용", key = f"manual_particle_btn_{index}"):
+                        minwon.at[index, '답변요지 방식'] = "부분 수용"
+                        minwon.at[index,'답변요지'] = config['sub']['particle_accept']
+                        st.rerun(scope="fragment")
+                if minwon.iloc[index]['답변요지 방식'] == "수용 불가":
+                    if st.button("수용 불가", key = f"manual_unaccept_btn_on_{index}"):
+                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                else:
+                    if st.button("수용 불가", key = f"manual_unaccept_btn_{index}"):
+                        minwon.at[index, '답변요지 방식'] = "수용 불가"
+                        minwon.at[index,'답변요지'] = config['sub']['unaccept']
+                        st.rerun(scope="fragment")
+                
+        minwon.at[index, '답변요지']  = st.text_area(
+                "답변 요지" ,label_visibility="collapsed", placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
+                , height = 277, value =minwon.at[index,'답변요지'], key = f"answer_sub_{index}"#, on_change=input_status_change, args=(i,)
+            )     
+    #우측 입력창
+    @st.fragment
+    def input_right_container(index):
+        minwon.at[index,'답변양식'] = st.text_area(
+                "답변 양식", height = 360, value = minwon.at[index, '답변양식'], key = f"answer_format_{index}"
+            )  
+
+    @st.fragment
+    def show_main_input(index):
+            minwon_column, spacer, answer_column = st.columns((7,8,8)) #8, 1.2,
+            with minwon_column:
+                input_left_container(index)
+            with spacer:
+                input_center_container(index)
+            with answer_column:                    
+                input_right_container(index)
+
+
+    #st.session_state.input_status = [False] * len(minwon)   
+    @st.fragment 
+    def show_input_container(check):
+        #container.empty()
+        #with container:
             tab_list = []
             tab_list = [f":material/comment: {i+1}번 민원" for i in range(len(minwon))]
-            if check == "탭":    
-                if st.session_state.multimode:  #페이지네이션 상태인지 체크하는 if문
-                    start_index = (st.session_state.current_page - 1) * 10 
-                    print(start_index)
-                    end_index = start_index + 10
-                    current_page_tabs = tab_list[start_index:end_index]
-                    print(current_page_tabs)
-                    df_to_iterate = minwon.iloc[start_index:end_index]
-                    tabs = st.tabs(current_page_tabs)
-                else:
-                    tabs = st.tabs(tab_list)
-                    df_to_iterate = minwon
-            else:
-                if st.session_state.multimode: 
-                    start_index = (st.session_state.current_page - 1) * 10
-                    print(start_index)
-                    end_index = start_index + 10
-                    current_page_tabs = tab_list[start_index:end_index]
-                    print(current_page_tabs)
-                    df_to_iterate = minwon.iloc[start_index:end_index]
-                else:
-                    df_to_iterate = minwon
+            match (check):
+                case "탭":    
+                    if st.session_state.multimode:  #페이지네이션 상태인지 체크하는 if문
+                        start_index = (st.session_state.current_page - 1) * 10 
+                        #print(start_index)
+                        end_index = start_index + 10
+                        current_page_tabs = tab_list[start_index:end_index]
+                        #print(current_page_tabs)
+                        df_to_iterate = minwon.iloc[start_index:end_index]
+                        tabs = st.tabs(current_page_tabs)
+                    else:
+                        tabs = st.tabs(tab_list)
+                        df_to_iterate = minwon
+                case "확장형":
+                    if st.session_state.multimode: 
+                        start_index = (st.session_state.current_page - 1) * 10
+                        end_index = start_index + 10
+                        current_page_tabs = tab_list[start_index:end_index]
+                        df_to_iterate = minwon.iloc[start_index:end_index]
+                    else:
+                        df_to_iterate = minwon
+                case "탭(세로형)":
+                    if st.session_state.multimode:  #페이지네이션 상태인지 체크하는 if문
+                        start_index = (st.session_state.current_page - 1) * 10 
+                        end_index = start_index + 10
+                        current_page_tabs = tab_list[start_index:end_index]
+                        df_to_iterate = minwon.iloc[start_index:end_index]
+    
+                    else:
+                        df_to_iterate = minwon
         #i =  페이지 내부의 인덱스, index, row = 데이터프레임의 인덱스 번호 
         #with st.container(key = f'tab_container'):
-            for i, (index, row) in enumerate(df_to_iterate.iterrows()):
-            
-                if check == "탭":
-                    expander = tabs[i]
-                else: #확장형일때 케이스
-                    expander = st.expander(f"{index+1}번 민원 데이터", expanded=True, icon=":material/comment:")
+            match (check):
+                case "탭":
+                    for i, (index, row) in enumerate(df_to_iterate.iterrows()):
+                        with tabs[i]:
+                            show_main_input(index)
+                case "탭(세로형)":
+                    with st.container(key = "input_total_container_test"):
+                        with st.container(key = "input_menu_container_test", horizontal=True):
+                            for i, (index, row) in enumerate(df_to_iterate.iterrows()):
+                                if st.button(f"{index+1}번 민원", key = f"index_menu_btn_{index}", icon = ":material/comment:", type = "tertiary"):
+                                    st.session_state['input_show_index'] = index
+                                    st.rerun()
+                        
+                        with st.container(key = "input_main_container_test"):
+                            show_main_input(st.session_state['input_show_index'])
+                case "확장형":
+                    for i, (index, row) in enumerate(df_to_iterate.iterrows()):
+                        with st.expander(f"{index+1}번 민원 데이터", expanded=True, icon=":material/comment:"):
+                                show_main_input(index)
+            """for i, (index, row) in enumerate(df_to_iterate.iterrows()):
+                match (check):
+                    case "탭":
+                #if check == "탭":
+                        expander = tabs[i]
+                    case "확장형":
+                #else: #확장형일때 케이스
+                        expander = st.expander(f"{index+1}번 민원 데이터", expanded=True, icon=":material/comment:")
 
-                with expander:
-                
-                    minwon_column, spacer, answer_column = st.columns((7,8,8)) #8, 1.2,
-                    with minwon_column:
-                    #with st.container(key = f"total_input_container_{index}", horizontal=True):
-                    #    with st.container(key = f"input_left_container_{index}", width = 490):
-                            with st.container(key = f"test_{index}", horizontal=True):
-                                minwon.at[index, '민원 카테고리'] = st.selectbox(
-                                        "민원 카테고리 및 민원 긴급도", options = ["일반", "환경", "교통", "복지", "교육", "기타"], key = f"minwon_category_{index}"
-                                    )
-                                minwon.at[index, '민원 긴급도'] = st.selectbox(
-                                    "민원 긴급도", options = ("매우 낮음", "낮음", "보통", "높음", "매우 높음"), key = f"minwon_urgency_{index}", help = "민원 긴급도를 선택해주세요.", label_visibility="hidden"
-                                ) 
-                            minwon.at[index, '민원요지'] = st.text_area(
-                                                                "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =277  , value= minwon.iloc[index]['민원요지'], key = f"minwon_sub_{index}"
-                            )
-                            
-                    with spacer:
-                    #    with st.container(key = f"input_center_container_{index}", width = 550):
-                            preset = st.pills(  
-                                                "답변 요지", ["직접 입력", "완전 수용", "부분 수용", "수용 불가"],
-                                                key = f"minwon_sub_selecor_{index}", default = "직접 입력",#    on_change=input_status_change, args=(i,), 
-        
-                                                
-                                        ) 
-                            match (preset):
-                                case "직접 입력":
-                                    minwon.at[index,'답변요지'] = ""
-                                case "완전 수용":
-                                    #st.toast(f"{i+1}번 민원 답변 요지 :orange[{preset}]을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", icon = ":material/warning:")
-                                    minwon.at[index,'답변요지'] = config['sub']['accept']
-                                case "부분 수용":
-                                    #show_popup(":orange[:material/warning:] 답변 요지 프리셋", f"답변 요지 {preset}을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", None, popup_check=True)
-                                    minwon.at[index,'답변요지'] = config['sub']['particle_accept']
-                                case "수용 불가":
-                                    #show_popup(":orange[:material/warning:] 답변 요지 프리셋", f"답변 요지 {preset}을 사용하셨습니다. 답변의 퀄리티가 저하될 수 있습니다.", None, popup_check=True)
-                                    minwon.at[index,'답변요지'] = config['sub']['unaccept']
-                            minwon.at[index, '답변요지']  = st.text_area(
-                                    "답변 요지" ,label_visibility="collapsed", placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
-                                    , height = 286, value =minwon.at[index,'답변요지'], key = f"answer_sub_{index}"#, on_change=input_status_change, args=(i,)
-                                )     
-                    with answer_column:                    
-                    #    with st.container(key = f"input_right_container_{index}", width = 580):#width = 580
-                            minwon.at[index,'답변양식'] = st.text_area(
-                                        "답변 양식", height = 360, value = minwon.at[index, '답변양식'], key = f"answer_format_{index}"
-                                    )    
+                if check == "탭" or check == "확장형":
+                    with expander:
+                        show_main_input(index)"""
 
-    #@st.fragment
+
+    @st.fragment
     def show_generate_btn():
 
         if st.button("답변 생성", icon=":material/edit:", key = f"input_minwon_generate"):
             input_answer()
             #st.rerun()
            #
-    show_input_comment()
+    @st.fragment
+    def show_input_total():
+        show_input_comment()
+        with st.container(key = "input_main_container", horizontal=True):
+            if st.session_state.layout_check == "탭(세로형)":
+                with st.container(key = "input_menu_container"):
+                    pass
+            show_input_container(st.session_state.layout_check)
+        
+        st.divider()
+        with st.container(key = "input_under_ui_option", horizontal=True):
+            if st.session_state.multimode:
+                show_multi_page()
+            show_generate_btn()
+    show_input_total()
 
-    content_placeholder = st.container()
 
 
-    show_input_container(st.session_state.layout_check, content_placeholder)
-    
-    st.divider()
-    with st.container(key = "input_under_ui_option", horizontal=True):
-        if st.session_state.multimode:
-            show_multi_page()
-        show_generate_btn()
+
 
 #결과창     
 #결과창 구조: show_total이라는 함수 안에 show_total_container를 호출, 이때 RAG가 켜져 있으면 show_first, show_second에서 각각 값을 리턴받아 실행
@@ -399,6 +478,7 @@ def show_result():
     # 스위치 버튼을 눌렀을 경우 발생하는 함수
     # 두 area의 값이 바뀌는게 아니라 두 area의 위치가 통째로 바뀌는 구조
     # test(추후 수정)의 bool 리턴값에 따라 위치 변경
+    @st.fragment
     def switch_result(index):
         temp = result.iloc[index]['test']
         
@@ -413,58 +493,116 @@ def show_result():
     # 결과창 바로 밑에 붙는 구조
     @st.fragment
     def show_edit(index):
-        edit = result.iloc[index]
-        #st.markdown('''---''')
-        #st.write(f"##### {index+1}번 민원 재생성")     
-        #left,spacer, right = st.columns([6,0.5,6])
-        #with left:
-        #edit['민원요지'] = st.text_area(
-        #                                                    "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =265  , value= edit['민원요지'], key = f"minwon_sub_{index}"
-        #                )
-        #with right:
-        with st.container(key=f"test_container_{index}", horizontal=True):
-            preset = st.pills(
-                        "답변 요지", ["직접 입력", "완전 수용", "부분 수용", "수용 불가"],
-                        key = f"minwon_sub_selecor_{index}", default = "직접 입력"
-                        
-                )               
-            #edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{index}")     
-        match (preset):
-            case "직접 입력":
-                pass
-            case "완전 수용":
-                result.at[index, '답변요지'] = config['sub']['accept']
-            case "부분 수용":
-                result.at[index, '답변요지'] = config['sub']['particle_accept']
-            case "수용 불가":
-                result.at[index, '답변요지'] = config['sub']['unaccept']
-            #with right:
+        with st.container(key = f"answer_sub_pills_{index}"):
+            with st.container(key = f"answer_sub_title_{index}"):
+                st.write("답변 요지")
+            with st.container(key = f"answer_sub_btngroup_{index}", horizontal=True):
+                if result.iloc[index]['답변요지 방식'] == "직접 입력":
+                    if st.button("직접 입력", key = f"manual_input_btn_on_{index}"):
+                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                else:
+                    if st.button("직접 입력", key = f"manual_input_btn_{index}"):
+                        result.at[index, '답변요지 방식'] = "직접 입력"
+                        result.at[index,'답변요지'] = ""
+                        st.rerun(scope="fragment")
+                if result.iloc[index]['답변요지 방식'] == "완전 수용":
+                    if st.button("완전 수용", key = f"manual_accept_btn_on_{index}"):
+                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                else:
+                    if st.button("완전 수용", key = f"manual_accept_btn_{index}"):
+                        result.at[index, '답변요지 방식'] = "완전 수용"
+                        result.at[index,'답변요지'] = config['sub']['accept']
+                        st.rerun(scope="fragment")
+                if result.iloc[index]['답변요지 방식'] == "부분 수용":
+                    if st.button("부분 수용", key = f"manual_particle_btn_on_{index}"):
+                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                else:
+                    if st.button("부분 수용", key = f"manual_particle_btn_{index}"):
+                        result.at[index, '답변요지 방식'] = "부분 수용"
+                        result.at[index,'답변요지'] = config['sub']['particle_accept']
+                        st.rerun(scope="fragment")
+                if result.iloc[index]['답변요지 방식'] == "수용 불가":
+                    if st.button("수용 불가", key = f"manual_unaccept_btn_on_{index}"):
+                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                else:
+                    if st.button("수용 불가", key = f"manual_unaccept_btn_{index}"):
+                        result.at[index, '답변요지 방식'] = "수용 불가"
+                        result.at[index,'답변요지'] = config['sub']['unaccept']
+                        st.rerun(scope="fragment")
+                
         result.at[index, '답변요지']  = st.text_area(
-                    "답변 요지를 입력해주세요.", height = 295,value = result.at[index, '답변요지'], key = f"answer_sub_{index}", label_visibility="collapsed", width = 800,
-                    placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
-                )
+                "답변 요지" ,label_visibility="collapsed", placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
+                , height = 277, value =result.at[index,'답변요지'], key = f"answer_sub_{index}"#, on_change=input_status_change, args=(i,)
+            )
         #st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:", on_click=generate_answer, args = (index, True, False))
         if st.session_state.file_check is not True and st.session_state.manual:
             if st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:"):
                 generate_answer(index, True, False)
     
+
+    def edit_rating_true(index):
+        result.at[index, '평점 수정'] = True
+        result.at[index,'평점 알림'] = True
+
+    @st.fragment
+    def feedback_component(index):
+        feedback_check = result.iloc[index]['평점 수정']
+        toast_check = result.iloc[index]['평점 알림']
+        with st.container(key = f"feedback_test_{index}", horizontal=True):
+            if feedback_check:
+                #pass
+                st.feedback("stars", key = f"minwon_rating_{index}", on_change = rating_score, args = (f"minwon_rating_{index}", index))
+            else:
+                if toast_check:
+                    st.toast(f"{index+1}번 민원 답변 점수가 :green[{result.iloc[index]['최종평점']}]점으로 책정되었습니다.",  icon = ":material/check:")
+                    result.at[index, '평점 알림'] = False
+
+                st.button(f"점수 재채점(점수 : {result.iloc[index]['최종평점']}점)", 
+                key = f"recoll_rating_{index}", type = "tertiary", 
+                icon= ":material/edit:",
+                on_click = edit_rating_true,
+                args = (index,)
+                )
+
+
+    #@st.fragment
+    def rating_score(key, index):
+        mapping = [1,2,3,4,5]
+        if result.iloc[index]['평점 수정']:
+            current_score = st.session_state.get(key)
+            if current_score is not None:
+                final_score = mapping[current_score]
+            else:
+                final_score = 0
+            result.at[index, '최종평점'] = int(final_score)
+            result.at[index, '평점 수정'] = False
+            #st.toast(f"{index}번 민원 답변 점수가 :green[{final_score}]점으로 책정되었습니다.",  icon = ":material/check:")
+
+    @st.fragment
+    def show_total_infor():
+        st.write("### 답변 결과")
+        with st.container(key = "minwon_result_guide_container", horizontal=True):
+            #st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
+            st.write("민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.")
+            #st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 :red[교환]됩니다.")
+        #st.session_state.layout_check = st.toggle("기능 테스트", key = "result_layout_check"
+
     #메인 답변 구조 출력
     # 메뉴 출력 방식에 따라 탭, 확장형 탭으로 구성
     # rag 옵션 on/off 여부에 따라 값이 달라지며 off일 경우 rag 창은 출력되지 않는다.
     # 9월 25일 추가 업데이트 반영-> 민원 내용 편집 시 기존에 화면 아래에 붙었던걸 이제 RAG를 죽이고     )
-
+        #st.write(st.session_state[f"minwon_rating_{index}"])
     @st.fragment
     def show_total_container(check):
-        mapping = [1,2,3,4,5]
         tab_list = []
         tab_list = [f":material/comment: {i+1}번 민원 답변" for i in range(len(result))]
         if check == "탭":    
             if st.session_state.multimode: 
                 start_index = (st.session_state.current_page - 1) * 10
-                print(start_index)
+                #print(start_index)
                 end_index = start_index + 10
                 current_page_tabs = tab_list[start_index:end_index]
-                print(current_page_tabs)
+                #print(current_page_tabs)
                 df_to_iterate = result.iloc[start_index:end_index]
                 tabs = st.tabs(current_page_tabs)
             else:
@@ -473,10 +611,10 @@ def show_result():
         else:
             if st.session_state.multimode: 
                 start_index = (st.session_state.current_page - 1) * 10
-                print(start_index)
+                #print(start_index)
                 end_index = start_index + 10
                 current_page_tabs = tab_list[start_index:end_index]
-                print(current_page_tabs)
+                #print(current_page_tabs)
                 df_to_iterate = result.iloc[start_index:end_index]
             else:
                 df_to_iterate = result
@@ -496,90 +634,65 @@ def show_result():
                         
                         with first:
                             if row['test'] is not True:
-                                with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium", width=500):
+                                with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium"):
                                     copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
-                                    #copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")   
-                                    row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")   #답변 평점 -> 최종 평점 이부분은 추후 수정 예정
-                                #with test3:
                                     edit =  st.toggle("민원 수정 및 재생성", key = f"edit_answer_sub_{index}")
+                                    feedback_component(index)                                
                                 with st.container(key = f"first_answer_{index}"):
                                     show_first(index)
-
                             else:
-                                with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium", width=500):
+                                with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium"):
                                     copy_button(target_key=f"result_second_{index}", button_key = f"copy_rag_btn_{index}", area_number=index)
-                                    row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")   #답변 평점 -> 최종 평점 이부분은 추후 수정 예정
-                                #with test3:
                                     edit =  st.toggle("민원 수정 및 재생성", key = f"edit_answer_sub_{index}")
+                                    feedback_component(index)
                                 with st.container(key = f"first_answer_{index}"):
                                     show_second(index)
-                            """with st.container(key = f"result_checkbox_container_{index}", horizontal=True, gap = "medium"):
-    
-                                row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")   #답변 평점 -> 최종 평점 이부분은 추후 수정 예정
-                            #with test3:
-                                edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{index}")"""
+                            #show_tatal_left(index)
                         with spacer:
                             for j in range(11):
                                 st.markdown('''''')
                             if edit is not True:
                                 if st.button("위치 스위치", key = f"switch_option_{i}", icon = ":material/compare_arrows:", type = "tertiary"):
                                     switch_result(index)       
-                                
-                            if row['답변 평점'] is not None:
-                                row['답변 평점'] = mapping[row['답변 평점']]
-                            else:
-                                row['답변 평점'] = 0
-                            result.at[index, '최종평점'] = row['답변 평점']
+
                         with second:
-                                match edit:
-                                    case True:
-                                        show_edit(index)
-                                    case False:
-                                        if row['test'] is not True:
-                                            #with st.container(key = f"result_checkbox_rag_container_{index}", horizontal=True, gap = "medium", width=330):
-                                            copy_button(target_key=f"result_second_{index}", button_key = f"copy_rag_btn_{index}", area_number=index)
-                                            with st.container(key = f"second_answer_{index}"):
-                                                show_second(index)
-                                        else:
-                                            #with st.container(key = f"result_checkbox_rag_container_{index}", horizontal=True, gap = "medium", width=330):
-                                            copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
-                                            with st.container(key = f"second_answer_{index}"):
-                                                show_first(index)
-                    
-                        
+                            match edit:
+                                case True:
+                                    show_edit(index)
+                                case False:
+                                    if row['test'] is not True:
+                                        #with st.container(key = f"result_checkbox_rag_container_{index}", horizontal=True, gap = "medium", width=330):
+                                        copy_button(target_key=f"result_second_{index}", button_key = f"copy_rag_btn_{index}", area_number=index)
+                                        with st.container(key = f"second_answer_{index}"):
+                                            show_second(index)
+                                    else:
+                                        #with st.container(key = f"result_checkbox_rag_container_{index}", horizontal=True, gap = "medium", width=330):
+                                        copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
+                                        with st.container(key = f"second_answer_{index}"):
+                                            show_first(index)
+                                
                         if edit:
                             result.at[index, '수정'] = True
                             #show_edit(index)
                         else:
                             result.at[index, '수정'] = False
-
                     #RAG가 off인 케이스
                     else:
                         first, spacer, second = st.columns((6.8, 1.4, 6.8))
                         with first:
-                            with st.container(key = f"result_checkbox_only_container_{index}", horizontal=True, gap = "medium", width=400):
-                                    #copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
+                            with st.container(key = f"result_checkbox_only_container_{index}", horizontal=True, gap = "medium"):
+                                    copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
                                     #copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")   
-                                    row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{index}")
-                                    edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{i}")
+                                    edit =  st.toggle("민원 수정 및 재생성", key = f"edit_answer_sub_{index}")
+                                    #st.button(f"민원 수정 및 재생성", key = f"minwon_edit_{index}", type = "tertiary", icon= ":material/edit:",on_click = recreate_convert,args = (index,))
+                                    feedback_component(index)
+                                    
                             with st.container(key = f"first_answer_{index}"):
                                 show_first(index)
-                            with st.container(key = f"copy_paste_{i}", horizontal=True):
-                                copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
-                                #paste_button(target_key=f"result_first_{index}", button_key = f"paste_btn_{index}")
-                            #edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{i}")
-                            with st.container(key = f"result_checkbox_container_{i}", horizontal=True, gap = "medium"):
-                                    #row['답변 평점'] = st.feedback("stars", key = f"minwon_rating_{i}")  
-                                    #edit =  st.toggle("민원 수정", key = f"edit_answer_sub_{i}")
-                                    if row['답변 평점'] is not None:
-                                        row['답변 평점'] = mapping[row['답변 평점']]
-                                    else:
-                                        row['답변 평점'] = 0
-                                    result.at[index, '최종평점'] = row['답변 평점']
+
                         with second:
                             #edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{i}")
                             show_edit(index)
-    
                         if edit:
                             result.at[index, '수정'] = True
                             #show_edit(index)
@@ -587,13 +700,9 @@ def show_result():
                             result.at[index, '수정'] = False
 
     #show_result 안에 있는 모든 함수들이 모여서 실행시키는 함수
+    @st.fragment
     def show_total():
-        st.write("### 답변 결과")
-        with st.container(key = "minwon_result_guide_container", horizontal=True):
-            #st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
-            st.write("민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.")
-            #st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 :red[교환]됩니다.")
-        #st.session_state.layout_check = st.toggle("기능 테스트", key = "result_layout_check")
+        show_total_infor()
         show_total_container(st.session_state.layout_check)
        
         st.write('''---''')
@@ -606,8 +715,8 @@ def show_result():
         
     #복수 생성일 경우 해당 함수 실행
     #수정 토글이 켜져 있는 민원들에 한해 재생성 기능 사용
+    @st.fragment
     def show_fragment_button():
-        
         if st.session_state.file_check:
             if st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다."):
                 reinput_answer()
