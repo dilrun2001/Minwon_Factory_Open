@@ -222,7 +222,21 @@ def clear_state():
     #페이지네이션 현재페이지
     if "current_page" not in st.session_state:
         st.session_state.current_page = 1
+    
+    if "home_input_btn" not in st.session_state:
+        st.session_state.home_input_btn = False
+    
+    if "home_manual_show" not in st.session_state:
+        st.session_state.home_manual_show = False
+    
+    if "home_file_show" not in st.session_state:
+        st.session_state.home_file_show = False
 
+    if "setting_display" not in st.session_state:
+        st.session_state["setting_display"] = "display"
+    
+    if "input_show_index" not in st.session_state:
+        st.session_state["input_show_index"] = 0
     
 
 # AI, RAG ON/OFF 기능으로 인해 실시간 피드백 변경
@@ -287,3 +301,7 @@ def minwon_clear():
     st.session_state.manual_count = 0
     st.session_state.multi_count = 0
     st.session_state.default_count = 0
+    st.session_state.home_file_show = False
+    st.session_state.home_manual_show = False
+    st.session_state.home_input_btn = False
+    st.session_state["input_show_index"] = 0

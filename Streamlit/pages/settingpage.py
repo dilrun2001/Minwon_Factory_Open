@@ -8,114 +8,52 @@ from util.page_convert import *
 from util.toml_edit import *
 from css.theme import *
 import datetime
+from util.table_static import admin_category_static, admin_urgency_static, admin_ai_static, admin_file_static, admin_grade_static
 
-#관리자 설정
-def show_admin():
-        #st.markdown('<span id = "delete-button"></span>', unsafe_allow_html=True)                           
-        def test_spinner():
-            timer = 10
-            with show_loading_overlay(f"로딩 화면 테스트 중입니다 해당 화면이 {int(timer / 60)}분 동안 지속됩니다."):
-                time.sleep(timer)
-        if st.session_state.admin:
-                        st.set_page_config(page_title = "관리자 페이지", page_icon=":material/admin_panel_settings:", layout="wide", initial_sidebar_state="collapsed")
-                        default, format, DB, static = st.tabs([':material/admin_panel_settings: 관리자 설정', ':material/edit: 양식', ":material/database: DB 관리", ":material/analytics: 통계"])
-                        with default:
-                                st.subheader("관리자 페이지")
-                                #left, center, right = st.columns([6,6,6])
-                                #with left:
-                                with st.container(horizontal=True, key = "admin_page_container"):
-                                        with st.expander("대기열 관리", expanded = True, icon = ":material/queue:"):
-                                                st.write("대기열 기능 오류 시 해당 부분에서 대기열을 초기화할 수 있습니다.")
-                                                queue_clear = st.button("대기열 초기화", key = "queue_clear", icon = ":material/clear_all:", on_click = clear_queue)
-                                                if queue_clear:
-                                                        st.toast("대기열이 초기화되었습니다.", icon = ":material/check:")
-                                                st.write("로딩 화면 테스트")
-                                            
-                                                start_spinner = st.button("스피너 시작", key = "start_spinner", on_click = test_spinner)#, args = ("test", "spinnertest",  test_spinner,))
-                                #with center:
-                                        with st.expander("AI 설정", expanded = True):
-                                                st.markdown("######  AI 설정")
-                                                st.write("AI 설정을 ON/OFF 할 수 있습니다.")
-                                                ai = st.pills(
-                                                        "AI ON/OFF", ["on", "off"],
-                                                        key = "ai_select_option", default = config['app']['ai'], label_visibility="collapsed"
-                                                        )
-                                                if ai != config['app']['ai']:
-                                                        change_toml('app', 'ai', ai, f"AI 설정 {ai}")
-                                                        ai_option_check()
-                                        #with st.expander("RAG 설정", expanded = True):
-                                                st.markdown("######  RAG 설정")
-                                                st.write("RAG(유사 답변 검색) 설정을 ON/OFF 할 수 있습니다. ")
-                                                rag = st.pills(
-                                                        "RAG ON/OFF", ["on", "off"],
-                                                        key = "rag_select_option", default = config['app']['rag'], label_visibility="collapsed"
-                                                        )
-                                                if rag != config['app']['rag']:
-                                                        change_toml('app', 'rag', rag, f"RAG 설정 {rag}")
-                                                        ai_option_check()
-                                        
-                                #with right:
-                                        with st.expander("관리자 비밀번호 변경", expanded = True, icon= ":material/key:"):
-                                                st.write("관리자 비밀번호를 변경할 수 있습니다.")
-                                                with st.form(key = "change_admin_password", height = 320, border = False):
-                                                        old = st.text_input("기존 비밀번호", key = "old_possword", placeholder="기존 비밀번호를 입력해주세요.", type = "password")
-                                                        new = st.text_input("신규 비밀번호", key = "new_password", placeholder="신규 비밀번호를 입력해주세요.", type = "password")
-                                                        repeat = st.text_input("신규 비밀번호", key = "new_password_repeat", placeholder="신규 비밀번호를 한번 더 입력해주세요.", type = "password")
-                                                        if st.form_submit_button("수정",  type = "secondary"):
-                                                                if old != new:
-                                                                        if new == repeat:
-                                                                                change_toml('app', 'admin_password', new, "관리자 비밀번호")
-                        with format:
-                                st.subheader("양식 포맷 설정")
-                                with st.container(horizontal=True):
-                                    with st.expander("양식 포맷 설정", icon = ":material/home:", expanded = True):
-                                            format = st.text_area("양식 수정", value = f"{config['format']['format']}", height = 300)
-                                            st.button("수정", key = "edit_format_btn", icon = ":material/note:", on_click = change_toml, args = ('format', 'format', format, '답변 양식 포맷'))
-                                    with st.expander("답변 요지 양식", icon = ":material/home:", expanded = True):
-                                            preset_edit = st.pills(
-                                            "수정할 답변 요지 방식을 선택해주세요.", ["완전 수용", "부분 수용", "수용 불가"],
-                                            key = "minwon_sub_edit_selector"
-                                            )
-                                    
-                                            match (preset_edit):
-                                                    case "완전 수용":
-                                                            accept = st.text_input("완전 수용 수정", value = config['sub']['accept'], label_visibility="collapsed")
-                                                            st.button("수정", key = "edit_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'accept', accept, '완전 수용 양식'))
-                                                    case "부분 수용":
-                                                            particle = st.text_input("부분 수용 수정", value = config['sub']['particle_accept'], label_visibility="collapsed")
-                                                            st.button("수정", key = "   ", icon = ":material/note:", on_click = change_toml, args = ('sub', 'particle_accept', particle, '부분 수용 양식'))
-                                                    case "수용 불가":
-                                                            unaccept = st.text_input("수용 불가 수정", value = config['sub']['unaccept'], label_visibility="collapsed")
-                                                            st.button("수정", key = "edit_unaccept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'unaccept', unaccept, '수용 불가 양식'))
-                        with DB:
-                            
-                            with st.expander("DB 데이터 관리", expanded = True, icon = ":material/database:"):
-                                st.write("민원이 저장된 데이터베이스 확인 및 데이터 추출")
-                                today = datetime.datetime.now()
-                                before_day = datetime.date(today.year, today.month-1, today.day)    
-                                with st.container(key = "DB_option_container_1", horizontal=True, gap  = "large"):
-                                        date = st.date_input("날짜 범위 지정", (before_day, today),key = "db_datetime_check", format = "YYYY.MM.DD", width=450)
-                                        print(date)
-                                       #date = st.date_input("날짜 범위 지정", (before_day, today),key = "db_datetime_check", format = "YYYY.MM.DD")
-                                        name = st.text_input("이름", key = "db_name_check", placeholder="이름 입력, 전체 검색은 공백", width = 450, value = "")
-                                        grade = st.slider("답변 평점 기준", 1, 5, value = 3, width = 450)
+#관리자 양식 설정
+def show_edit_format():
+        st.write("## :material/edit: 양식")
+        st.divider()
+        with st.container(key = "edit_format_container"):
+                st.write("#### 답변 양식 수정")
+                format = st.text_area("양식 수정", value = f"{config['format']['format']}", height = 370)
+                st.button("수정", key = "edit_format_btn", icon = ":material/note:", on_click = change_toml, args = ('format', 'format', format, '답변 양식 포맷'))
+        with st.container(key = "edit_preset_container"):
+                st.write("#### 답변 요지 프리셋 수정")
+                preset_edit = st.pills(
+                "수정할 답변 요지 방식을 선택해주세요.", ["완전 수용", "부분 수용", "수용 불가"],
+                key = "minwon_sub_edit_selector"
+                )
+        
+                match (preset_edit):
+                        case "완전 수용":
+                                accept = st.text_input("완전 수용 수정", value = config['sub']['accept'], label_visibility="collapsed")
+                                st.button("수정", key = "edit_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'accept', accept, '완전 수용 양식'))
+                        case "부분 수용":
+                                particle = st.text_input("부분 수용 수정", value = config['sub']['particle_accept'], label_visibility="collapsed")
+                                st.button("수정", key = "   ", icon = ":material/note:", on_click = change_toml, args = ('sub', 'particle_accept', particle, '부분 수용 양식'))
+                        case "수용 불가":
+                                unaccept = st.text_input("수용 불가 수정", value = config['sub']['unaccept'], label_visibility="collapsed")
+                                st.button("수정", key = "edit_unaccept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'unaccept', unaccept, '수용 불가 양식'))
 
-                                
-                                #with st.container(key = "DB_option_container_2", horizontal=True):
-                                        
-                                        
+#관리자 비밀번호 변경
+def show_edit_password():
+        st.write("## :material/key: 비밀번호 변경")
+        st.divider()
+        #with st.expander("관리자 비밀번호 변경", expanded = True, icon= ":material/key:"):
+        st.write("#### 관리자 비밀번호 변경")
+        with st.form(key = "change_admin_password", height = 320, border = False):
+                old = st.text_input("기존 비밀번호", key = "old_possword", placeholder="기존 비밀번호를 입력해주세요.", type = "password")
+                new = st.text_input("신규 비밀번호", key = "new_password", placeholder="신규 비밀번호를 입력해주세요.", type = "password")
+                repeat = st.text_input("신규 비밀번호", key = "new_password_repeat", placeholder="신규 비밀번호를 한번 더 입력해주세요.", type = "password")
+                if st.form_submit_button("수정",  type = "secondary"):
+                        if old != new:
+                                if new == repeat:
+                                        change_toml('app', 'admin_password', new, "관리자 비밀번호")
 
-                                if st.button("데이터베이스 데이터 확인", key = "db_check", icon = ":material/database:"):
-                                        db_data = check_db_option(date,name, grade)#run_query(f"SELECT {name},{grade}, {minwon}, {response}, {answer_yogi} FROM history")
-                                        if not db_data.empty:
-                                                st.dataframe(db_data)
-                                        else:
-                                                st.toast("데이터베이스에 저장된 :red[데이터가 없습니다.]", icon = ":material/block:")
-
-                        with static:
-                               show_static()
-        else:
-                with st.form("admin_login_form", border = False):
+@st.dialog(":material/admin_panel_settings: 관리자 로그인")
+def show_login_admin():
+       with st.form("admin_login_form", border = False):
                         password = st.text_input("관리자 비밀번호 입력", type="password")
                         if st.form_submit_button("관리자 페이지 열기"):
                                 if password == config['app']['admin_password']:
@@ -123,13 +61,45 @@ def show_admin():
                                         st.rerun()
                                 else:
                                         st.toast("비밀번호가 틀립니다.", icon = ":material/block:")
-            
 
-def show_setting():
-        st.session_state['page'] = "adminpage"
-        match (st.session_state['set_check']):
-                case 'admin':
-                     show_admin()
+#대기열 초기화 설정
+def show_queue():
+        def test_spinner():
+            timer = 10
+            with show_loading_overlay(f"로딩 화면 테스트 중입니다 해당 화면이 {int(timer / 60)}분 동안 지속됩니다."):
+                time.sleep(timer)
+        st.write("## :material/queue: 대기열")
+        st.divider()
+        with st.container(key = "admin_page_container"):
+                #with st.expander("대기열 관리", expanded = True, icon = ":material/queue:"):
+                        st.write("대기열 기능 오류 시 해당 부분에서 대기열을 초기화할 수 있습니다.")
+                        queue_clear = st.button("대기열 초기화", key = "queue_clear", icon = ":material/clear_all:", on_click = clear_queue)
+                        if queue_clear:
+                                st.toast("대기열이 초기화되었습니다.", icon = ":material/check:")
+                        st.write("로딩 화면 테스트")
+                        
+                        start_spinner = st.button("스피너 시작", key = "start_spinner", on_click = test_spinner)
+#관리자 DB 설정
+def show_db():
+        st.write("## :material/database: 데이터베이스")
+        st.divider()
+        #with st.expander("DB 데이터 관리", expanded = True, icon = ":material/database:"):
+        today = datetime.datetime.now()
+        before_day = datetime.date(today.year, today.month-1, today.day)    
+        with st.container(key = "DB_option_container_1"):
+                st.write("#### 데이터프레임 필터링 옵션")
+                with st.container(key = "DB_option_container_2", horizontal=True):
+                        date = st.date_input("날짜 범위 지정", (before_day, today),key = "db_datetime_check", format = "YYYY.MM.DD", width=450)
+                        #date = st.date_input("날짜 범위 지정", (before_day, today),key = "db_datetime_check", format = "YYYY.MM.DD")
+                        name = st.text_input("이름", key = "db_name_check", placeholder="이름 입력, 전체 검색은 공백", width = 450, value = "")
+                        grade = st.slider("답변 평점 기준", 1, 5, value = 3, width = 450)
+                if st.button("데이터베이스 데이터 확인", key = "db_check", icon = ":material/database:"):
+                        db_data = check_db_option(date,name, grade)#run_query(f"SELECT {name},{grade}, {minwon}, {response}, {answer_yogi} FROM history")
+                        if not db_data.empty:
+                                st.dataframe(db_data)
+                        else:
+                                st.toast("데이터베이스에 저장된 :red[데이터가 없습니다.]", icon = ":material/block:")
+
 
 #DB 옵션따라 리턴값 다르게 하려는 의도
 def check_db_option(date, name, grade):
@@ -141,89 +111,264 @@ def check_db_option(date, name, grade):
                return run_query(f"SELECT timestamp, name, minwon, response, answer_yogi, grade FROM history WHERE grade >= {grade} AND timestamp >= '{start_date}' AND timestamp < '{end_date}'")
         #return run_query(f"SELECT {option_list}")
 
+#화면 설정
+def show_display():
+       st.write("## :material/display_settings: 화면")
+       st.divider()
+       with st.container(key = "setting_display_container", gap="medium", border = True):
+            #with st.expander("화면 표시 방식", expanded=True, icon = ":material/display_settings:"):
+                #with st.container(key = "setting_display_infor", horizontal=True):
+                #st.write("- 화면 표시 방식을 변경할 수 있습니다.")
+                st.write("#### 화면 표시 방식")
+                st.write("- 확장형: 최대 10개의 확장 및 축소가 가능한 탭을 세로로 배열")
+                st.write("- 탭: 최대 10개의 확장 및 축소가 불가능하지만 탭으로 구분하여 가로로 배열")
+                with st.container(key = "option_btn_container", horizontal=True, gap = "medium"):
+                        match st.session_state.layout_check:
+                                case "탭":
+                                        if st.button("탭", key = "option_tab_btn_on", type = "secondary", width = 100):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("확장형", key = "option_expand_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "확장형"
 
-
-def show_lab():
-    if config['app']['setting'] == "on":
-        st.session_state['page'] =  "setting"
-        #tab1, tab2, tab3 = st.tabs([':material/display_settings: 화면 표시 방식', '탭2', '탭3'])
-        #with tab1:
-        with st.container(key = "setting_container", horizontal=True):
-            with st.expander("화면 표시 방식", expanded=True, icon = ":material/display_settings:"):
-                    st.write("##### 화면 표시 방식")
-                    st.write("- 화면 표시 방식을 변경할 수 있습니다.")
-                    st.write("- 확장형: 최대 10개의 확장 및 축소가 가능한 탭을 세로로 배열")
-                    st.write("- 탭: 최대 10개의 확장 및 축소가 불가능하지만 탭으로 구분하여 가로로 배열")
-                    option =  st.pills("표기 방식 변경", ["탭", "확장형"], label_visibility="collapsed", default= st.session_state.layout_check)
-                    if option != st.session_state.layout_check:
+                                                st.rerun()
+                                case "확장형":
+                                        if st.button("탭", key = "option_tab_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "탭"
+                                                st.rerun()
+                                        if st.button("확장형", key = "option_expand_btn_on", type = "secondary", width = 100):
+                                                 st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                
+                '''option =  st.pills("표기 방식 변경", ["탭", "확장형"], label_visibility="collapsed", default= st.session_state.layout_check)
+                if option != st.session_state.layout_check:
                         st.toast(f"화면 표시 방식이 변경되었습니다. {st.session_state.layout_check} -> :green[{option}]", icon = ":material/check:")
-                        st.session_state.layout_check = option
-            with st.expander("AI 모델 선택", expanded=True, icon=":material/person:"):
-                    st.write("##### AI 모델 선택")
-                    st.write("- 기본 모델: 어떠한 파인튜닝도 거치지 않은 베이스 AI 모델")
-                    st.write("- 민원팩토리 모델: 파인튜닝을 거쳐 개발된 민원팩토리 자체 AI 모델")
-                    st.write("- 사하아이 연동: 사하아이 AI 모델과 연동하여 답변 생성")
-                    model =st.pills(":material/person: AI 모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], width = 450, default = st.session_state.model, label_visibility="collapsed")
-                    match (model):#, key = "llm_model_select", width = 300)):
-                        case '기본 모델':
-                            if st.session_state.model != '기본 모델':
-                                st.toast(f"AI 모델이 변경되었습니다1. {st.session_state.model} -> :green[기본 모델]", icon = ":material/check:")
-                                st.session_state.model = '기본 모델'
-                            #st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
-                        case '민원팩토리 모델':
-                            st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
-                        case '사하아이 연동':
-                            #st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
-                            if st.session_state.model != '사하아이 연동':
-                                st.toast(f"AI 모델이 변경되었습니다1. {st.session_state.model} -> :green[사하아이 연동]", icon = ":material/check:")
-                                st.session_state.model = '사하아이 연동'
-                        
-                    #st.session_state.layout_check = st.toggle("표기 방식 변경")
-                    """, on_change = show_popup, args = (":orange[:material/experiment:] 테스트 기능", '''현재 테스트 중인 기능입니다.   
-                                                                                                해당 기능 사용 시 민원 입력창과 결과창의 UI가 변경됩니다.''', None, True))"""
-    else:
-        st.error("현재 사용할 수 없는 페이지입니다.")
-        
+                        st.session_state.layout_check = option'''
+
+#AI 설정
+@st.fragment
+def show_ai_set():
+        st.write("## :material/robot: AI")
+        st.divider()
+        with st.container(key = "ai_model_container", border = True, gap = "medium"):
+                st.write("#### AI 모델 선택")
+                st.write("- 기본 모델: 어떠한 파인튜닝도 거치지 않은 베이스 AI 모델")
+                st.write("- 민원팩토리 모델: 파인튜닝을 거쳐 개발된 민원팩토리 자체 AI 모델")
+                st.write("- 사하아이 연동: 사하아이 AI 모델과 연동하여 답변 생성")
+                with st.container(key = "ai_model_btn_container", horizontal=True, gap = "medium"):
+                        match st.session_state.model:
+                                case '기본 모델':
+                                        if st.button("기본 모델", key = "normal_model_on", type = "secondary", width = 150):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("민원팩토리 모델", key = "mf_model_off", type = "secondary", width = 150):
+                                                st.session_state.model = '민원팩토리 모델'
+                                                st.rerun()
+                                        if st.button("사하아이 연동", key = "sahaai_model_off", type = "secondary", width = 150):
+                                                st.session_state.model = '사하아이 연동'
+                                                st.rerun()
+                                case '민원팩토리 모델':
+                                        if st.button("기본 모델", key = "normal_model_off", type = "secondary", width = 150):
+                                                 st.session_state.model = '기본 모델'
+                                                 st.rerun()
+                                        if st.button("민원팩토리 모델", key = "mf_model_on", type = "secondary", width = 150):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("사하아이 연동", key = "sahaai_model_off", type = "secondary", width = 150):
+                                                st.session_state.model = '사하아이 연동'
+                                                st.rerun()
+                                case '사하아이 연동':
+                                        if st.button("기본 모델", key = "normal_model_off", type = "secondary", width = 150):
+                                                 st.session_state.model = '기본 모델'
+                                                 st.rerun()
+                                        if st.button("민원팩토리 모델", key = "mf_model_off", type = "secondary", width = 150):
+                                                 st.session_state.model = '민원팩토리 모델'
+                                                 st.rerun()
+                                        if st.button("사하아이 연동", key = "sahaai_model_on", type = "secondary", width = 150):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+        if st.session_state.admin:
+                with st.container(key = "admin_ai_setting", horizontal=True, gap = "medium"):
+                        with st.container(key = "admin_ai_setting_1", border = True, gap = "medium"):
+                                st.markdown("####  AI 설정")
+                                st.write("AI 설정을 ON/OFF 할 수 있습니다.")
+                                ai = st.pills(
+                                        "AI ON/OFF", ["on", "off"],
+                                        key = "ai_select_option", default = config['app']['ai'], label_visibility="collapsed"
+                                        )
+                                if ai != config['app']['ai']:
+                                        change_toml('app', 'ai', ai, f"AI 설정 {ai}")
+                                        ai_option_check()
+                        with st.container(key = "admin_ai_setting_2", border = True, gap = "medium"):
+                                st.markdown("####  RAG 설정")
+                                st.write("RAG(유사 답변 검색) 설정을 ON/OFF 할 수 있습니다. ")
+                                rag = st.pills(
+                                        "RAG ON/OFF", ["on", "off"],
+                                        key = "rag_select_option", default = config['app']['rag'], label_visibility="collapsed"
+                                        )
+                                if rag != config['app']['rag']:
+                                        change_toml('app', 'rag', rag, f"RAG 설정 {rag}")
+                                        ai_option_check()
+
+#실험실
+def show_lab():
+        st.write("## :material/experiment: 실험실")
+        st.divider()
+        with st.container(key = "setting_lab_container", gap="medium", border = True):
+                st.write("#### 화면 표시 방식(실험실)")
+                st.write("- :red[아직 정식으로 들어가지 않은 기능]이 포함된 선택 방식입니다. 주의해주시길 바랍니다.")
+                st.write("- 확장형: 최대 10개의 확장 및 축소가 가능한 탭을 세로로 배열")
+                st.write("- 탭: 최대 10개의 확장 및 축소가 불가능하지만 탭으로 구분하여 가로로 배열")
+                st.write("- 탭(세로형) : 최대 10개의 탭이 한 페이지에 화면 왼쪽에 표시하여 배열")
+                with st.container(key = "option_btn_container", horizontal=True, gap = "medium"):
+                        match st.session_state.layout_check:
+                                case "탭":
+                                        if st.button("탭", key = "option_tab_btn_on", type = "secondary", width = 100):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("확장형", key = "option_expand_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "확장형"
+                                                st.rerun()
+                                        if st.button("탭(세로형)", key = "option_new_tab_off", type = "secondary", width = 150):
+                                                st.session_state.layout_check = "탭(세로형)"
+                                                st.rerun()
+                                case "확장형":
+                                        if st.button("탭", key = "option_tab_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "탭"
+                                                st.rerun()
+                                        if st.button("확장형", key = "option_expand_btn_on", type = "secondary", width = 100):
+                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("탭(세로형)", key = "option_new_tab_off", type = "secondary", width = 150):
+                                                st.session_state.layout_check = "탭(세로형)"
+                                                st.rerun()
+                                case "탭(세로형)":
+                                        if st.button("탭", key = "option_tab_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "탭"
+                                                st.rerun()
+                                        if st.button("확장형", key = "option_expand_btn_off", type = "secondary", width = 100):
+                                                st.session_state.layout_check = "확장형"
+                                                st.rerun()
+                                        if st.button("탭(세로형)", key = "option_new_tab_on", type = "secondary", width = 150):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+
 #통계 페이지 테스트
 def show_static():
-        #st.session_state['page'] = 'static'
-        test = run_query("SELECT * FROM history_grade")
-        ai_count = run_query("SELECT * FROM AI_Static")
-        #answer, ai = st.tabs(['민원데이터', 'AI'])
-        #with answer:
-        st.write("### 민원 데이터 통계")
-        st.write(f"- DB 내 답변 데이터의 통계를 나타내는 지표입니다. 현재 서버 내 저장된 민원 답변 데이터 수는 {test.iloc[0]['total_count']}개 저장되어있습니다.")
+        st.write("## :material/analytics: 통계")
+        st.divider()
+        st.write("#### 민원 데이터 통계")
+        #st.write(f"- DB 내 답변 데이터의 통계를 나타내는 지표입니다. 현재 서버 내 저장된 민원 답변 데이터 수는 개 저장되어있습니다.")
         with st.container(key = "answer_data_container", horizontal=True):
                 with st.expander("답변 데이터의 평점", expanded=True, icon = ":material/star:"):
-                
-                        test2 = test[['1점', '2점', '3점', '4점', '5점']]
-                        st.dataframe(test2)
+                        st.write(admin_grade_static())
+                        #test2 = test[['1점', '2점', '3점', '4점', '5점']]
+                        #st.dataframe(test2)
                 with st.expander("답변 데이터의 민원 카테고리", expanded=True, icon = ":material/category:"):
-                        st.write(test[['일반','환경', '교통', '복지', '교육', '기타']])
+                        st.write(admin_category_static())
                 with st.expander("답변 데이터의 긴급도", expanded=True, icon = ":material/siren:"):
-                        st.write(test[['매우 낮음', '낮음', '보통', '높음', '매우 높음']])
-        st.write('''---''')
+                        st.write(admin_urgency_static())
 #with ai:
-        st.write("### AI 사용 데이터 통계")
-        st.write(f"- AI 사용, 파일 출력 관련 통계 지표입니다. 현재 서버에서 AI는 총 {ai_count.iloc[0]['AI 전체 사용 횟수']}번 사용되었습니다.")
+        st.write("#### AI 사용 데이터 통계")
+        #st.write(f"- AI 사용, 파일 출력 관련 통계 지표입니다. 현재 서버에서 AI는 총 {admin_ai_static().iloc[0]['AI 전체 사용 횟수']}번 사용되었습니다.")
         with st.container(key = "AI_data_container", horizontal=True):
                 with st.expander("AI 통계", expanded=True):
-                        ai_static = ai_count[['민원팩토리 모델 횟수', '사하아이 요청 횟수', '기본 모델 횟수', '답변 재생성 횟수']]
-                        st.write(ai_static)
+                        #ai_static = ai_count[['민원팩토리 모델 횟수', '사하아이 요청 횟수', '기본 모델 횟수', '답변 재생성 횟수']]
+                        st.write(admin_ai_static())
                 with st.expander("파일 통계", expanded=True):
-                        file_static = ai_count[['엑셀 파일 생성 횟수', 'CSV 파일 생성 횟수']]
-                        st.write(file_static)
+                        #file_static = ai_count[['엑셀 파일 생성 횟수', 'CSV 파일 생성 횟수']]
+                        st.write(admin_file_static())
 
 
 def show_setting():
     st.session_state['page'] = 'setting'
-    with st.container(key = "setting_page_option"):
-        category = st.pills("설정 카테고리", options = ['기본 설정', '관리자 설정'], default='기본 설정', label_visibility="collapsed")
-    match category:
-        case '기본 설정':
-                show_lab()
-        case '관리자 설정':
-                show_admin()
+    #menu, main = st.columns([1.5, 9], gap="medium")
+    #with menu:
+    with st.container(key = "total_set_container", horizontal=True):
+        with st.container(key = "setting_menu_container"):
+                #화면
+                if st.session_state["setting_display"] == "display":
+                        if st.button("화면",key = "display_on", type = 'tertiary' ,icon = ":material/display_settings:"):
+                               st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                else:
+                        if st.button("화면",key = "display_off", type = 'tertiary' ,icon = ":material/display_settings:"):
+                                st.session_state["setting_display"] = "display"
+                                st.rerun()
+                #AI
+                if st.session_state["setting_display"] == "ai":
+                        if st.button("AI", key = "ai_set_btn_on", type = "tertiary", icon = ":material/robot:"):
+                               st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                else:
+                        if st.button("AI", key = "ai_set_btn_off", type = "tertiary", icon = ":material/robot:"):
+                                st.session_state["setting_display"] = "ai"
+                                st.rerun()
+                #실험실
+                if st.session_state["setting_display"] == "lab":
+                        if st.button("실험실", key = "lab_btn_on", type = "tertiary", icon = ":material/experiment:"):
+                                st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                else:
+                        if st.button("실험실", key = "lab_btn_off", type = "tertiary", icon = ":material/experiment:"):
+                                #st.toast("현재 :red[지원하지 않는 기능]입니다.", icon = ":material/block:")
+                                st.session_state["setting_display"] = "lab"
+                                st.rerun()
+                #관리자 패널 
+                if st.session_state.admin is not True:
+                        if st.button("관리자 로그인", key = "admin_set_btn", type = "tertiary", icon = ":material/admin_panel_settings:"):
+                                show_login_admin()
+                else:
+                        #대기열
+                        if st.session_state["setting_display"] == "queue":
+                                if st.button("대기열", key = "admin_queue_btn_on", type = "tertiary", icon = ":material/queue:"):
+                                       st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                        else:
+                                if st.button("대기열", key = "admin_queue_btn_off", type = "tertiary", icon = ":material/queue:"):
+                                        st.session_state["setting_display"] = "queue"
+                                        st.rerun()
+                        #양식
+                        if st.session_state["setting_display"] == "admin_format":
+                               if st.button("양식", key = "admin_format_btn_on", type = "tertiary", icon = ":material/edit:"):
+                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                        else:
+                                if st.button("양식", key = "admin_format_btn_off", type = "tertiary", icon = ":material/edit:"):
+                                        st.session_state["setting_display"] = "admin_format"
+                                        st.rerun()
+                        #비밀번호 변경
+                        if st.session_state["setting_display"] == "admin_password":
+                               if st.button("비밀번호 변경", key = "admin_password_btn_on", type = "tertiary", icon = ":material/key:"):
+                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                        else:
+                                if st.button("비밀번호 변경", key = "admin_password_btn_off", type = "tertiary", icon = ":material/key:"):
+                                        st.session_state["setting_display"] = "admin_password"
+                                        st.rerun()
+                        #데이터베이스
+                        if st.session_state["setting_display"] == "db":
+                               if st.button("데이터베이스", key = "admin_db_btn_on", type = "tertiary", icon = ":material/database:"):
+                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+
+                        else:
+                                if st.button("데이터베이스", key = "admin_db_btn_off", type = "tertiary", icon = ":material/database:"):
+                                        st.session_state["setting_display"] = "db"
+                                        st.rerun()
+                        #통계
+                        if st.session_state["setting_display"] == "static":
+                                if st.button("통계", key = "admin_static_btn_on", type = "tertiary", icon = ":material/analytics:"):
+                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                        else:
+                                if st.button("통계", key = "admin_static_btn_off", type = "tertiary", icon = ":material/analytics:"):
+                                        st.session_state["setting_display"] = "static"
+                                        st.rerun()
+
+        with st.container(key = "setting_main_container"):
+                match (st.session_state["setting_display"]):
+                        case "display":
+                              show_display()
+                        case "ai":
+                              show_ai_set()
+                        case "lab":
+                                show_lab()
+                        case "static":
+                              show_static()
+                        case "admin_password":
+                              show_edit_password()
+                        case "admin_format":
+                              show_edit_format()
+                        case "db":
+                              show_db()
+                        case "queue":
+                              show_queue()
+
 
         
         

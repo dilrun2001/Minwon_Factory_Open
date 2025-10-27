@@ -6,12 +6,13 @@
     --accept-color: rgb(21, 130, 55);
     --warning-color: rgb(217, 90, 0);
     --font-color: inherit;
+    --background_color: #ebf1f7;
 }
 
 /*기본 테두리 버튼 css*/
 [data-testid = "stBaseButton-secondary"],
 [data-testid="stBaseButton-secondaryFormSubmit"]{
-    background-color: var(--background);
+
     border-radius: 3rem;
 }
 
@@ -25,12 +26,12 @@ div.st-key-file_format .stButtonGroup button:hover,
 {
     border-color: var(--main-color);
     color: var(--main-color);
-    background-color: transparent;
 }
 
 [data-testid = "stBaseButton-tertiary"]:hover{
     color: var(--main-color);
 }
+
 /*st.pills 기본 css */
 [data-baseweb = "button-group"] [data-testid = "stBaseButton-pills"]{
     background-color: transparent;
@@ -47,12 +48,124 @@ div[class *= "current_page_"] [data-testid = "stBaseButton-secondary"]{
 }
 
 div[class *= "switch_option_"] [data-testid="stBaseButton-tertiary"]{
-    width: 120px;
+    width: 7.5rem; /* 120px -> 7.5rem */
 
 }
 div[class *= "switch_option_"] [data-testid="stIconMaterial"]{
-    font-size: 50px;
+    font-size: 3.125rem; /* 50px -> 3.125rem */
 }
+
+div[class *= input_menu_btn_]{
+    width: 100%;
+}
+
+
+div.st-key-display_off,
+div.st-key-ai_set_btn_off,
+div.st-key-admin_queue_btn_off,
+div.st-key-admin_password_btn_off,
+div.st-key-admin_db_btn_off,
+div.st-key-admin_static_btn_off,
+div.st-key-admin_format_btn_off,
+div.st-key-admin_set_btn,
+div.st-key-lab_btn_off{
+    width: 100%;
+    border-radius:1rem;
+    transition: all 0.4s ease;
+}
+div.st-key-display_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-ai_set_btn_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_queue_btn_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_password_btn_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_db_btn_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_static_btn_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_format_btn_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_set_btn [data-testid = "stBaseButton-tertiary"],
+div.st-key-lab_btn_off [data-testid = "stBaseButton-tertiary"]{
+    justify-content: left;
+    transition: all 0.4s ease;
+    width: 100%;
+    border-radius:1rem;
+}
+
+div.st-key-display_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-ai_set_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-admin_queue_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-admin_password_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-admin_db_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-admin_static_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-admin_format_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-admin_set_btn [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-lab_btn_off [data-testid = "stBaseButton-tertiary"]:hover{
+    transform: translateX(1rem);
+    transition: all 0.4s ease;
+    width: 100%;
+    border-radius:1rem;
+    display: flex;
+    align-items: center;
+}
+
+div.st-key-display_off:hover,
+div.st-key-ai_set_btn_off:hover,
+div.st-key-admin_queue_btn_off:hover,
+div.st-key-admin_password_btn_off:hover,
+div.st-key-admin_db_btn_off:hover,
+div.st-key-admin_static_btn_off:hover,
+div.st-key-admin_format_btn_off:hover,
+div.st-key-admin_set_btn:hover{
+    transition: all 0.3s ease;
+    
+    background-color: #dfe5ee;
+}
+
+div.st-key-display_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-ai_set_btn_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_queue_btn_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_password_btn_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_db_btn_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_static_btn_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_format_btn_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-lab_btn_on [data-testid = "stBaseButton-tertiary"]{
+    transform: translateX(1rem);
+    transition: all 0.4s ease;
+    width: 100%;
+    border-radius:1rem;
+    display: flex;
+    justify-content: left;
+}
+
+div.st-key-display_on,
+div.st-key-ai_set_btn_on,
+div.st-key-admin_queue_btn_on,
+div.st-key-admin_password_btn_on,
+div.st-key-admin_db_btn_on,
+div.st-key-admin_static_btn_on,
+div.st-key-admin_format_btn_on,
+div.st-key-lab_btn_on{
+    background-color:#dfe5ee;
+    transition: all 0.4s ease;
+    color:var(--main-color);
+    text-align: left;
+    width: 100%;
+    border-radius:1rem;
+}
+
+
+div.st-key-option_tab_btn_on [data-testid = "stBaseButton-secondary"],
+div.st-key-option_expand_btn_on [data-testid = "stBaseButton-secondary"],
+div.st-key-normal_model_on [data-testid = "stBaseButton-secondary"],
+div.st-key-normal_popover_on [data-testid = "stBaseButton-secondary"],
+div.st-key-mf_model_on [data-testid = "stBaseButton-secondary"],
+div.st-key-mf_popover_on [data-testid = "stBaseButton-secondary"],
+div.st-key-sahaai_model_on [data-testid = "stBaseButton-secondary"],
+div.st-key-sahaai_popover_on [data-testid = "stBaseButton-secondary"],
+div.st-key-option_new_tab_on [data-testid = "stBaseButton-secondary"]{
+    border: 1px solid var(--main-color);
+    
+    color:var(--main-color);
+    background-color: #dfe5ee;
+}
+
 
 /*llm을 포함한 모델 선택 메뉴 */
 div.st-key-llm_model_select [data-testid = "stPopoverButton"]{
@@ -66,7 +179,7 @@ div.st-key-llm_model_select [data-testid="stPopoverButton"] > div svg{
     display: none;
 }
 div.st-key-llm_model_select [data-testid = "stIconMaterial"]{
-    font-size: 25px;
+    font-size: 1.5625rem; /* 25px -> 1.5625rem */
     font-weight: 100;
 }
 div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
@@ -77,11 +190,13 @@ div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
 
 div.st-key-llm_model_select > div.st-key-download_CSV{
     position: absolute;
-    left: 83%;
+    width:5rem;
+    left: 82%;
 }
 div.st-key-llm_model_select > div.st-key-download_Excel{
     position: absolute;
-    left:88%;
+    width:5rem;
+    left:87%;
 }
 
 div.st-key-llm_model_select > div.st-key-hidden_download_file{
@@ -90,8 +205,8 @@ div.st-key-llm_model_select > div.st-key-hidden_download_file{
 
 div.st-key-file_reselect [data-testid = "stBaseButton-tertiary"]{
     width: 9.375rem;
-    height: 15px;
-    padding: 5px;
+    height: 0.9375rem; /* 15px -> 0.9375rem */
+    padding: 0.3125rem; /* 5px -> 0.3125rem */
     position:fixed;
     top: 0.6rem;
     right: 9rem;
@@ -99,7 +214,7 @@ div.st-key-file_reselect [data-testid = "stBaseButton-tertiary"]{
     font-size: 0.875rem;
 }
 div.st-key-file_reselect [data-testid = "stIconMaterial"] {
-    font-size: 25px;
+    font-size: 1.5625rem; /* 25px -> 1.5625rem */
 }
 
 /*파일 생성, 파일 다운로드 버튼*/
@@ -107,8 +222,8 @@ div.st-key-create_file [data-testid = "stBaseButton-tertiary"],
 div.st-key-download_file [data-testid = "stBaseButton-tertiary"]
 {
     width: 9.375rem;
-    height: 15px;
-    padding: 5px;
+    height: 0.9375rem; /* 15px -> 0.9375rem */
+    padding: 0.3125rem; /* 5px -> 0.3125rem */
     position: fixed;
     top: 0.6rem;
     right: 0.5rem; 
@@ -129,6 +244,91 @@ div.st-key-edit_format_btn{
     margin-left: auto;
 }
 
+/*커스텀 pills 옵션 버튼 css(답변 요지 프리셋 버튼)*/
+div[class *= answer_sub_pills_]{
+    gap:0.4rem;
+}
+div[class *= answer_sub_title_] > div > div > div > p{
+    font-size: 14px;
+}
+div[class *= answer_sub_btngroup_]{
+    gap:0.4rem;
+}
+
+div[class *= manual_input_btn_]> div > button > div > p,
+div[class *= manual_accept_btn_]> div > button > div > p,
+div[class *= manual_particle_btn_]> div > button > div > p,
+div[class *= manual_unaccept_btn_] > div > button > div > p{
+    font-size: 14px;
+}
+div[class *= manual_input_btn_]> div > button,
+div[class *= manual_accept_btn_]> div > button,
+div[class *= manual_particle_btn_]> div > button ,
+div[class *= manual_unaccept_btn_] > div > button{
+    padding: 0.2rem 0.5rem;
+    width: 100%;
+    max-width: 4.5rem;
+}
+
+div[class *= manual_input_btn_on_]> div > button,
+div[class *= manual_accept_btn_on_]> div > button,
+div[class *= manual_particle_btn_on_]> div > button ,
+div[class *= manual_unaccept_btn_on_] > div > button{
+    border: 1px solid var(--main-color);
+    background-color: var(--main-color);
+    color: white;
+}
+
+/*탭 버튼*/
+div.st-key-tab_container{
+    gap:0.1rem;
+    height: auto;
+    min-height: 0.5rem;
+}
+div.st-key-tab_container > div{
+    width:100%;
+    max-width: 7rem;
+}
+div[class *= "custom_tab_"]{
+    gap: 0.4rem;
+    width:100%;
+    max-width: 6.5rem;
+}
+div[class *= "tab_btn_"] > div > button{
+
+    padding: 0.1rem 0.3rem;
+    width: 100%;
+    max-width: 6rem;
+}
+
+div[class *= "tab_btn_"] > div > button > div > p {
+    font-size: 14px;
+}
+
+/*피드백 재채점 버튼 css*/
+div[class *= "recoll_rating_"]{
+    height:100%;
+    max-height: 1rem;
+}
+
+div[class *= "recoll_rating_"] > div > [data-testid = "stBaseButton-tertiary"]{
+    width : 100%;
+    align-items:start;
+    justify-content: left;
+    max-width: 15rem;
+    min-height: 1rem;
+    line-height: 1.6;
+}
+div[class *= "recoll_rating_"] > div > [data-testid = "stBaseButton-tertiary"] > span{
+    height: 1.5rem;
+}
+div[class *= "recoll_rating_"] > div > [data-testid = "stBaseButton-tertiary"] > span > span{
+    margin:0px 0.3rem 0px 0px;
+    align-items:center;
+}
+div[class *= "recoll_rating_"] > div > [data-testid = "stBaseButton-tertiary"] > div > p{
+    font-size: 16px;
+}
 /* file-selector 마커 바로 다음에 나오는 stButtonGroup만 적용 */
 div.st-key-file_format .stButtonGroup{
     position: fixed !important;
@@ -136,8 +336,8 @@ div.st-key-file_format .stButtonGroup{
     right: 8.5rem;
     z-index: 9999999999 !important;
     background: transparent;
-    gap: 8px;
-    padding: 2px 12px;
+    gap: 0.5rem; /* 8px -> 0.5rem */
+    padding: 0.125rem 0.75rem; /* 2px 12px -> 0.125rem 0.75rem */
 }
 
 
@@ -152,22 +352,46 @@ div.st-key-input_before_btn [data-testid = "stMarkdownContainer"] p,
 div.st-key-input_next_btn [data-testid = "stMarkdownContainer"] p,
 div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p,
 .rc-overflow span[label="민원 입력"],
-.rc-overflow span[label="관리자 설정"],
+.rc-overflow span[label="홈"],
 .rc-overflow span[label="설정"]
 {
     display: none;
 }
 
+div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"],
+div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"]{
+    width: 30rem;
+    height: 10rem;
+}
+
+div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"] > div > p,
+div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > div >p{
+    font-weight: 600;
+    font-size: 2.188rem;
+}
+div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"] > span >[data-testid="stIconMaterial"],
+div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > span >[data-testid="stIconMaterial"]{
+
+    font-size: 3.125rem;
+    justify-content:flex-end;
+}
+
+
+
+
 
 /*상단바 버튼 css*/
+.rc-overflow{
+    height: 1.875rem; /* 30px -> 1.875rem */
+}
 .rc-overflow [data-testid = "stTopNavLink"]{
     
     background-color: transparent;
 }
 
 .rc-overflow [data-testid = "stIconMaterial"]{
-    font-size: 25px;
-    font-weight:100;
+    font-size: 1.5625rem; /* 25px -> 1.5625rem */
+    font-weight:500;
     color:dark;
 }
 .rc-overflow [data-testid = "stIconMaterial"]:hover{
@@ -177,5 +401,5 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p,
     color:var(--main-color);
 }
 .rc-overflow .stSidebarNavLinkContainer {
-    font-size: 28px !important;
+    font-size: 1.75rem !important; /* 28px -> 1.75rem */
 }

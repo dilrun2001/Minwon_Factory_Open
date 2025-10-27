@@ -2,12 +2,12 @@
 #rag도 on/off 기능이 정상적으로 동작은 하나, 최초 실행 때 켜지는 부분에서는 아직 문제가 있습니다.
 #toml 파일을 수정후 streamlit을 다시 껐다 켜주시길 바랍니다.
 [app]
-ai = "on" #ai on/off 기능
+ai = "off" #ai on/off 기능
 rag = "off" #ragai on/off 기능
 history = "on" #민원히스토리 on/off
 setting = "on" #설정 on/off
 format = "off" #민원 설정 양식 on/off
-admin_password = "minfacadmin123"
+admin_password = "1234"
 [sub]
 accept  = "조속히 처리하겠습니다."
 particle_accept = "현장확인 후 조속히 처리하겠음."
