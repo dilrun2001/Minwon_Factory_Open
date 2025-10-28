@@ -7,6 +7,7 @@ rag = "off" #ragai on/off 기능
 history = "on" #민원히스토리 on/off
 setting = "on" #설정 on/off
 format = "off" #민원 설정 양식 on/off
+lab = "off" #실험실 기능 on/off
 admin_password = "1234"
 [sub]
 accept  = "조속히 처리하겠습니다."

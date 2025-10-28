@@ -295,14 +295,15 @@ def show_setting():
                                 st.session_state["setting_display"] = "ai"
                                 st.rerun()
                 #실험실
-                if st.session_state["setting_display"] == "lab":
-                        if st.button("실험실", key = "lab_btn_on", type = "tertiary", icon = ":material/experiment:"):
-                                st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
-                else:
-                        if st.button("실험실", key = "lab_btn_off", type = "tertiary", icon = ":material/experiment:"):
-                                #st.toast("현재 :red[지원하지 않는 기능]입니다.", icon = ":material/block:")
-                                st.session_state["setting_display"] = "lab"
-                                st.rerun()
+                if config['app']['lab'] == 'on':
+                        if st.session_state["setting_display"] == "lab":
+                                if st.button("실험실", key = "lab_btn_on", type = "tertiary", icon = ":material/experiment:"):
+                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                        else:
+                                if st.button("실험실", key = "lab_btn_off", type = "tertiary", icon = ":material/experiment:"):
+                                        #st.toast("현재 :red[지원하지 않는 기능]입니다.", icon = ":material/block:")
+                                        st.session_state["setting_display"] = "lab"
+                                        st.rerun()
                 #관리자 패널 
                 if st.session_state.admin is not True:
                         if st.button("관리자 로그인", key = "admin_set_btn", type = "tertiary", icon = ":material/admin_panel_settings:"):

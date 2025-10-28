@@ -30,7 +30,7 @@ def input_db():#format):
                         st.session_state.recreate_count,st.session_state.xlsx_count, st.session_state.csv_count, st.session_state.xlsx_count+st.session_state.csv_count) #재생성, 엑셀, CSV, 파일 총합
                         , fetch = False)
         for i, row in data.iterrows():
-            print(f"{row['최종평점']}")
+            #print(f"{row['최종평점']}")
             #print(row['최종답변'])
             if st.session_state.db_check is not True:
                 run_query("INSERT INTO history (timestamp, name, category, urgency, minwon,answer_yogi,response, grade) VALUES (%s, %s, %s, %s, %s,%s,%s, %s)",
@@ -42,6 +42,7 @@ def input_db():#format):
                 "민원내용": row['민원내용'],
                 "답변내용": row['최종답변'],
             }])
+            
             st.session_state.save_df = pd.concat(
                     [st.session_state.save_df, new_data],
                     ignore_index=True
