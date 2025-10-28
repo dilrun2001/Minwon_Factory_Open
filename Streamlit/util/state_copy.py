@@ -223,6 +223,9 @@ def clear_state():
     if "current_page" not in st.session_state:
         st.session_state.current_page = 1
     
+    if "save_page" not in st.session_state:
+        st.session_state.save_page = 1
+    
     if "home_input_btn" not in st.session_state:
         st.session_state.home_input_btn = False
     
@@ -235,8 +238,13 @@ def clear_state():
     if "setting_display" not in st.session_state:
         st.session_state["setting_display"] = "display"
     
+    #입력창 인덱스(통합 결정시 인덱스 통합)
     if "input_show_index" not in st.session_state:
         st.session_state["input_show_index"] = 0
+    
+    #결과창 인덱스(임시)
+    if "result_show_index" not in st.session_state:
+        st.session_state["result_show_index"] = 0
     
 
 # AI, RAG ON/OFF 기능으로 인해 실시간 피드백 변경
@@ -292,6 +300,7 @@ def minwon_clear():
     st.session_state['btn_show'] = False
     st.session_state.current_page = 1
     st.session_state.end_page = 1
+    st.session_state.save_page = 1
     st.session_state.multimode = False
     st.session_state.recreate_count = 0
     st.session_state.csv_count = 0
@@ -305,3 +314,4 @@ def minwon_clear():
     st.session_state.home_manual_show = False
     st.session_state.home_input_btn = False
     st.session_state["input_show_index"] = 0
+    st.session_state["result_show_index"] = 0

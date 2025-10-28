@@ -55,6 +55,66 @@ div[class *= "switch_option_"] [data-testid="stIconMaterial"]{
     font-size: 3.125rem; /* 50px -> 3.125rem */
 }
 
+/*div[class *= "select_answer_"] [data-testid = "stBaseButton-tertiary"]{
+    color: var(--accept-color);
+
+    width : 100%;
+    min-width: 230px;
+    border: 1px solid var(--accept-color);
+
+}
+div[class *= "select_answer_"] >div >button > div > p,
+div[class *= "select_answer_"] >div >button > span > span{
+    font-size: 20px;
+}
+*/
+div[class *= "select_answer_"] [data-testid = "stBaseButton-tertiary"],
+div[class *= "select_rag_"] [data-testid = "stBaseButton-tertiary"]{
+    color: var(--accept-color);
+    border-radius: 1rem;
+    width:100%;
+    min-width: 250px;
+    justify-content: left;
+}
+div[class *= "select_answer_"] [data-testid = "stBaseButton-tertiary"]:hover,
+div[class *= "select_rag_"] [data-testid = "stBaseButton-tertiary"]:hover{
+    color: white;
+    background-color: var(--accept-color);
+}
+
+div[class *= "select_answer_"] >div >button > div > p,
+div[class *= "select_answer_"] >div >button > span > span,
+div[class *= "select_rag_"] >div >button > div > p,
+div[class *= "select_rag_"] >div >button > span > span{
+    font-size: 19px;
+}
+
+div[class *= "select_off_answer_"] [data-testid = "stBaseButton-tertiary"],
+div[class *= "select_off_rag_"] [data-testid = "stBaseButton-tertiary"]{
+    color: var(--warning-color);
+    border-radius: 1rem;
+    width:100%;
+    min-width: 250px;   
+    justify-content: left;
+}
+div[class *= "select_off_answer_"] [data-testid = "stBaseButton-tertiary"]:hover,
+div[class *= "select_off_rag_"] [data-testid = "stBaseButton-tertiary"]:hover{
+    background-color: var(--warning-color);
+    color: white;
+}
+
+div[class *= "select_off_answer_"] >div > div > div > div  >button > div > p,
+div[class *= "select_off_answer_"] >div > div > div > div >button > span > span,
+div[class *= "select_off_rag_"] >div > div > div > div > button > div > p,
+div[class *= "select_off_rag_"] >div > div > div > div  >button > span > span{
+    font-size: 19px;
+    
+}
+
+
+
+
+
 div[class *= input_menu_btn_]{
     width: 100%;
 }
@@ -191,12 +251,12 @@ div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
 div.st-key-llm_model_select > div.st-key-download_CSV{
     position: absolute;
     width:5rem;
-    left: 82%;
+    left: 86%;
 }
 div.st-key-llm_model_select > div.st-key-download_Excel{
     position: absolute;
     width:5rem;
-    left:87%;
+    left:81%;
 }
 
 div.st-key-llm_model_select > div.st-key-hidden_download_file{

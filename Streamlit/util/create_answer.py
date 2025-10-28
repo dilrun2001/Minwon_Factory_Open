@@ -77,6 +77,9 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                         else:
                             answer = useAi.AI_print_answer(minwon=data.iloc[index]['민원내용'], answer=data.iloc[index]['답변요지'],answer_format=data.iloc[index]['답변양식'])
                         data.loc[index, '답변결과'] = answer
+                        #match data.loc[index, '최종답변 체크']:
+                        #        case "답변결과":
+
                 else:
                     timer = 5
                     update(f"단일 민원 생성 테스트. {timer}초 동안 해당 화면이 유지됩니다.")

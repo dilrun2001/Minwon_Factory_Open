@@ -304,7 +304,7 @@ div[class *= "first_answer_"]{
 
 div[class *= "second_answer_"]{
     border-radius: 1.6rem;
-    background-color: #cf5454;
+    background-color: #eb7406;
     padding-right: 0.8rem;
 }
 
@@ -322,6 +322,14 @@ div[class *="input_center_container_"]{
 }
 div[class *="input_right_container_"]{
     width: 580px;
+}
+div[class *= "total_input_left_container_"]{
+    gap: 0.5rem;
+}
+
+
+div[class *= "selectbox_select_"] > div > div > div > p{
+    font-size: 14px;
 }
 
 /*div[class *= "result_first_"] [data-baseweb = "base-input"],
@@ -406,7 +414,7 @@ div.st-key-home_info_container > div > div >  div > p,
 div.st-key-home_info_container  > div >div > div > ul > li{
     text-align : center;
     font-size: 1.1875rem; /* 19px -> 1.1875rem */
-    color: #636363;
+    color: #3f3f3f;
     white-space: pre-wrap;
     line-height: 2.5rem; /* 40px -> 2.5rem */
     padding-top: 0.625rem; /* 10px -> 0.625rem */
@@ -418,7 +426,11 @@ div.st-key-input_title_container{
     font-weight: 700;
 }
 
-
+div.st-key-input_menu_container_test{
+    gap: 2rem;
+    border-bottom: 1px solid rgb(189, 189, 189);
+    border-radius: 0;
+}
 
 div.st-key-input_guide_container > div > div  > div > p,
 div.st-key-minwon_result_guide_container > div > div  > div > p{
