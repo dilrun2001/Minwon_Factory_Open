@@ -8,7 +8,7 @@ def get_grade():
     return run_query("SELECT * FROM history_grade")
 @st.cache_data(ttl = 300)
 def get_ai_count():
-    return run_query("SELECT * FROM AI_Static")
+    return run_query("SELECT * FROM ai_static")
 @st.cache_data(ttl = 300)
 def get_category(): 
     return run_query("SELECT * FROM category_static")
