@@ -21,28 +21,17 @@
 
 .main,
 body {
-    font-weight:400;
+    font-weight:600;
     animation: pageReload 0.3s ease-out;
 }
-.stApp {
-    animation: pageReload 0.3s ease-out;
-}
-[data-testid = "stHeader"]{
-    animation: pageReload 0.3s ease-out;
-}
-div.block-container {
-    animation: pageReload 0.3s ease-out;
-}
-
-section.main > div {
-    animation: pageReload 0.3s ease-out;
-}
-
-div[data-testid="stAppViewContainer"] {
-    animation: pageReload 0.3s ease-out;
-}
-
-div[data-testid="stMainBlockContainer"] {
+.stApp,
+.stForm,
+[data-testid = "stHeader"],
+div.block-container,
+section.main > div,
+div[data-testid="stAppViewContainer"],
+div[data-testid="stMainBlockContainer"],
+.stTabs {
     animation: pageReload 0.3s ease-out;
 }
 
@@ -61,6 +50,10 @@ div[data-testid="stMainBlockContainer"] {
         transform: translateY(0);
     }
 }
+
+
+
+
 
 
 /* 버튼 호버 애니메이션 */
@@ -143,6 +136,7 @@ div[data-testid="stMainBlockContainer"] {
 }
 
 
+
 .stTabs [data-baseweb="tab-panel"] {
     animation: fadeIn 0.4s ease-out;
     
@@ -152,12 +146,16 @@ div[data-testid="stMainBlockContainer"] {
     animation: fadeIn 0.4s ease-out;
     
 }
-
+.rc-overflow [data-test = "stIconMaterial"],
+div[class *= "current_page_"] [data-testid = "stBaseButton-secondary"],
+div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"],
 .stTabs [data-baseweb="tab"] {
     transition: all 0.3s ease;
     
 }
-
+.rc-overflow [data-testid = "stIconMaterial"]:hover,
+div[class *= "current_page_"] [data-testid = "stBaseButton-secondary"],
+div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"]:hover,
 .stTabs [data-baseweb="tab"]:hover,
 .stTabs [data-baseweb="tab"][aria-selected="true"]{
     transform: translateY(-0.2rem);
