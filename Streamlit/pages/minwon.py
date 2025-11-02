@@ -317,7 +317,7 @@ def show_input():
                     if st.button("직접 입력", key = f"manual_input_btn_{index}"):
                         minwon.at[index, '답변요지 방식'] = "직접 입력"
                         minwon.at[index,'답변요지'] = ""
-                        st.rerun(scope="fragment")
+                        st.rerun(scope = "fragment")
                 if minwon.iloc[index]['답변요지 방식'] == "완전 수용":
                     if st.button("완전 수용", key = f"manual_accept_btn_on_{index}"):
                         st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
@@ -325,7 +325,7 @@ def show_input():
                     if st.button("완전 수용", key = f"manual_accept_btn_{index}"):
                         minwon.at[index, '답변요지 방식'] = "완전 수용"
                         minwon.at[index,'답변요지'] = config['sub']['accept']
-                        st.rerun(scope="fragment")
+                        st.rerun(scope = "fragment")
                 if minwon.iloc[index]['답변요지 방식'] == "부분 수용":
                     if st.button("부분 수용", key = f"manual_particle_btn_on_{index}"):
                         st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
@@ -333,7 +333,7 @@ def show_input():
                     if st.button("부분 수용", key = f"manual_particle_btn_{index}"):
                         minwon.at[index, '답변요지 방식'] = "부분 수용"
                         minwon.at[index,'답변요지'] = config['sub']['particle_accept']
-                        st.rerun(scope="fragment")
+                        st.rerun(scope = "fragment")
                 if minwon.iloc[index]['답변요지 방식'] == "수용 불가":
                     if st.button("수용 불가", key = f"manual_unaccept_btn_on_{index}"):
                         st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
@@ -341,7 +341,7 @@ def show_input():
                     if st.button("수용 불가", key = f"manual_unaccept_btn_{index}"):
                         minwon.at[index, '답변요지 방식'] = "수용 불가"
                         minwon.at[index,'답변요지'] = config['sub']['unaccept']
-                        st.rerun(scope="fragment")
+                        st.rerun(scope = "fragment")
                 
         minwon.at[index, '답변요지']  = st.text_area(
                 "답변 요지" ,label_visibility="collapsed", placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
@@ -464,10 +464,10 @@ def show_result():
         #st.write("###### 답변")
         match result.iloc[index]['최종답변 체크']:
                     case '답변결과':
-                        if st.button("답변(현재 선택된 최종 답변)", key = f"select_answer_{index}", type = "tertiary", icon = ":material/comment:"):
-                            st.toast("이미 선택하신 옵션입니다.")
+                        if st.button("답변 (현재 선택된 최종 답변)", key = f"select_answer_{index}", type = "tertiary", icon = ":material/comment:"):
+                            st.toast("이미 :red[선택하신 옵션]입니다.", icon = ":material/block:")
                     case 'RAG':
-                        if st.button("답변(클릭 시 최종 답변으로 전환)", key = f"select_off_answer_{index}", type = "tertiary", icon = ":material/comment:", help = "클릭 시 최종 답변이 답변결과로 전환됩니다."):
+                        if st.button("답변 (클릭 시 최종 답변으로 전환)", key = f"select_off_answer_{index}", type = "tertiary", icon = ":material/comment:", help = "클릭 시 최종 답변이 답변결과로 전환됩니다."):
                             result.at[index, '최종답변'] = result.iloc[index]['답변결과']
                             result.at[index,'최종답변 체크'] = '답변결과'
                             st.rerun()
@@ -483,15 +483,15 @@ def show_result():
     @st.fragment
     def show_second(index):
         #st.write("###### 유사 답변")
-        if result.iloc[index]['재생성 알림']:
-            st.toast(f"{index+1}번 민원의 :green[답변 요지 편집 및 재생성 기능]이 종료되었습니다.", icon= ":material/check:")
-            result.at[index, '재생성 알림'] = False
+        #if result.iloc[index]['재생성 알림']:
+        #    st.toast(f"{index+1}번 민원의 :green[답변 요지 편집 및 재생성 기능]이 종료되었습니다.", icon= ":material/check:")
+        #    result.at[index, '재생성 알림'] = False
         match result.iloc[index]['최종답변 체크']:
             case 'RAG':
-                if st.button("유사 답변(현재 선택된 최종 답변)", key = f"select_rag_{index}", type = "tertiary", icon = ":material/comment:"):
-                    st.toast("이미 선택하신 옵션입니다.")
+                if st.button("유사 답변 (현재 선택된 최종 답변)", key = f"select_rag_{index}", type = "tertiary", icon = ":material/comment:"):
+                    st.toast("이미 :red[선택하신 옵션]입니다.", icon = ":material/block:")
             case '답변결과':
-                if st.button("유사 답변(클릭 시 최종 답변으로 전환)", key = f"select_off_rag_{index}", type = "tertiary", icon = ":material/comment:", help = "클릭 시 유사 답변이 최종 답변이 됩니다."):
+                if st.button("유사 답변 (클릭 시 최종 답변으로 전환)", key = f"select_off_rag_{index}", type = "tertiary", icon = ":material/comment:", help = "클릭 시 유사 답변이 최종 답변이 됩니다."):
                     result.at[index, '최종답변'] = result.iloc[index]['RAG']
                     result.at[index,'최종답변 체크'] = 'RAG'
                     st.rerun()
@@ -519,12 +519,14 @@ def show_result():
     # 결과창 바로 밑에 붙는 구조
     @st.fragment
     def show_edit(index):
-        if result.iloc[index]['재생성 알림'] is not True:
-            st.toast(f"{index+1}번 민원 :green[답변 요지 편집 및 재생성 기능]이 활성화되었습니다.", icon= ":material/check:")
-            result.at[index, '재생성 알림'] = True
+        #if result.iloc[index]['재생성 알림'] is not True:
+        #    st.toast(f"{index+1}번 민원 :green[답변 요지 편집 및 재생성 기능]이 활성화되었습니다.", icon= ":material/check:")
+        #    result.at[index, '재생성 알림'] = True
+
         with st.container(key = f"answer_sub_pills_{index}"):
             with st.container(key = f"answer_sub_title_{index}"):
-                st.write("답변 요지")
+                st.write("##### 답변 재생성 ")
+                st.write("답변 요지 수정")
             with st.container(key = f"answer_sub_btngroup_{index}", horizontal=True):
                 if result.iloc[index]['답변요지 방식'] == "직접 입력":
                     if st.button("직접 입력", key = f"manual_input_btn_on_{index}"):
@@ -688,8 +690,6 @@ def show_result():
                     result.at[index, '수정'] = True
                 #show_edit(index)
                 else:
-                    if result.iloc[index]['재생성 알림']:
-                        st.toast(f"{index+1}번 민원의 편집 및 재생성 기능이 종료되었습니다.")
                     result.at[index, '수정'] = False
     
     #메인 답변 구조 출력

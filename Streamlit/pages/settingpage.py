@@ -16,25 +16,27 @@ def show_edit_format():
         st.divider()
         with st.container(key = "edit_format_container"):
                 st.write("#### 답변 양식 수정")
-                format = st.text_area("양식 수정", value = f"{config['format']['format']}", height = 370)
-                st.button("수정", key = "edit_format_btn", icon = ":material/note:", on_click = change_toml, args = ('format', 'format', format, '답변 양식 포맷'))
+                with st.container(key = "edit_main_format_container", border = True):
+                        format = st.text_area("양식 수정", value = f"{config['format']['format']}", height = 370, label_visibility="collapsed")
+                        st.button("수정", key = "edit_format_btn", icon = ":material/note:", on_click = change_toml, args = ('format', 'format', format, '답변 양식 포맷'))
         with st.container(key = "edit_preset_container"):
                 st.write("#### 답변 요지 프리셋 수정")
-                preset_edit = st.pills(
-                "수정할 답변 요지 방식을 선택해주세요.", ["완전 수용", "부분 수용", "수용 불가"],
-                key = "minwon_sub_edit_selector"
-                )
-        
-                match (preset_edit):
-                        case "완전 수용":
-                                accept = st.text_input("완전 수용 수정", value = config['sub']['accept'], label_visibility="collapsed")
-                                st.button("수정", key = "edit_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'accept', accept, '완전 수용 양식'))
-                        case "부분 수용":
-                                particle = st.text_input("부분 수용 수정", value = config['sub']['particle_accept'], label_visibility="collapsed")
-                                st.button("수정", key = "   ", icon = ":material/note:", on_click = change_toml, args = ('sub', 'particle_accept', particle, '부분 수용 양식'))
-                        case "수용 불가":
-                                unaccept = st.text_input("수용 불가 수정", value = config['sub']['unaccept'], label_visibility="collapsed")
-                                st.button("수정", key = "edit_unaccept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'unaccept', unaccept, '수용 불가 양식'))
+                with st.container(key = "edit_preset_main_container", border = True):
+                        preset_edit = st.pills(
+                        "수정할 답변 요지 방식을 선택해주세요.", ["완전 수용", "부분 수용", "수용 불가"],
+                        key = "minwon_sub_edit_selector"
+                        )
+                
+                        match (preset_edit):
+                                case "완전 수용":
+                                        accept = st.text_input("완전 수용 수정", value = config['sub']['accept'], label_visibility="collapsed")
+                                        st.button("수정", key = "edit_accept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'accept', accept, '완전 수용 양식'))
+                                case "부분 수용":
+                                        particle = st.text_input("부분 수용 수정", value = config['sub']['particle_accept'], label_visibility="collapsed")
+                                        st.button("수정", key = "   ", icon = ":material/note:", on_click = change_toml, args = ('sub', 'particle_accept', particle, '부분 수용 양식'))
+                                case "수용 불가":
+                                        unaccept = st.text_input("수용 불가 수정", value = config['sub']['unaccept'], label_visibility="collapsed")
+                                        st.button("수정", key = "edit_unaccept_btn", icon = ":material/note:", on_click = change_toml, args = ('sub', 'unaccept', unaccept, '수용 불가 양식'))
 
 #관리자 비밀번호 변경
 def show_edit_password():
@@ -42,14 +44,16 @@ def show_edit_password():
         st.divider()
         #with st.expander("관리자 비밀번호 변경", expanded = True, icon= ":material/key:"):
         st.write("#### 관리자 비밀번호 변경")
-        with st.form(key = "change_admin_password", height = 320, border = False):
-                old = st.text_input("기존 비밀번호", key = "old_possword", placeholder="기존 비밀번호를 입력해주세요.", type = "password")
-                new = st.text_input("신규 비밀번호", key = "new_password", placeholder="신규 비밀번호를 입력해주세요.", type = "password")
-                repeat = st.text_input("신규 비밀번호", key = "new_password_repeat", placeholder="신규 비밀번호를 한번 더 입력해주세요.", type = "password")
-                if st.form_submit_button("수정",  type = "secondary"):
-                        if old != new:
-                                if new == repeat:
-                                        change_toml('app', 'admin_password', new, "관리자 비밀번호")
+        with st.container(key = "change_admin_password_container", border = True):
+               
+                with st.form(key = "change_admin_password", height = 320, border = False):
+                        old = st.text_input("기존 비밀번호", key = "old_possword", placeholder="기존 비밀번호를 입력해주세요.", type = "password")
+                        new = st.text_input("신규 비밀번호", key = "new_password", placeholder="신규 비밀번호를 입력해주세요.", type = "password")
+                        repeat = st.text_input("신규 비밀번호", key = "new_password_repeat", placeholder="신규 비밀번호를 한번 더 입력해주세요.", type = "password")
+                        if st.form_submit_button("수정",  type = "secondary"):
+                                if old != new:
+                                        if new == repeat:
+                                                change_toml('app', 'admin_password', new, "관리자 비밀번호")
 
 @st.dialog(":material/admin_panel_settings: 관리자 로그인")
 def show_login_admin():
@@ -70,9 +74,11 @@ def show_queue():
                 time.sleep(timer)
         st.write("## :material/queue: 대기열")
         st.divider()
-        with st.container(key = "admin_page_container"):
+        st.write("#### 대기열 관리")
+        with st.container(key = "admin_page_container", border = True):
+                        
                 #with st.expander("대기열 관리", expanded = True, icon = ":material/queue:"):
-                        st.write("대기열 기능 오류 시 해당 부분에서 대기열을 초기화할 수 있습니다.")
+                        #st.write("대기열 기능 오류 시 해당 부분에서 대기열을 초기화할 수 있습니다.")
                         queue_clear = st.button("대기열 초기화", key = "queue_clear", icon = ":material/clear_all:", on_click = clear_queue)
                         if queue_clear:
                                 st.toast("대기열이 초기화되었습니다.", icon = ":material/check:")
@@ -85,9 +91,11 @@ def show_db():
         st.divider()
         #with st.expander("DB 데이터 관리", expanded = True, icon = ":material/database:"):
         today = datetime.datetime.now()
-        before_day = datetime.date(today.year, today.month-1, today.day)    
-        with st.container(key = "DB_option_container_1"):
-                st.write("#### 데이터프레임 필터링 옵션")
+        #before_day = datetime.date(today.year, today.month-1, today.day)    
+        before_day = today - datetime.timedelta(days=30)
+        st.write("#### 데이터프레임 필터링 옵션")
+        with st.container(key = "DB_option_container_1", border = True):
+                
                 with st.container(key = "DB_option_container_2", horizontal=True):
                         date = st.date_input("날짜 범위 지정", (before_day, today),key = "db_datetime_check", format = "YYYY.MM.DD", width=450)
                         #date = st.date_input("날짜 범위 지정", (before_day, today),key = "db_datetime_check", format = "YYYY.MM.DD")
@@ -114,12 +122,13 @@ def check_db_option(date, name, grade):
 #화면 설정
 def show_display():
        st.write("## :material/display_settings: 화면")
-       st.divider()
+       st.divider()                
+       st.write("#### 화면 표시 방식")
        with st.container(key = "setting_display_container", gap="medium", border = True):
             #with st.expander("화면 표시 방식", expanded=True, icon = ":material/display_settings:"):
                 #with st.container(key = "setting_display_infor", horizontal=True):
                 #st.write("- 화면 표시 방식을 변경할 수 있습니다.")
-                st.write("#### 화면 표시 방식")
+
                 st.write("- 확장형: 최대 10개의 확장 및 축소가 가능한 탭을 세로로 배열")
                 st.write("- 탭: 최대 10개의 확장 및 축소가 불가능하지만 탭으로 구분하여 가로로 배열")
                 with st.container(key = "option_btn_container", horizontal=True, gap = "medium"):
@@ -148,8 +157,9 @@ def show_display():
 def show_ai_set():
         st.write("## :material/robot: AI")
         st.divider()
+        st.write("#### AI 모델 선택")
         with st.container(key = "ai_model_container", border = True, gap = "medium"):
-                st.write("#### AI 모델 선택")
+                
                 st.write("- 기본 모델: 어떠한 파인튜닝도 거치지 않은 베이스 AI 모델")
                 st.write("- 민원팩토리 모델: 파인튜닝을 거쳐 개발된 민원팩토리 자체 AI 모델")
                 st.write("- 사하아이 연동: 사하아이 AI 모델과 연동하여 답변 생성")
@@ -182,28 +192,31 @@ def show_ai_set():
                                                  st.rerun()
                                         if st.button("사하아이 연동", key = "sahaai_model_on", type = "secondary", width = 150):
                                                 st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+        st.divider()
         if st.session_state.admin:
                 with st.container(key = "admin_ai_setting", horizontal=True, gap = "medium"):
-                        with st.container(key = "admin_ai_setting_1", border = True, gap = "medium"):
+                        with st.container(key = "admin_ai_setting_1", gap = "medium"):
                                 st.markdown("####  AI 설정")
-                                st.write("AI 설정을 ON/OFF 할 수 있습니다.")
-                                ai = st.pills(
-                                        "AI ON/OFF", ["on", "off"],
-                                        key = "ai_select_option", default = config['app']['ai'], label_visibility="collapsed"
-                                        )
-                                if ai != config['app']['ai']:
-                                        change_toml('app', 'ai', ai, f"AI 설정 {ai}")
-                                        ai_option_check()
-                        with st.container(key = "admin_ai_setting_2", border = True, gap = "medium"):
+                                with st.container(key = "admin_ai_set_1", border = True):
+                                        st.write("AI 설정 ON/OFF")
+                                        ai = st.pills(
+                                                "AI ON/OFF", ["on", "off"],
+                                                key = "ai_select_option", default = config['app']['ai'], label_visibility="collapsed"
+                                                )
+                                        if ai != config['app']['ai']:
+                                                change_toml('app', 'ai', ai, f"AI 설정 {ai}")
+                                                ai_option_check()
+                        with st.container(key = "admin_ai_setting_2", gap = "medium"):
                                 st.markdown("####  RAG 설정")
-                                st.write("RAG(유사 답변 검색) 설정을 ON/OFF 할 수 있습니다. ")
-                                rag = st.pills(
-                                        "RAG ON/OFF", ["on", "off"],
-                                        key = "rag_select_option", default = config['app']['rag'], label_visibility="collapsed"
-                                        )
-                                if rag != config['app']['rag']:
-                                        change_toml('app', 'rag', rag, f"RAG 설정 {rag}")
-                                        ai_option_check()
+                                with st.container(key = "admin_ai_set_2", border = True):
+                                        st.write("RAG(유사 답변 검색) 설정 ON/OFF")
+                                        rag = st.pills(
+                                                "RAG ON/OFF", ["on", "off"],
+                                                key = "rag_select_option", default = config['app']['rag'], label_visibility="collapsed"
+                                                )
+                                        if rag != config['app']['rag']:
+                                                change_toml('app', 'rag', rag, f"RAG 설정 {rag}")
+                                                ai_option_check()
 
 #실험실
 def show_lab():
@@ -250,26 +263,29 @@ def show_static():
         st.write("## :material/analytics: 통계")
         st.divider()
         st.write("#### 민원 데이터 통계")
-        #st.write(f"- DB 내 답변 데이터의 통계를 나타내는 지표입니다. 현재 서버 내 저장된 민원 답변 데이터 수는 개 저장되어있습니다.")
-        with st.container(key = "answer_data_container", horizontal=True):
-                with st.expander("답변 데이터의 평점", expanded=True, icon = ":material/star:"):
-                        st.write(admin_grade_static())
-                        #test2 = test[['1점', '2점', '3점', '4점', '5점']]
-                        #st.dataframe(test2)
-                with st.expander("답변 데이터의 민원 카테고리", expanded=True, icon = ":material/category:"):
-                        st.write(admin_category_static())
-                with st.expander("답변 데이터의 긴급도", expanded=True, icon = ":material/siren:"):
-                        st.write(admin_urgency_static())
-#with ai:
+        with st.container(key = "answer_data_container", border = True):
+                
+                with st.container(key = "answer_frame_container", horizontal=True):
+                        with st.expander("답변 데이터의 평점", expanded=True, icon = ":material/star:"):
+                                st.write(admin_grade_static())
+                                #test2 = test[['1점', '2점', '3점', '4점', '5점']]
+                                #st.dataframe(test2)
+                        with st.expander("답변 데이터의 민원 카테고리", expanded=True, icon = ":material/category:"):
+                                st.write(admin_category_static())
+                        with st.expander("답변 데이터의 긴급도", expanded=True, icon = ":material/siren:"):
+                                st.write(admin_urgency_static())
+#with ai: 
         st.write("#### AI 사용 데이터 통계")
+        with st.container(key = "AI_data_container", border = True):
+                
         #st.write(f"- AI 사용, 파일 출력 관련 통계 지표입니다. 현재 서버에서 AI는 총 {admin_ai_static().iloc[0]['AI 전체 사용 횟수']}번 사용되었습니다.")
-        with st.container(key = "AI_data_container", horizontal=True):
-                with st.expander("AI 통계", expanded=True):
-                        #ai_static = ai_count[['민원팩토리 모델 횟수', '사하아이 요청 횟수', '기본 모델 횟수', '답변 재생성 횟수']]
-                        st.write(admin_ai_static())
-                with st.expander("파일 통계", expanded=True):
-                        #file_static = ai_count[['엑셀 파일 생성 횟수', 'CSV 파일 생성 횟수']]
-                        st.write(admin_file_static())
+                with st.container(key = "AI_frame_container", horizontal=True):
+                        with st.expander("AI 통계", expanded=True):
+                                #ai_static = ai_count[['민원팩토리 모델 횟수', '사하아이 요청 횟수', '기본 모델 횟수', '답변 재생성 횟수']]
+                                st.write(admin_ai_static())
+                        with st.expander("파일 통계", expanded=True):
+                                #file_static = ai_count[['엑셀 파일 생성 횟수', 'CSV 파일 생성 횟수']]
+                                st.write(admin_file_static())
 
 
 def show_setting():
