@@ -8,6 +8,7 @@ codeFontSize = "16px"
 primaryColor = "#2766C2"
 
 
+
 [server]
 runOnSave = true
 headless = true

@@ -33,6 +33,7 @@ div.st-key-file_format .stButtonGroup button:hover,
 
 [data-testid = "stBaseButton-tertiary"]:hover{
     color: var(--main-color);
+    background-color: var(--main-background);
 }
 
 /*st.pills 기본 css */
@@ -224,15 +225,61 @@ div.st-key-lab_btn_on{
     border-radius:1rem;
 }
 
+div.st-key-normal_popover_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-sahaai_popover_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-mf_popover_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-option_tab_menu_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-option_expand_menu_off [data-testid = "stBaseButton-tertiary"]{
+    transition: all 0.4s ease;
+    width: 100%;
+    justify-content: left;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+div.st-key-normal_popover_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-sahaai_popover_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-mf_popover_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-option_tab_menu_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-option_expand_menu_off [data-testid = "stBaseButton-tertiary"]:hover{
+    transition: all 0.4s ease;
+    background-color:var(--main-background);
+    border-radius: 1rem;
+
+}
+div.st-key-normal_popover_on,
+div.st-key-sahaai_popover_on,
+div.st-key-mf_popover_on,
+div.st-key-normal_popover_off,
+div.st-key-sahaai_popover_off,
+div.st-key-mf_popover_off,
+div.st-key-option_tab_menu_on ,
+div.st-key-option_expand_menu_on,
+div.st-key-option_tab_menu_off ,
+div.st-key-option_expand_menu_off {
+    width:100%;
+}
+
+
+div.st-key-normal_popover_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-sahaai_popover_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-mf_popover_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-option_tab_menu_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-option_expand_menu_on [data-testid = "stBaseButton-tertiary"]{
+    color: var(--main-background);
+    background-color:#6994d6;
+    width: 100%;
+    justify-content: left;
+    border-radius: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
 
 div.st-key-option_tab_btn_on [data-testid = "stBaseButton-secondary"],
 div.st-key-option_expand_btn_on [data-testid = "stBaseButton-secondary"],
 div.st-key-normal_model_on [data-testid = "stBaseButton-secondary"],
-div.st-key-normal_popover_on [data-testid = "stBaseButton-secondary"],
 div.st-key-mf_model_on [data-testid = "stBaseButton-secondary"],
-div.st-key-mf_popover_on [data-testid = "stBaseButton-secondary"],
 div.st-key-sahaai_model_on [data-testid = "stBaseButton-secondary"],
-div.st-key-sahaai_popover_on [data-testid = "stBaseButton-secondary"],
 div.st-key-option_new_tab_on [data-testid = "stBaseButton-secondary"]{
     border: 1px solid var(--main-color);
     
@@ -262,20 +309,26 @@ div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
     border-color: transparent;
 }
 
-/*div.st-key-clear_btn{
-    position:fixed;
-    
-}*/
+div.st-key-clear_btn >div > button{
+    width:110px;
+    border-radius: 1.2rem;
+}
+div.st-key-download_CSV  >div>div>div>div > button,
+div.st-key-download_Excel >div>div>div>div > button{
+    width:100px;
+    border-radius:1.2rem;
+    padding: 0.3rem;
+}
 
 div.st-key-clear_btn > div > button > span > span,
-div.st-key-download_CSV > div > button > span > span,
-div.st-key-download_Excel > div > button > span > span{
+div.st-key-download_CSV  > div > div > div > div  > button > span > span,
+div.st-key-download_Excel  > div > div > div > div  > button > span > span{
     font-size: 1.7rem;
 }
 
 div.st-key-clear_btn > div > button > div > p,
-div.st-key-download_CSV > div > button > div > p,
-div.st-key-download_Excel > div > button > div > p{
+div.st-key-download_CSV  > div > div > div > div > button > div > p,
+div.st-key-download_Excel  > div > div > div > div > button > div > p{
     font-size: 17px;
 }
 
@@ -455,6 +508,7 @@ div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"],
 div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"]{
     width: 30rem;
     height: 10rem;
+    border: 1px solid #444444;
 }
 
 div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"] > div > p,
@@ -495,6 +549,11 @@ div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > span >[data-
 
 .rc-overflow-item:hover{
     transition: all 0.3s ease;
+}
+
+.rc-overflow [data-testid = "stTopNavLink"]{
+    width:fit-content;
+    justify-content: center;
 }
 .rc-overflow [data-testid = "stTopNavLink"]:hover{
     background-color: var(--main-background);
@@ -546,6 +605,7 @@ button[data-testid="stExpandSidebarButton"] span[data-testid="stIconMaterial"]::
     content: 'menu';
     font-family: 'Material Icons';
     font-size: 28px;
+    font-weight: 500;
     margin-left: -10%; 
     color: rgb(49, 51, 63);
 }
@@ -566,6 +626,7 @@ button[data-testid = "stBaseButton-headerNoPadding"] span[data-testid = "stIconM
     content: 'close';
     font-family: 'Material Icons';
     font-size: 22px;
+    font-weight: 600;
     color: rgb(49, 51, 63);
     padding-top:25%;
 }

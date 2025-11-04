@@ -108,7 +108,9 @@ div.st-key-file_input > div[data-testid = "stElementContainer"]{
     width: 95%;  
 }
 
-
+[data-testid = "stSidebarHeader"]{
+    justify-content: left;
+}
 
 [data-testid="stFileUploader"] section div div span {
     visibility: hidden;
@@ -301,7 +303,7 @@ button[data-baseweb="tab"] {
 [data-testid = "stMainBlockContainer"]{
     padding-left: 7rem;
     padding-right: 7rem;
-    padding-top: 4.5rem;
+    padding-top: 6rem;
 
 }
 
@@ -338,8 +340,13 @@ div[class *= "total_input_left_container_"]{
     gap: 0.5rem;
 }
 
+div[class *= "answer_sub_total_"]{
+    gap: 0.5rem;
+}
 
-div[class *= "selectbox_select_"] > div > div > div > p{
+
+div[class *= "selectbox_select_"] > div > div > div > p,
+div[class *= "answer_sub_total_"] > div > div > div > p{
     font-size: 14px;
 }
 
@@ -415,37 +422,59 @@ div.st-key-llm_model_select{
     }
 }*/
 div.st-key-main_total_menu_container{
-    position: fixed;
-    justify-content: center;
+    position: absolute;
 
-    gap: 2rem;
-    width: fit-content;
+    gap: 0.3rem;
+    width: 300px;
     border-radius: 1.5rem;
-    top:0.7rem;
-    left: 88%;
+    top:0.8rem; 
+    right: 1rem;
     z-index: 999999 !important;
-    padding-left: 1.5rem;
-    padding-right:1.5rem;
+    padding-left:5rem;
     padding-top:0.3rem;
     padding-bottom: 0.3rem;
 }
 
 div.st-key-main_clear_container{
-
     position: absolute;
-    justify-content: center;
+
     width: fit-content;
     border-radius: 1.4rem;
     height: 1.875rem;
     top:0.8rem;
-    left:16%;
-    margin-left: 5.5%;
+    left: 23.6rem;
     z-index: 999999 !important;
     padding-left: 1rem;
     padding-right:1rem;
     padding-top:0.3rem;
     padding-bottom: 0.3rem;
 }
+
+div.st-key-menu_sidebar,
+div.st-key-show_display_sidebar{
+    gap: 0.03rem;
+    padding-top:0.5rem;
+    padding-left:0.5rem;
+    padding-bottom:1rem;
+}
+/*@media (min-width: 1628px) and (max-width:1698px){
+    div.st-key-main_clear_container{
+        left: -23%;
+    }
+}
+@media (min-width: 1400px) and (max-width:1627px){
+    div.st-key-main_clear_container{
+        left: -20%;
+    }
+}
+@media (min-width: 1200px) and (max-width:1399px){
+    div.st-key-main_clear_container{
+        left: -15%;
+    }
+}*/
+
+
+
 /*
 div.st-key-main_header_container{
     position:absolute;

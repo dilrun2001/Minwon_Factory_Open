@@ -83,7 +83,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                 else:
                     timer = 5
                     update(f"단일 민원 생성 테스트. {timer}초 동안 해당 화면이 유지됩니다.")
-                    data.loc[index, '답변결과'] = "해당 답변은 단일 민원 생성 테스트에 사용된 답변입니다."
+                    data.at[index, '답변결과'] = "해당 답변은 단일 민원 생성 테스트에 사용된 답변입니다."
                     time.sleep(timer)
                 end_task(task_id)
                 st.rerun()
@@ -106,7 +106,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                             #cnt = row['수정']
                             if row['수정'] == True:
                                 update(f"{i+1}번 민원의 답변 재생성 테스트. 답변은 생성되지 않습니다.")
-                                data.loc[i, '답변결과'] = "해당 답변은 단일 민원 생성 테스트에 사용된 답변입니다."
+                                data.at[i, '답변결과'] = "해당 답변은 단일 민원 생성 테스트에 사용된 답변입니다."
                                 time.sleep(1)
                     end_task(task_id)
                     st.rerun()

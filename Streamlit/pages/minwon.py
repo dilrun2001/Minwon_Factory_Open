@@ -272,17 +272,19 @@ def show_multi_page():
 #show_input_comment(멘트 및 간단 설명), show_input_container(메인 컨테이너), 페이지네이션 상태일때 show_multi_page 사용
 @st.fragment
 def show_input():
-    st.set_page_config(page_title = "민원 입력", page_icon=":material/input:", layout="wide", initial_sidebar_state="collapsed")
-    
     @st.fragment
     def show_input_comment():
         with st.container(key = "input_title_container"):
-            st.write("### 민원 입력 및 응답 생성")
+            st.write("### :material/input: 답변 요지 입력")
         with st.container(key = "input_guide_container", horizontal=True):
             st.write('''
-                     입력하신 민원의 :red[답변 요지]를 :red[입력]해주셔야 답변을 생성할 수 있습니다.
-                     상단 선택 메뉴(:material/menu: 모양 아이콘)에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.
-                     ''')
+                    입력하신 민원의 요약을 바탕으로 :green[답변 요지]를 입력해주세요.
+                    상단 메뉴(:material/menu:)를 눌러 AI 모델을 :green[변경]할 수 있습니다.
+''')
+            #st.write('''
+            #         입력하신 민원의 :red[답변 요지]를 :red[입력]해주셔야 답변을 생성할 수 있습니다.
+            #        상단 선택 메뉴(:material/menu: 모양 아이콘)에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.
+            #        ''')
     minwon = st.session_state.df
 
 
@@ -325,6 +327,7 @@ def show_input():
                     if st.button("완전 수용", key = f"manual_accept_btn_{index}"):
                         minwon.at[index, '답변요지 방식'] = "완전 수용"
                         minwon.at[index,'답변요지'] = config['sub']['accept']
+                        time.sleep(0.01)
                         st.rerun(scope = "fragment")
                 if minwon.iloc[index]['답변요지 방식'] == "부분 수용":
                     if st.button("부분 수용", key = f"manual_particle_btn_on_{index}"):
@@ -524,47 +527,64 @@ def show_result():
         #    result.at[index, '재생성 알림'] = True
 
         with st.container(key = f"answer_sub_pills_{index}"):
-            with st.container(key = f"answer_sub_title_{index}"):
-                st.write("##### 답변 재생성 ")
-                st.write("답변 요지 수정")
-            with st.container(key = f"answer_sub_btngroup_{index}", horizontal=True):
-                if result.iloc[index]['답변요지 방식'] == "직접 입력":
-                    if st.button("직접 입력", key = f"manual_input_btn_on_{index}"):
-                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
-                else:
-                    if st.button("직접 입력", key = f"manual_input_btn_{index}"):
-                        result.at[index, '답변요지 방식'] = "직접 입력"
-                        result.at[index,'답변요지'] = ""
-                        st.rerun(scope="fragment")
-                if result.iloc[index]['답변요지 방식'] == "완전 수용":
-                    if st.button("완전 수용", key = f"manual_accept_btn_on_{index}"):
-                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
-                else:
-                    if st.button("완전 수용", key = f"manual_accept_btn_{index}"):
-                        result.at[index, '답변요지 방식'] = "완전 수용"
-                        result.at[index,'답변요지'] = config['sub']['accept']
-                        st.rerun(scope="fragment")
-                if result.iloc[index]['답변요지 방식'] == "부분 수용":
-                    if st.button("부분 수용", key = f"manual_particle_btn_on_{index}"):
-                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
-                else:
-                    if st.button("부분 수용", key = f"manual_particle_btn_{index}"):
-                        result.at[index, '답변요지 방식'] = "부분 수용"
-                        result.at[index,'답변요지'] = config['sub']['particle_accept']
-                        st.rerun(scope="fragment")
-                if result.iloc[index]['답변요지 방식'] == "수용 불가":
-                    if st.button("수용 불가", key = f"manual_unaccept_btn_on_{index}"):
-                        st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
-                else:
-                    if st.button("수용 불가", key = f"manual_unaccept_btn_{index}"):
-                        result.at[index, '답변요지 방식'] = "수용 불가"
-                        result.at[index,'답변요지'] = config['sub']['unaccept']
-                        st.rerun(scope="fragment")
+            
+            st.write(f"#### :material/edit: {index+1}번 답변 요지 편집 ")
+            st.markdown("""""")
+            st.markdown("""""") 
+            with st.container(key = f"selectbox_select_{index}"):
+                st.write("민원 카테고리 및 민원 긴급도")
+                with st.container(key = f"test_{index}", horizontal=True):
+                    result.at[index, '민원 카테고리'] = st.selectbox(
+                            "민원 카테고리 및 민원 긴급도", options = ["일반", "환경", "교통", "복지", "교육", "기타"], key = f"minwon_category_{index}", label_visibility="collapsed"
+                        )
+                    result.at[index, '민원 긴급도'] = st.selectbox(
+                        "민원 긴급도", options = ("매우 낮음", "낮음", "보통", "높음", "매우 높음"), key = f"minwon_urgency_{index}", help = "민원 긴급도를 선택해주세요.", label_visibility="collapsed"
+                    )
+            #st.write(f'''
+            ######## 답변 요지를 수정하신 후 버튼을 눌러 재생성 할 수 있습니다. 
+            ###### 다중 민원은 해당 화면이 뜨는 :green[모든 민원의 답변]을 재생성 할 수 있습니다.
+            #''')
+            with st.container(key = f"answer_sub_total_{index}"):
                 
-        result.at[index, '답변요지']  = st.text_area(
-                "답변 요지" ,label_visibility="collapsed", placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
-                , height = 300, value =result.at[index,'답변요지'], key = f"answer_sub_{index}"#, on_change=input_status_change, args=(i,)
-            )
+                st.write("답변 요지 편집")
+                with st.container(key = f"answer_sub_btngroup_{index}", horizontal=True):
+                    if result.iloc[index]['답변요지 방식'] == "직접 입력":
+                        if st.button("직접 입력", key = f"manual_input_btn_on_{index}"):
+                            st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                    else:
+                        if st.button("직접 입력", key = f"manual_input_btn_{index}"):
+                            result.at[index, '답변요지 방식'] = "직접 입력"
+                            result.at[index,'답변요지'] = ""
+                            st.rerun(scope="fragment")
+                    if result.iloc[index]['답변요지 방식'] == "완전 수용":
+                        if st.button("완전 수용", key = f"manual_accept_btn_on_{index}"):
+                            st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                    else:
+                        if st.button("완전 수용", key = f"manual_accept_btn_{index}"):
+                            result.at[index, '답변요지 방식'] = "완전 수용"
+                            result.at[index,'답변요지'] = config['sub']['accept']
+                            st.rerun(scope="fragment")
+                    if result.iloc[index]['답변요지 방식'] == "부분 수용":
+                        if st.button("부분 수용", key = f"manual_particle_btn_on_{index}"):
+                            st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                    else:
+                        if st.button("부분 수용", key = f"manual_particle_btn_{index}"):
+                            result.at[index, '답변요지 방식'] = "부분 수용"
+                            result.at[index,'답변요지'] = config['sub']['particle_accept']
+                            st.rerun(scope="fragment")
+                    if result.iloc[index]['답변요지 방식'] == "수용 불가":
+                        if st.button("수용 불가", key = f"manual_unaccept_btn_on_{index}"):
+                            st.toast("현재 사용 중인 옵션입니다.", icon=":material/page_control:")
+                    else:
+                        if st.button("수용 불가", key = f"manual_unaccept_btn_{index}"):
+                            result.at[index, '답변요지 방식'] = "수용 불가"
+                            result.at[index,'답변요지'] = config['sub']['unaccept']
+                            st.rerun(scope="fragment")
+                    
+                result.at[index, '답변요지']  = st.text_area(
+                        "답변 요지" ,label_visibility="collapsed", placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
+                        , height = 220, value =result.at[index,'답변요지'], key = f"answer_sub_{index}"#, on_change=input_status_change, args=(i,)
+                    )
         #st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:", on_click=generate_answer, args = (index, True, False))
         if st.session_state.file_check is not True and st.session_state.manual:
             if st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:"):
@@ -579,10 +599,11 @@ def show_result():
     def feedback_component(index):
         feedback_check = result.iloc[index]['평점 수정']
         toast_check = result.iloc[index]['평점 알림']
-        with st.container(key = f"feedback_test_{index}"):
+        with st.container(key = f"feedback_test_{index}", horizontal=True):
             if feedback_check:
                 #pass
                 st.feedback("stars", key = f"minwon_rating_{index}", on_change = rating_score, args = (f"minwon_rating_{index}", index))
+                
             else:
                 if toast_check:
                     st.toast(f"{index+1}번 민원 답변 점수가 :green[{result.iloc[index]['최종평점']}]점으로 채점되었습니다.",  icon = ":material/check:")
@@ -611,11 +632,16 @@ def show_result():
 
     @st.fragment
     def show_total_infor():
-        st.write("### 답변 결과")
+        st.write("### :material/output: 답변 결과")
         with st.container(key = "minwon_result_guide_container", horizontal=True):
             #st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
-            st.write("민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.")
+            st.write(f'''
+                    입력하신 민원 {len(result)}건의 답변 생성이 완료되었습니다. :green[재생성]이 필요하시면 민원 수정 토글을 눌러 편집 후 재생성 버튼을 눌러주세요.
+                    :green[파일 다운로드]를 위해서는 :material/star: 모양의 피드백 버튼을 눌러 채점해주세요. AI 성능 개선에 도움이 됩니다.
+
+            ''')
             #st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 :red[교환]됩니다.")
+            #민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.
         #st.session_state.layout_check = st.toggle("기능 테스트", key = "result_layout_check"
 
     
