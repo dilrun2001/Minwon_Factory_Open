@@ -77,6 +77,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                         else:
                             answer = useAi.AI_print_answer(minwon=data.iloc[index]['민원내용'], answer=data.iloc[index]['답변요지'],answer_format=data.iloc[index]['답변양식'])
                         data.loc[index, '답변결과'] = answer
+                        st.session_state[f"result_first_{index}"] = answer
                         #match data.loc[index, '최종답변 체크']:
                         #        case "답변결과":
 
@@ -84,6 +85,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                     timer = 5
                     update(f"단일 민원 생성 테스트. {timer}초 동안 해당 화면이 유지됩니다.")
                     data.at[index, '답변결과'] = "해당 답변은 단일 민원 생성 테스트에 사용된 답변입니다."
+                    st.session_state[f"result_first_{index}"] = "해당 답변은 단일 민원 생성 테스트에 사용된 답변입니다."
                     time.sleep(timer)
                 end_task(task_id)
                 st.rerun()
@@ -100,13 +102,16 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                                 else:
                                     answer = useAi.AI_print_answer(minwon = row['민원내용'], answer = row['답변요지'], answer_format = row['답변양식'])
                                 data.at[i, '답변결과'] = answer
-                                
+                                st.session_state[f"result_first_{i}"] = answer
                     else:
                         for i, row in data.iterrows():
                             #cnt = row['수정']
                             if row['수정'] == True:
                                 update(f"{i+1}번 민원의 답변 재생성 테스트. 답변은 생성되지 않습니다.")
-                                data.at[i, '답변결과'] = "해당 답변은 단일 민원 생성 테스트에 사용된 답변입니다."
+                                data.at[i, '답변결과'] = "해당 답변은 멀티 민원 생성 테스트에 사용된 답변입니다."
+                                if data.iloc[index]['최종답변 체크'] == '답변결과':
+                                    data.at[i, '최종답변'] = data.iloc[i]['답변결과']
+                                st.session_state[f"result_first_{i}"] = "해당 답변은 멀티 민원 생성 테스트에 사용된 답변입니다."
                                 time.sleep(1)
                     end_task(task_id)
                     st.rerun()

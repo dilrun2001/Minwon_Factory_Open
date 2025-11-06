@@ -220,6 +220,7 @@ div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"]:hover,
 
 div.st-key-AI_total_count {
     animation: pageReload 0.3s ease-out;
+    background-color: #4ac254;
     transition: all 0.3s ease;   
 }
 div.st-key-AI_total_count:hover{
@@ -228,6 +229,7 @@ div.st-key-AI_total_count:hover{
 }
 div.st-key-AI_most_count {
     animation: pageReload 0.3s ease-out;
+    background-color: #c1d35a;
     transition: all 0.3s ease;
 }
 div.st-key-AI_most_count:hover{
@@ -237,6 +239,7 @@ div.st-key-AI_most_count:hover{
 div.st-key-AI_recreate_count {
     animation: pageReload 0.3s ease-out;
     transition: all 0.3s ease;
+    background-color: #5479ca;
 }
 div.st-key-AI_recreate_count:hover{
     background-color: #5479ca;
@@ -245,6 +248,7 @@ div.st-key-AI_recreate_count:hover{
 div.st-key-AI_file_count {
     animation: pageReload 0.3s ease-out;
     transition: all 0.3s ease;
+    background-color: #cad0dd;
 }
 div.st-key-AI_file_count:hover{
     background-color: #cad0dd;
@@ -254,6 +258,7 @@ div.st-key-AI_file_count:hover{
 div.st-key-AI_category_count {
     animation: pageReload 0.3s ease-out;
     transition: all 0.3s ease;
+    background-color: #80c453;
 }
 div.st-key-AI_category_count:hover{
     background-color: #80c453;
@@ -263,6 +268,7 @@ div.st-key-AI_category_count:hover{
 div.st-key-AI_urgency_count {
     animation: pageReload 0.3s ease-out;
     transition: all 0.3s ease;
+    background-color: #ad4a58;
 }
 div.st-key-AI_urgency_count:hover{
     background-color: #ad4a58;

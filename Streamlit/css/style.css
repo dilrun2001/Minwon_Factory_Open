@@ -577,14 +577,7 @@ div.st-key-llm_model_select .st-br{
     display:none;
 }
 
-div.st-key-AI_total_count,
-div.st-key-AI_most_count,
-div.st-key-AI_recreate_count ,
-div.st-key-AI_file_count,
-div.st-key-AI_category_count,
-div.st-key-AI_urgency_count{
-    background-color: #dce3f1;
-}
+
 
 div.st-key-edit_main_format_container,
 div.st-key-edit_preset_main_container,
