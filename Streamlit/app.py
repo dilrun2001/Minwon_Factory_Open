@@ -16,17 +16,17 @@ st.html(
 )
 load_css()
 clear_state()
+
 pages = [
-    st.Page(pg.show_page, title = "민원 입력", icon = ":material/input:"),
-    st.Page(pg.show_home, title = "홈", icon = ":material/analytics:"),
+st.Page(pg.show_page, title = "답변 생성", icon = ":material/input:"),
+st.Page(pg.show_home, title = "통계", icon = ":material/analytics:"),
 
-    st.Page(pg.show_setting, title = "설정", icon = ":material/settings:"),
-   
-    
+st.Page(pg.show_setting, title = "설정", icon = ":material/settings:"),
+
+
 ]
+set_menu_side()
 page = st.navigation(pages, position="top")
-
-
 page.run()
-set_menu()
+set_menu_btn()
 #show_copyright()

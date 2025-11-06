@@ -1,11 +1,16 @@
 /*폰트 임포트*/
 @import url('https://fonts.googleapis.com/css2?family=Gothic+A1&family=IBM+Plex+Sans+KR&display=swap');
+
 :root {
     --main-color: #2766c2;
-    --background: rgba(13, 13, 13, 0);
-    --error-color: rgb(255,43,43);
-    --accept-color: rgb(21, 130, 55);
-    --warning-color: rgb(217, 90, 0);
+    --main-background: #e7edf7;
+    --background: #0d0d0d00;
+    --error-color: #ff2b2b;
+    --error-background: #f7f2f2;
+    --accept-color: #158237;
+    --accept-background:#f4fcf4;
+    --warning-color: #d95a00;
+    --warning-background: #f7f3ef;
     --font-color: inherit;
 }
 
@@ -16,11 +21,12 @@
 [data-testid = "stHeader"]{
     top: 0.5rem;
     left:1rem;  
-    width:98%;
-    background-color: #e5e9f0;
+    container-type: inline-size;
+    /*background-color: #e5e9f0;
     border-radius: 1.5rem;
     /*border-bottom-right-radius: 1.2rem;*/
 }
+
 
 
 [data-testid = "stMainMenu"],
@@ -79,7 +85,7 @@ div.st-key-file_input > div[data-testid = "stElementContainer"]{
     color:dark;
 } 
 [data-testid = "stVerticalBlock"]{
-    border-radius:3rem;
+    border-radius:2rem;
 }
 [data-testid="stFileUploader"] section {
     height: 20rem;
@@ -102,7 +108,9 @@ div.st-key-file_input > div[data-testid = "stElementContainer"]{
     width: 95%;  
 }
 
-
+[data-testid = "stSidebarHeader"]{
+    justify-content: left;
+}
 
 [data-testid="stFileUploader"] section div div span {
     visibility: hidden;
@@ -188,12 +196,15 @@ button[data-baseweb="tab"] {
 
 [data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 43, 43)"]) {
     border: 0.0625rem solid var(--error-color); /* 1px -> 0.0625rem */
+    background-color: var(--error-background)   
 }
-
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 43, 43)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]{
+    background-color: var(--error-background);
+}
 [data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 43, 43)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
-    background-color: transparent;
     color: var(--error-color)!important;
     border: 0.0625rem solid var(--error-color) !important; /* 1px -> 0.0625rem */
+    background-color: var(--error-background);
 }
 
 [data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(21, 130, 55)"]) {
@@ -254,10 +265,12 @@ button[data-baseweb="tab"] {
 }
 .stToast:has(span[style*="color: rgb(21, 130, 55)"])  {
     border: 0.0625rem solid var(--accept-color); /* 1px -> 0.0625rem */
+    background-color: #f4fcf4; 
 }
 
 .stToast:has(span[style*="color: rgb(255, 43, 43)"]){
     border: 0.0625rem solid var(--error-color); /* 1px -> 0.0625rem */
+    background-color: var(--error-background);
 }
 
 .stToast:has(span[style*="color: rgb(217, 90, 0)"]){
@@ -327,8 +340,13 @@ div[class *= "total_input_left_container_"]{
     gap: 0.5rem;
 }
 
+div[class *= "answer_sub_total_"]{
+    gap: 0.5rem;
+}
 
-div[class *= "selectbox_select_"] > div > div > div > p{
+
+div[class *= "selectbox_select_"] > div > div > div > p,
+div[class *= "answer_sub_total_"] > div > div > div > p{
     font-size: 14px;
 }
 
@@ -365,14 +383,109 @@ div.st-key-input_page_option [data-testid = "stHorizontalBlock"]{
     border: 0.0625rem solid var(--main-color); /* 1px -> 0.0625rem */
 }
 div.st-key-llm_model_select{
-    position: fixed;
-
+    position:absolute;
+    width: fit-content;
     top: 1.1rem;
-    left: 8.6rem;
+    left: 1rem;
     gap: 0.2rem;
+    left:19%;
     background-color: transparent;
-    z-index: 99999999 !important;
+    z-index: 999999 !important;
 }
+@container (max-width: 1500px) {
+    div.st-key-llm_model_select {
+        position: relative;
+        left: auto;
+        top: auto;
+        margin: 1rem;
+    }
+}
+/*@media (min-width: 1700px){
+    div.st-key-llm_model_select{
+        left:19%;
+    }
+}
+@media (max-width: 1699px){
+    div.st-key-llm_model_select{
+        left:23%;
+    }
+}
+
+@media (min-width: 1188px) and (max-width:1698px){
+    div.st-key-llm_model_select{
+        left:26%;
+    }
+}
+@media (min-width: 888px) and (max-width:1187px){
+    div.st-key-llm_model_select{
+        left:30%;
+    }
+}*/
+div.st-key-main_total_menu_container{
+    position: absolute;
+
+    gap: 0.3rem;
+    width: 300px;
+    border-radius: 1.5rem;
+    top:0.8rem; 
+    right: 1rem;
+    z-index: 999999 !important;
+    padding-left:5rem;
+    padding-top:0.3rem;
+    padding-bottom: 0.3rem;
+}
+
+div.st-key-main_clear_container{
+    position: absolute;
+
+    width: fit-content;
+    border-radius: 1.4rem;
+    height: 1.875rem;
+    top:0.8rem;
+    left: 23.6rem;
+    z-index: 999999 !important;
+    padding-left: 1rem;
+    padding-right:1rem;
+    padding-top:0.3rem;
+    padding-bottom: 0.3rem;
+}
+
+div.st-key-menu_sidebar,
+div.st-key-show_display_sidebar{
+    gap: 0.03rem;
+    padding-top:0.5rem;
+    padding-left:0.5rem;
+    padding-bottom:1rem;
+}
+/*@media (min-width: 1628px) and (max-width:1698px){
+    div.st-key-main_clear_container{
+        left: -23%;
+    }
+}
+@media (min-width: 1400px) and (max-width:1627px){
+    div.st-key-main_clear_container{
+        left: -20%;
+    }
+}
+@media (min-width: 1200px) and (max-width:1399px){
+    div.st-key-main_clear_container{
+        left: -15%;
+    }
+}*/
+
+
+
+/*
+div.st-key-main_header_container{
+    position:absolute;
+    top:1.1rem;
+    left:90%;
+    gap: 2rem;
+
+    border-radius: 1rem;
+    width:170px;
+    z-index: 999999 !important;
+}*/
 
 div.st-key-home_text_container{
     text-align: center;
@@ -464,23 +577,20 @@ div.st-key-llm_model_select .st-br{
     display:none;
 }
 
-div.st-key-AI_total_count {
-    background-color: #58da63;
-}
-div.st-key-AI_most_count {
-    background-color: #d3e762;
-}
-div.st-key-AI_recreate_count {
-    background-color: #5e87e0;
-}
-div.st-key-AI_file_count{
-    background-color: #dce3f1;
-}
-div.st-key-AI_category_count{
-    background-color: #92e05e;
-}   
-div.st-key-AI_urgency_count{
-    background-color: #ce5767;
+
+
+div.st-key-edit_main_format_container,
+div.st-key-edit_preset_main_container,
+div.st-key-change_admin_password_container,
+div.st-key-setting_display_container,
+div.st-key-ai_model_container,
+div[class *= "admin_ai_set_"],
+div.st-key-DB_option_container_1,
+div.st-key-admin_page_container,
+div.st-key-answer_data_container,
+div.st-key-AI_data_container{
+    border-radius: 0.5rem;
+    padding: 1.5rem;
 }
 
 /*선택된 textarea 영역 */
@@ -491,3 +601,8 @@ textarea.active-highlight {
     background-color: #d9f0cf !important;
     box-shadow: 0 0 0.625rem rgba(74, 144, 226, 0.5) !important; /* 10px -> 0.625rem */     
 }
+
+.stSidebar{
+    width: 300px !important;
+}
+
