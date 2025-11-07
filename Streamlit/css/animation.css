@@ -1,10 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Gothic+A1&family=IBM+Plex+Sans+KR&display=swap');
 :root {
     --main-color: #2766c2;
-    --background: rgba(13, 13, 13, 0);
-    --error-color: rgb(255,43,43);
-    --accept-color: rgb(21, 130, 55);
-    --warning-color: rgb(217, 90, 0);
+    --background: #0d0d0d00;
+    --error-color: #ff2b2b;
+    --error-background: #f7f2f2;
+    --accept-color: #158237;
+    --accept-background:#f4fcf4;
+    --warning-color: #d95a00;
+    --warning-background: #f8f1eb;
     --font-color: inherit;
 }
 /* 페이지 전환 애니메이션 */
@@ -31,7 +34,8 @@ div.block-container,
 section.main > div,
 div[data-testid="stAppViewContainer"],
 div[data-testid="stMainBlockContainer"],
-.stTabs {
+.stTabs,
+[data-testid = "stVerticalBlock"] {
     animation: pageReload 0.3s ease-out;
 }
 
@@ -153,7 +157,7 @@ div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"],
     transition: all 0.3s ease;
     
 }
-.rc-overflow [data-testid = "stIconMaterial"]:hover,
+
 div[class *= "current_page_"] [data-testid = "stBaseButton-secondary"],
 div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"]:hover,
 .stTabs [data-baseweb="tab"]:hover,
@@ -216,6 +220,7 @@ div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"]:hover,
 
 div.st-key-AI_total_count {
     animation: pageReload 0.3s ease-out;
+    background-color: #4ac254;
     transition: all 0.3s ease;   
 }
 div.st-key-AI_total_count:hover{
@@ -224,6 +229,7 @@ div.st-key-AI_total_count:hover{
 }
 div.st-key-AI_most_count {
     animation: pageReload 0.3s ease-out;
+    background-color: #c1d35a;
     transition: all 0.3s ease;
 }
 div.st-key-AI_most_count:hover{
@@ -233,6 +239,7 @@ div.st-key-AI_most_count:hover{
 div.st-key-AI_recreate_count {
     animation: pageReload 0.3s ease-out;
     transition: all 0.3s ease;
+    background-color: #5479ca;
 }
 div.st-key-AI_recreate_count:hover{
     background-color: #5479ca;
@@ -241,6 +248,7 @@ div.st-key-AI_recreate_count:hover{
 div.st-key-AI_file_count {
     animation: pageReload 0.3s ease-out;
     transition: all 0.3s ease;
+    background-color: #cad0dd;
 }
 div.st-key-AI_file_count:hover{
     background-color: #cad0dd;
@@ -250,6 +258,7 @@ div.st-key-AI_file_count:hover{
 div.st-key-AI_category_count {
     animation: pageReload 0.3s ease-out;
     transition: all 0.3s ease;
+    background-color: #80c453;
 }
 div.st-key-AI_category_count:hover{
     background-color: #80c453;
@@ -259,6 +268,7 @@ div.st-key-AI_category_count:hover{
 div.st-key-AI_urgency_count {
     animation: pageReload 0.3s ease-out;
     transition: all 0.3s ease;
+    background-color: #ad4a58;
 }
 div.st-key-AI_urgency_count:hover{
     background-color: #ad4a58;

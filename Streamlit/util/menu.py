@@ -110,9 +110,12 @@ def grade_check():
 
 @st.fragment
 def set_menu():
-    if st.session_state['page'] == 'main':
+    #if st.session_state['page'] == 'main':
         with st.container(key = "llm_model_select", horizontal=True):
             popover =  st.popover("메뉴", icon= ":material/menu:")
+            if st.session_state.manual == True or st.session_state.file_check == True:
+                        if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", type = "tertiary"):
+                            show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
             with popover.container(key = "popover_llm_select"):
                 st.write(":material/person: AI 모델 선택")
                 with st.container(key = "popover_llm_main", horizontal=True):
@@ -147,26 +150,12 @@ def set_menu():
                                         st.rerun()
                                 if st.button("사하아이 연동", key = "sahaai_popover_on", type = "secondary", width = 150):
                                     st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
-            """model = popover.pills(":material/person: AI 모델 선택", options = ['기본 모델', '민원팩토리 모델', '사하아이 연동'], width = 450, default = '사하아이 연동')
-            match (model):#, key = "llm_model_select", width = 300)):
-                case '기본 모델':
-                    if st.session_state.model != '기본 모델':
-                        st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[기본 모델]", icon = ":material/check:")
-                        st.session_state.model = '기본 모델'
-                    #st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
-                case '민원팩토리 모델':
-                    st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
-                case '사하아이 연동':
-                    #st.toast( '''선택하신 설정은 현재 :red[지원하지 않는 설정]입니다.''', icon = ":material/block:")
-                    if st.session_state.model != '사하아이 연동':
-                        st.toast(f"AI 모델이 변경되었습니다. {st.session_state.model} -> :green[사하아이 연동]", icon = ":material/check:")
-                        st.session_state.model = '사하아이 연동'"""
             #popover.write('''---''')
             if st.session_state['page'] == "main":
                 if st.session_state.manual == True or st.session_state.file_check == True:
                     with popover.container(key = "display_option_container"):
                         st.write(":material/desktop_windows: 화면 표시 방식")
-                        with st.container(key = "option_btn_container", horizontal=True):
+                        with st.container(key = "option_btn_menu_container", horizontal=True):
                         
                             match st.session_state.layout_check:
                                 case "탭":
@@ -195,71 +184,95 @@ def set_menu():
                                                 st.session_state.layout_check = "확장형"
                                 #                st.rerun()
                                 #        if st.button("탭(세로형)", key = "option_new_tab_on", type = "secondary", width = 150):
-                                #             st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
-                    '''layout_option = {
-                        0: ":material/tab: 탭",
-                        1:  ":material/expand 확장형"
-                    }
-                    layout_check = popover.pills(":material/desktop_windows: 화면 표시 방식",
-                    
-                    options = ('탭', '확장형'),
-                    width=450, default=st.session_state.layout_check)
-                    match (layout_check):
-                        case '탭':
-                            if st.session_state.layout_check != '탭':
-                                #st.toast(f"화면 표시 방식이 변경됩니다. {st.session_state.layout_check} -> :green[탭]", icon = ":material/check:")
-                                st.session_state.layout_check = '탭'
-                                time.sleep(0.05)
+#@st.fragment
+def set_menu_side():
+    with st.sidebar.container(key = "menu_sidebar"):
+        #if st.session_state['page'] == 'main' or st.session_state['page'] == 'static':
+            st.write("## :material/person: AI 모델 선택")
+            st.divider()
+            with st.container(key = "popover_llm_main"):
+                match st.session_state.model:
+                    case '기본 모델':
+                            if st.button("기본 모델", key = "normal_popover_on", type = "tertiary"):
+                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                            if st.button("민원팩토리 모델", key = "mf_popover_off", type = "tertiary"):
+                                st.session_state.model = '민원팩토리 모델'
                                 st.rerun()
-                            else:
-                                pass
-                            #st.rerun()
-                        case '확장형':
-                            if st.session_state.layout_check != '확장형':
-                                #st.toast(f"화면 표시 방식이 변경됩니다. {st.session_state.layout_check} -> :green[확장형]", icon = ":material/check:")
-                                st.session_state.layout_check = '확장형'
-                                time.sleep(0.05)
-                                st.rerun()'''
+                            if st.button("사하아이 연동", key = "sahaai_popover_off", type = "tertiary"):
+                                st.session_state.model = '사하아이 연동'
+                                st.rerun()
+
+                    case '민원팩토리 모델':
+                            if st.button("기본 모델", key = "normal_popover_off", type = "tertiary"):
+                                st.session_state.model = '기본 모델'
+                                st.rerun()
+
+                            if st.button("민원팩토리 모델", key = "mf_popover_on", type = "tertiary"):
+                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                            if st.button("사하아이 연동", key = "sahaai_popover_off", type = "tertiary"):
+                                st.session_state.model = '사하아이 연동'
+                                st.rerun()
+
+                    case '사하아이 연동':
+                            if st.button("기본 모델", key = "normal_popover_off", type = "tertiary", width = 150):
+                                st.session_state.model = '기본 모델'
+                                st.rerun()
+                            if st.button("민원팩토리 모델", key = "mf_popover_off", type = "tertiary", width = 150):
+                                    st.session_state.model = '민원팩토리 모델'
+                                    st.rerun()
+                            if st.button("사하아이 연동", key = "sahaai_popover_on", type = "tertiary", width = 150):
+                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+
+        #popover.write('''---''')
+    '''font-weight: 600;'''
+@st.fragment
+def set_menu_btn():
+        if st.session_state['page'] == 'main':
+            
+                with st.container(key = "main_clear_container", horizontal=True):
+                    if st.session_state.manual == True or st.session_state.file_check == True:
+                        if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", type = "tertiary"):
+                            show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
+                    
+                #with st.container(key = "main_header_container",horizontal=True):    
+                with st.container(key = "main_total_menu_container", horizontal=True):
+                    #st.info("파일 생성은 모든 답변의 평점을 채점해주셔야 가능합니다.")
+                    if st.session_state['minwon_check'] == 'result':
+                        if st.button("Excel",key = "download_Excel", type = "tertiary", icon = ":material/download:", help = "엑셀 다운로드를 하기전 답변의 평점을 채점해주세요."):
+                                st.session_state.xlsx_count += 1
+                                start_download("Excel")
+                                
+                        if st.button("CSV",key = "download_CSV", type = "tertiary", icon = ":material/download:", help = "CSV 다운로드를 하기전 답변의 평점을 채점해주세요."):
+                            st.session_state.csv_count += 1
+                            start_download("CSV")
+                            
                         
-                
-                
-                    if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", type = "tertiary"):
-                        show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
-                if st.session_state['minwon_check'] == 'result':
-                
-                    if st.button("CSV",key = "download_CSV", type = "tertiary", icon = ":material/download:"):
-                        st.session_state.csv_count += 1
-                        start_download("CSV")
+                    
                         
                         
-                    if st.button("Excel",key = "download_Excel", type = "tertiary", icon = ":material/download:"):
-                        st.session_state.xlsx_count += 1
-                        start_download("Excel")
-                        
-                        
-                    if st.session_state.file_download:
-                        st.download_button(
-                            label="히든 다운로드 버튼",
-                            data=st.session_state.file,
-                            file_name=f"민원 결과.csv" if st.session_state.file_set =="CSV" else f"민원 결과.xlsx",
-                            key='hidden_download_file' , type = "tertiary"
-                        )
-                        st.toast(f":green[{st.session_state.file_set}] 파일을 다운로드 중입니다 잠시만 기다려주세요.", icon = ":material/download:")
-                        time.sleep(0.5)
-                        js_code = f"""
-                                <script>
-                                    const downloader = window.parent.document.querySelector('.st-key-hidden_download_file button');
-                                    if (downloader) {{
-                                        downloader.click();
-                                        console.log('Downloader found and clicked!');
-                                    }} else {{
-                                        console.error('Downloader element not found!');
-                                    }}
-                                </script>
-                            """
-                        html(js_code, height=0, width=0)
-                        st.session_state.save_df = pd.DataFrame(columns = ["민원내용", "답변내용"])
-                        st.session_state.file_download = False
+                if st.session_state.file_download:
+                    st.download_button(
+                        label="히든 다운로드 버튼",
+                        data=st.session_state.file,
+                        file_name=f"민원 결과.csv" if st.session_state.file_set =="CSV" else f"민원 결과.xlsx",
+                        key='hidden_download_file' , type = "tertiary"
+                    )
+                    st.toast(f":green[{st.session_state.file_set}] 파일을 다운로드 중입니다 잠시만 기다려주세요.", icon = ":material/download:")
+                    time.sleep(0.5)
+                    js_code = f"""
+                            <script>
+                                const downloader = window.parent.document.querySelector('.st-key-hidden_download_file button');
+                                if (downloader) {{
+                                    downloader.click();
+                                    console.log('Downloader found and clicked!');
+                                }} else {{
+                                    console.error('Downloader element not found!');
+                                }}
+                            </script>
+                        """
+                    html(js_code, height=0, width=0)
+                    st.session_state.save_df = pd.DataFrame(columns = ["민원내용", "답변내용"])
+                    st.session_state.file_download = False
 
 
                 

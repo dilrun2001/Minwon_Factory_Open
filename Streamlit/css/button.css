@@ -1,14 +1,17 @@
-/* 파일 업로더, stdialog 같이 따로 작업해줘야 하는 버튼을 제외한 나머지 버튼들은 해당 css 파일에 이식되었습니다.*/
+@import url('https://fonts.googleapis.com/css2?family=Gothic+A1&family=IBM+Plex+Sans+KR&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 :root {
     --main-color: #2766c2;
-    --background: rgba(13, 13, 13, 0);
-    --error-color: rgb(255,43,43);
-    --accept-color: rgb(21, 130, 55);
-    --warning-color: rgb(217, 90, 0);
+    --main-background: #e7edf7;
+    --background: #0d0d0d00;
+    --error-color: #ff2b2b;
+    --error-background: #f7f2f2;
+    --accept-color: #158237;
+    --accept-background:#f4fcf4;
+    --warning-color: #d95a00;
+    --warning-background: #f7f3ef;
     --font-color: inherit;
-    --background_color: #ebf1f7;
 }
-
 /*기본 테두리 버튼 css*/
 [data-testid = "stBaseButton-secondary"],
 [data-testid="stBaseButton-secondaryFormSubmit"]{
@@ -30,6 +33,7 @@ div.st-key-file_format .stButtonGroup button:hover,
 
 [data-testid = "stBaseButton-tertiary"]:hover{
     color: var(--main-color);
+    background-color: var(--main-background);
 }
 
 /*st.pills 기본 css */
@@ -72,14 +76,19 @@ div[class *= "select_answer_"] [data-testid = "stBaseButton-tertiary"],
 div[class *= "select_rag_"] [data-testid = "stBaseButton-tertiary"]{
     color: var(--accept-color);
     border-radius: 1rem;
-    width:100%;
-    min-width: 250px;
+    width:fit-content;
     justify-content: left;
+    border: 1px solid transparent;
+    background-color: var(--accept-background);
+    padding-left: 0.5rem;
+    padding-right:0.5rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
 }
 div[class *= "select_answer_"] [data-testid = "stBaseButton-tertiary"]:hover,
 div[class *= "select_rag_"] [data-testid = "stBaseButton-tertiary"]:hover{
-    color: white;
-    background-color: var(--accept-color);
+    background-color: var(--accept-background);
+    border: 1px solid var(--accept-color);
 }
 
 div[class *= "select_answer_"] >div >button > div > p,
@@ -92,15 +101,21 @@ div[class *= "select_rag_"] >div >button > span > span{
 div[class *= "select_off_answer_"] [data-testid = "stBaseButton-tertiary"],
 div[class *= "select_off_rag_"] [data-testid = "stBaseButton-tertiary"]{
     color: var(--warning-color);
+    background-color: var(--warning-background);
     border-radius: 1rem;
     width:100%;
     min-width: 250px;   
     justify-content: left;
+    border: 1px solid transparent;
+    padding-left: 0.5rem;
+    padding-right:0.5rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
 }
 div[class *= "select_off_answer_"] [data-testid = "stBaseButton-tertiary"]:hover,
 div[class *= "select_off_rag_"] [data-testid = "stBaseButton-tertiary"]:hover{
-    background-color: var(--warning-color);
-    color: white;
+    background-color: var(--warning-background);
+    border: 1px solid var(--warning-color);
 }
 
 div[class *= "select_off_answer_"] >div > div > div > div  >button > div > p,
@@ -210,15 +225,61 @@ div.st-key-lab_btn_on{
     border-radius:1rem;
 }
 
+div.st-key-normal_popover_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-sahaai_popover_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-mf_popover_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-option_tab_menu_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-option_expand_menu_off [data-testid = "stBaseButton-tertiary"]{
+    transition: all 0.4s ease;
+    width: 100%;
+    justify-content: left;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+div.st-key-normal_popover_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-sahaai_popover_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-mf_popover_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-option_tab_menu_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-option_expand_menu_off [data-testid = "stBaseButton-tertiary"]:hover{
+    transition: all 0.4s ease;
+    background-color:var(--main-background);
+    border-radius: 1rem;
+
+}
+div.st-key-normal_popover_on,
+div.st-key-sahaai_popover_on,
+div.st-key-mf_popover_on,
+div.st-key-normal_popover_off,
+div.st-key-sahaai_popover_off,
+div.st-key-mf_popover_off,
+div.st-key-option_tab_menu_on ,
+div.st-key-option_expand_menu_on,
+div.st-key-option_tab_menu_off ,
+div.st-key-option_expand_menu_off {
+    width:100%;
+}
+
+
+div.st-key-normal_popover_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-sahaai_popover_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-mf_popover_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-option_tab_menu_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-option_expand_menu_on [data-testid = "stBaseButton-tertiary"]{
+    color: var(--main-background);
+    background-color:#6994d6;
+    width: 100%;
+    justify-content: left;
+    border-radius: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
 
 div.st-key-option_tab_btn_on [data-testid = "stBaseButton-secondary"],
 div.st-key-option_expand_btn_on [data-testid = "stBaseButton-secondary"],
 div.st-key-normal_model_on [data-testid = "stBaseButton-secondary"],
-div.st-key-normal_popover_on [data-testid = "stBaseButton-secondary"],
 div.st-key-mf_model_on [data-testid = "stBaseButton-secondary"],
-div.st-key-mf_popover_on [data-testid = "stBaseButton-secondary"],
 div.st-key-sahaai_model_on [data-testid = "stBaseButton-secondary"],
-div.st-key-sahaai_popover_on [data-testid = "stBaseButton-secondary"],
 div.st-key-option_new_tab_on [data-testid = "stBaseButton-secondary"]{
     border: 1px solid var(--main-color);
     
@@ -248,18 +309,42 @@ div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
     border-color: transparent;
 }
 
-div.st-key-llm_model_select > div.st-key-download_CSV{
-    position: absolute;
-    width:5rem;
-    left: 86%;
+div.st-key-clear_btn >div > button{
+    width:110px;
+    border-radius: 1.2rem;
 }
-div.st-key-llm_model_select > div.st-key-download_Excel{
-    position: absolute;
-    width:5rem;
-    left:81%;
+div.st-key-download_CSV  >div>div>div>div > button,
+div.st-key-download_Excel >div>div>div>div > button{
+    width:100px;
+    border-radius:1.2rem;
+    padding: 0.3rem;
 }
 
-div.st-key-llm_model_select > div.st-key-hidden_download_file{
+div.st-key-clear_btn > div > button > span > span,
+div.st-key-download_CSV  > div > div > div > div  > button > span > span,
+div.st-key-download_Excel  > div > div > div > div  > button > span > span{
+    font-size: 1.7rem;
+}
+
+div.st-key-clear_btn > div > button > div > p,
+div.st-key-download_CSV  > div > div > div > div > button > div > p,
+div.st-key-download_Excel  > div > div > div > div > button > div > p{
+    font-size: 17px;
+}
+
+div.st-key-download_CSV{
+    position: relative;
+    width:4rem;
+
+}
+div.st-key-download_Excel{
+    position: relative;
+    width:4rem;
+
+}
+
+
+div.st-key-main_header_container > div.st-key-hidden_download_file{
     left: -1000%;
 }
 
@@ -335,8 +420,8 @@ div[class *= manual_accept_btn_on_]> div > button,
 div[class *= manual_particle_btn_on_]> div > button ,
 div[class *= manual_unaccept_btn_on_] > div > button{
     border: 1px solid var(--main-color);
-    background-color: var(--main-color);
-    color: white;
+    background-color: var(--main-background);
+    
 }
 
 /*탭 버튼*/
@@ -410,18 +495,20 @@ div.st-key-file_format .stButtonGroup button:hover{
 /*페이지 다음, 이전 버튼 css*/
 div.st-key-input_before_btn [data-testid = "stMarkdownContainer"] p,
 div.st-key-input_next_btn [data-testid = "stMarkdownContainer"] p,
-div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p,
-.rc-overflow span[label="민원 입력"],
+div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p
+ /*.rc-overflow span[label="민원 입력"],
 .rc-overflow span[label="홈"],
-.rc-overflow span[label="설정"]
+.rc-overflow span[label="설정"]*/
 {
     display: none;
 }
+
 
 div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"],
 div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"]{
     width: 30rem;
     height: 10rem;
+    border: 1px solid #444444;
 }
 
 div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"] > div > p,
@@ -442,24 +529,104 @@ div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > span >[data-
 
 /*상단바 버튼 css*/
 .rc-overflow{
-    height: 1.875rem; /* 30px -> 1.875rem */
-}
-.rc-overflow [data-testid = "stTopNavLink"]{
-    
-    background-color: transparent;
+    gap:1rem;
+
 }
 
-.rc-overflow [data-testid = "stIconMaterial"]{
-    font-size: 1.5625rem; /* 25px -> 1.5625rem */
-    font-weight:500;
-    color:dark;
+.rc-overflow >div>div > div > a{
+    gap:0.9rem;
 }
-.rc-overflow [data-testid = "stIconMaterial"]:hover{
+
+.rc-overflow >div>div > div > a> :nth-child(2){
+    font-weight: 600;
+    font-size:17px;
+    display:table-cell;
+}
+
+.rc-overflow{
+    height: 1.875rem; /* 30px -> 1.875rem */
+}
+
+.rc-overflow-item:hover{
+    transition: all 0.3s ease;
+}
+
+.rc-overflow [data-testid = "stTopNavLink"]{
+    width:fit-content;
+    justify-content: center;
+}
+.rc-overflow [data-testid = "stTopNavLink"]:hover{
+    background-color: var(--main-background);
+    border-radius: 1rem;
+    transition: all 0.6s ease;
+}
+
+
+.rc-overflow [data-testid = "stIconMaterial"]{
+    font-size: 1.7rem; /* 25px -> 1.5625rem */
+    color:rgb(49, 51, 63);
+    font-weight:300;
+}
+
+/*.rc-overflow [data-testid = "stIconMaterial"]:hover*/
+
+.rc-overflow a[aria-current="page"]{
+    border-radius: 1rem;
+    background-color: var(--main-background);
+    
+}
+
+.rc-overflow a[aria-current="page"] span{
     color:var(--main-color);
 }
-.rc-overflow a[aria-current="page"] [data-testid="stIconMaterial"]{
+.rc-overflow a[aria-current="page"] span{
     color:var(--main-color);
 }
 .rc-overflow .stSidebarNavLinkContainer {
     font-size: 1.75rem !important; /* 28px -> 1.75rem */
+}
+
+button[data-testid="stExpandSidebarButton"] span[data-testid="stIconMaterial"],
+button[data-testid = "stBaseButton-headerNoPadding"] span[data-testid = "stIconMaterial"]{
+    /* 기존 아이콘 텍스트(keyboard_double_arrow_right)를 숨깁니다. */
+    font-size: 0 !important;
+    visibility: visible; /* 부모는 보이게 유지 */
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    width: 28px;
+    height: 28px;
+}
+
+
+
+/* 'menu' 아이콘을 ::before로 삽입합니다. */
+button[data-testid="stExpandSidebarButton"] span[data-testid="stIconMaterial"]::before{
+    content: 'menu';
+    font-family: 'Material Icons';
+    font-size: 28px;
+    font-weight: 500;
+    margin-left: -10%; 
+    color: rgb(49, 51, 63);
+}
+
+button[data-testid="stExpandSidebarButton"]:hover{
+    transition: all 0.6s ease;
+}
+
+button[data-testid = "stBaseButton-headerNoPadding"]{
+    margin-top:55%;
+    padding-top: 25%;
+}
+button[data-testid = "stBaseButton-headerNoPadding"]:hover{ 
+    background-color:var(--main-background);
+   transition: all 0.6s ease;
+}
+button[data-testid = "stBaseButton-headerNoPadding"] span[data-testid = "stIconMaterial"]::before{
+    content: 'close';
+    font-family: 'Material Icons';
+    font-size: 22px;
+    font-weight: 600;
+    color: rgb(49, 51, 63);
+    padding-top:25%;
 }
