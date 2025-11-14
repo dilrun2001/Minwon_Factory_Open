@@ -5,7 +5,7 @@ from util.state_copy import *
 from streamlit.components.v1 import html
 from io import BytesIO
 from datetime import datetime
-from streamlit_float import *
+#from streamlit_float import *
 #데이버베이스 입력
 #데이터프레임 임시 입력 작업 추가
 #6/11 선택한 답변 값이 들어가도록 수정
