@@ -448,9 +448,9 @@ div.st-key-main_clear_container{
     padding-right:1rem;
     padding-top:0.3rem;
     padding-bottom: 0.3rem;
+    transition: left 0.3s ease-in-out;
 }
 
-div.st-key-menu_sidebar,
 div.st-key-show_display_sidebar{
     gap: 0.03rem;
     padding-top:0.5rem;
@@ -588,7 +588,9 @@ div[class *= "admin_ai_set_"],
 div.st-key-DB_option_container_1,
 div.st-key-admin_page_container,
 div.st-key-answer_data_container,
-div.st-key-AI_data_container{
+div.st-key-model_select_container,
+div.st-key-AI_data_container,
+div.st-key-page_set_container{
     border-radius: 0.5rem;
     padding: 1.5rem;
 }

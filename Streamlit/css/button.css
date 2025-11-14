@@ -142,8 +142,10 @@ div.st-key-admin_password_btn_off,
 div.st-key-admin_db_btn_off,
 div.st-key-admin_static_btn_off,
 div.st-key-admin_format_btn_off,
+div.st-key-admin_grade_btn_off,
 div.st-key-admin_set_btn,
-div.st-key-lab_btn_off{
+div.st-key-lab_btn_off,
+div.st-key-admin_page_btn_off{
     width: 100%;
     border-radius:1rem;
     transition: all 0.4s ease;
@@ -155,8 +157,10 @@ div.st-key-admin_password_btn_off [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_db_btn_off [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_static_btn_off [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_format_btn_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_grade_btn_off [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_set_btn [data-testid = "stBaseButton-tertiary"],
-div.st-key-lab_btn_off [data-testid = "stBaseButton-tertiary"]{
+div.st-key-lab_btn_off [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_page_btn_off [data-testid = "stBaseButton-tertiary"]{
     justify-content: left;
     transition: all 0.4s ease;
     width: 100%;
@@ -170,8 +174,10 @@ div.st-key-admin_password_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-admin_db_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-admin_static_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-admin_format_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-admin_grade_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-admin_set_btn [data-testid = "stBaseButton-tertiary"]:hover,
-div.st-key-lab_btn_off [data-testid = "stBaseButton-tertiary"]:hover{
+div.st-key-lab_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-admin_page_btn_off [data-testid = "stBaseButton-tertiary"]:hover{
     transform: translateX(1rem);
     transition: all 0.4s ease;
     width: 100%;
@@ -187,7 +193,9 @@ div.st-key-admin_password_btn_off:hover,
 div.st-key-admin_db_btn_off:hover,
 div.st-key-admin_static_btn_off:hover,
 div.st-key-admin_format_btn_off:hover,
-div.st-key-admin_set_btn:hover{
+div.st-key-admin_grade_btn_off:hover,
+div.st-key-admin_set_btn:hover,
+div.st-key-admin_page_btn_off:hover{
     transition: all 0.3s ease;
     
     background-color: #dfe5ee;
@@ -200,7 +208,9 @@ div.st-key-admin_password_btn_on [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_db_btn_on [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_static_btn_on [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_format_btn_on [data-testid = "stBaseButton-tertiary"],
-div.st-key-lab_btn_on [data-testid = "stBaseButton-tertiary"]{
+div.st-key-admin_grade_btn_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-lab_btn_on [data-testid = "stBaseButton-tertiary"],
+div.st-key-admin_page_btn_on [data-testid = "stBaseButton-tertiary"]{
     transform: translateX(1rem);
     transition: all 0.4s ease;
     width: 100%;
@@ -216,7 +226,9 @@ div.st-key-admin_password_btn_on,
 div.st-key-admin_db_btn_on,
 div.st-key-admin_static_btn_on,
 div.st-key-admin_format_btn_on,
-div.st-key-lab_btn_on{
+div.st-key-admin_grade_btn_on,
+div.st-key-lab_btn_on,
+div.st-key-admin_page_btn_on{
     background-color:#dfe5ee;
     transition: all 0.4s ease;
     color:var(--main-color);
@@ -228,8 +240,7 @@ div.st-key-lab_btn_on{
 div.st-key-normal_popover_off [data-testid = "stBaseButton-tertiary"],
 div.st-key-sahaai_popover_off [data-testid = "stBaseButton-tertiary"],
 div.st-key-mf_popover_off [data-testid = "stBaseButton-tertiary"],
-div.st-key-option_tab_menu_off [data-testid = "stBaseButton-tertiary"],
-div.st-key-option_expand_menu_off [data-testid = "stBaseButton-tertiary"]{
+div.st-key-option_tab_menu_off [data-testid = "stBaseButton-tertiary"]{
     transition: all 0.4s ease;
     width: 100%;
     justify-content: left;
@@ -280,7 +291,15 @@ div.st-key-option_expand_btn_on [data-testid = "stBaseButton-secondary"],
 div.st-key-normal_model_on [data-testid = "stBaseButton-secondary"],
 div.st-key-mf_model_on [data-testid = "stBaseButton-secondary"],
 div.st-key-sahaai_model_on [data-testid = "stBaseButton-secondary"],
-div.st-key-option_new_tab_on [data-testid = "stBaseButton-secondary"]{
+div.st-key-option_new_tab_on [data-testid = "stBaseButton-secondary"],
+div.st-key-static_page_btn1_on [data-testid = "stBaseButton-secondary"],
+div.st-key-static_page_btn2_on [data-testid = "stBaseButton-secondary"],
+div.st-key-file_page_btn1_on [data-testid = "stBaseButton-secondary"],
+div.st-key-file_page_btn2_on [data-testid = "stBaseButton-secondary"],
+div.st-key-manual_page_btn1_on [data-testid = "stBaseButton-secondary"],
+div.st-key-manual_page_btn2_on [data-testid = "stBaseButton-secondary"],
+div.st-key-ui_page_btn1_on [data-testid = "stBaseButton-secondary"],
+div.st-key-ui_page_btn2_on [data-testid = "stBaseButton-secondary"]{
     border: 1px solid var(--main-color);
     
     color:var(--main-color);
@@ -309,10 +328,15 @@ div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
     border-color: transparent;
 }
 
+
 div.st-key-clear_btn >div > button{
+    position: absolute;
     width:110px;
     border-radius: 1.2rem;
+    z-index:99999999;
 }
+
+
 div.st-key-download_CSV  >div>div>div>div > button,
 div.st-key-download_Excel >div>div>div>div > button{
     width:100px;
@@ -630,3 +654,4 @@ button[data-testid = "stBaseButton-headerNoPadding"] span[data-testid = "stIconM
     color: rgb(49, 51, 63);
     padding-top:25%;
 }
+

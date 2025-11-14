@@ -5,7 +5,7 @@ from util.state_copy import *
 from streamlit.components.v1 import html
 from io import BytesIO
 from datetime import datetime
-
+from streamlit_float import *
 #데이버베이스 입력
 #데이터프레임 임시 입력 작업 추가
 #6/11 선택한 답변 값이 들어가도록 수정
@@ -222,6 +222,10 @@ def set_menu_side():
                                     st.rerun()
                             if st.button("사하아이 연동", key = "sahaai_popover_on", type = "tertiary", width = 150):
                                 st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                #if st.session_state.manual == True or st.session_state.file_check == True:
+                #        if st.sidebar.button("처음으로", key = "clear_btn", icon = ":material/refresh:", type = "tertiary"):
+                #            show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
+                    
 
         #popover.write('''---''')
     '''font-weight: 600;'''
@@ -245,7 +249,9 @@ def set_menu_btn():
                         if st.button("CSV",key = "download_CSV", type = "tertiary", icon = ":material/download:", help = "CSV 다운로드를 하기전 답변의 평점을 채점해주세요."):
                             st.session_state.csv_count += 1
                             start_download("CSV")
-                            
+                    #if st.session_state.manual == True or st.session_state.file_check == True:
+                    #    if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", type = "tertiary"):
+                    #        show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
                         
                     
                         

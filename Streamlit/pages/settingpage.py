@@ -287,104 +287,274 @@ def show_static():
                                 #file_static = ai_count[['엑셀 파일 생성 횟수', 'CSV 파일 생성 횟수']]
                                 st.write(admin_file_static())
 
+#페이지 설정
+def show_pageset():
+        st.session_state['page'] = "page_set"
+        st.write("## :material/page_control: 페이지")
+        st.divider()
+        st.write("#### 페이지 옵션")
+        with st.container(key = "page_set_container", border = True):
+                with st.container(key = "admin_page_main", horizontal=True):
+                        with st.container(key = "admin_page_set_1"):
+                                #통계페이지 온오프
+                                st.write("통계페이지")
+                                with st.container(key = "admin_page_btn_1", gap = "medium", horizontal=True):
+                                        match config['page']['staticpage']:
+                                                case True:
+                                                        if st.button("ON", key = "static_page_btn1_on", type = "secondary", width =100):
+                                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                                        if st.button("OFF", key = "static_page_btn2_off", type = "secondary", width = 100):
+                                                                change_toml('page', 'staticpage', False, f'통계페이지 비활성화')
+                                                                st.rerun()
+                                                
+                                                case False:
+                                                        if st.button("ON", key = "static_page_btn1_off", type = "secondary", width =100):
+                                                                change_toml('page', 'staticpage', True, f'통계페이지 활성화')
+                                                                st.rerun()
+                                                        if st.button("OFF", key = "static_page_btn2_on", type = "secondary", width = 100):
+                                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                
+                                #파일 입력 온오프
+                                st.write("파일 입력")
+                                with st.container(key="admin_page_btn_2", gap = "medium", horizontal = True):
+                                        match config['page']['filepage']:
+                                                        case True:
+                                                                if st.button("ON", key = "file_page_btn1_on", type = "secondary", width =100):
+                                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                                                if st.button("OFF", key = "file_page_btn2_off", type = "secondary", width = 100):
+                                                                        change_toml('page', 'filepage', False, f'파일입력 비활성화')
+                                                                        st.rerun()
+                                                        
+                                                        case False:
+                                                                if st.button("ON", key = "file_page_btn1_off", type = "secondary", width =100):
+                                                                        change_toml('page', 'filepage', True, f'파일입력 활성화')
+                                                                        st.rerun()
+                                                                if st.button("OFF", key = "file_page_btn2_on", type = "secondary", width = 100):
+                                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                
+                                #직접 입력 온오프
+                                st.write("직접 입력")
+                                with st.container(key="admin_page_btn_3", gap = "medium", horizontal = True):
+                                        match config['page']['manualpage']:
+                                                        case True:
+                                                                if st.button("ON", key = "manual_page_btn1_on", type = "secondary", width =100):
+                                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                                                if st.button("OFF", key = "manual_page_btn2_off", type = "secondary", width = 100):
+                                                                        change_toml('page', 'manualpage', False, f'직접입력 비활성화')
+                                                                        st.rerun()
+                                                        
+                                                        case False:
+                                                                if st.button("ON", key = "manual_page_btn1_off", type = "secondary", width =100):
+                                                                        change_toml('page', 'manualpage', True, f'직접입력 활성화')
+                                                                        st.rerun()
+                                                                if st.button("OFF", key = "manual_page_btn2_on", type = "secondary", width = 100):
+                                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                #첫 화면 UI 온오프
+                                st.write("메인 화면")
+                                with st.container(key="admin_page_btn_4", gap = "medium", horizontal = True):
+                                        match config['page']['new_ui']:
+                                                        case True:
+                                                                if st.button("ON", key = "ui_page_btn1_on", type = "secondary", width =100):
+                                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                                                if st.button("OFF", key = "ui_page_btn2_off", type = "secondary", width = 100):
+                                                                        change_toml('page', 'new_ui', False, f'직접입력 비활성화')
+                                                                        st.rerun()
+                                                        
+                                                        case False:
+                                                                if st.button("ON", key = "ui_page_btn1_off", type = "secondary", width =100):
+                                                                        change_toml('page', 'new_ui', True, f'직접입력 활성화')
+                                                                        st.rerun()
+                                                                if st.button("OFF", key = "ui_page_btn2_on", type = "secondary", width = 100):
+                                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                
+#기본값 점수 편집
+def show_gradeset():
+        st.session_state['page'] = 'gradeset'
+        st.write("## :material/analytics: 기본값 수정")
+        st.divider()
+        st.write("#### 평점 기본값 수정")
+        with st.container(key = "answer_data_container", border = True):
+                st.write('''평점 기본값을 수정할 수 있습니다.''')
+                with st.form(key = "edit_grade", border = False):
+                        grade = st.selectbox(
+                                "평점 기본값 수정", options = [0,1,2,3,4,5], key = "grade_default_edit"
+                        )
+                        if st.form_submit_button("수정",key = "accept_grade", icon = ":material/edit:"):
+                                change_toml('app', 'default_grade', grade, f'평점 기본값 수정 {grade}')
+                                st.rerun()
+        st.write("#### AI 기본 모델 변경")
+        with st.container(key = "model_select_container", border = True):
+                st.write('''기본 디폴트 AI 모델 변경''')
+                with st.container(key = "ai_model_btn_container", horizontal=True, gap = "medium"):
+                        match config['app']['default_model']:#st.session_state.model:
+                                case '기본 모델':
+                                        if st.button("기본 모델", key = "normal_model_on", type = "secondary", width = 150):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("민원팩토리 모델", key = "mf_model_off", type = "secondary", width = 150):
+                                                change_toml('app', 'default_model', "민원팩토리 모델", f"모델 기본값 수정 민원팩토리 모델")
+                                                st.rerun()
+                                        if st.button("사하아이 연동", key = "sahaai_model_off", type = "secondary", width = 150):
+                                                change_toml('app', 'default_model', "사하아이 연동", f"사하아이 연동")
+                                                st.rerun()
+                                case '민원팩토리 모델':
+                                        if st.button("기본 모델", key = "normal_model_off", type = "secondary", width = 150):
+                                                change_toml('app', 'default_model', "기본 모델", f"기본 모델")
+                                                st.rerun()
+                                        if st.button("민원팩토리 모델", key = "mf_model_on", type = "secondary", width = 150):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("사하아이 연동", key = "sahaai_model_off", type = "secondary", width = 150):
+                                                change_toml('app', 'default_model', "사하아이 연동", f"사하아이 연동")
+                                                st.rerun()
+                                case '사하아이 연동':
+                                        if st.button("기본 모델", key = "normal_model_off", type = "secondary", width = 150):
+                                                change_toml('app', 'default_model', "기본 모델", f"기본 모델")
+                                                st.rerun()
+                                        if st.button("민원팩토리 모델", key = "mf_model_off", type = "secondary", width = 150):
+                                                change_toml('app', 'default_model', "민원팩토리 모델", f"모델 기본값 수정 민원팩토리 모델")
+                                                st.rerun()
+                                        if st.button("사하아이 연동", key = "sahaai_model_on", type = "secondary", width = 150):
+                                                st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                
+        """
+        with st.container(key = f"feedback_test_{index}", horizontal=True):
+            if feedback_check:
+                #pass
+                st.feedback("stars", key = f"minwon_rating_{index}", on_change = rating_score, args = (f"minwon_rating_{index}", index))
+                
+            else:
+                if toast_check:
+                    st.toast(f"{index+1}번 민원 답변 점수가 :green[{result.iloc[index]['최종평점']}]점으로 채점되었습니다.",  icon = ":material/check:")
+                    result.at[index, '평점 알림'] = False
+                st.button(f"점수 재채점(점수 : {result.iloc[index]['최종평점']}점)", 
+                key = f"recoll_rating_{index}", type = "tertiary", 
+                icon= ":material/edit:",
+                on_click = edit_rating_true,
+                args = (index,)
+                )"""
+
+
 
 def show_setting():
-    st.session_state['page'] = 'setting'
+        st.session_state['page'] = 'setting'
     #menu, main = st.columns([1.5, 9], gap="medium")
     #with menu:
-    with st.container(key = "total_set_container", horizontal=True):
-        with st.container(key = "setting_menu_container"):
-                #화면
-                if st.session_state["setting_display"] == "display":
-                        if st.button("화면",key = "display_on", type = 'tertiary' ,icon = ":material/display_settings:"):
-                               st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
-                else:
-                        if st.button("화면",key = "display_off", type = 'tertiary' ,icon = ":material/display_settings:"):
-                                st.session_state["setting_display"] = "display"
-                                st.rerun()
-                #AI
-                if st.session_state["setting_display"] == "ai":
-                        if st.button("AI", key = "ai_set_btn_on", type = "tertiary", icon = ":material/robot:"):
-                               st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
-                else:
-                        if st.button("AI", key = "ai_set_btn_off", type = "tertiary", icon = ":material/robot:"):
-                                st.session_state["setting_display"] = "ai"
-                                st.rerun()
-                #실험실
-                if config['app']['lab'] == 'on':
-                        if st.session_state["setting_display"] == "lab":
-                                if st.button("실험실", key = "lab_btn_on", type = "tertiary", icon = ":material/experiment:"):
-                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
-                        else:
-                                if st.button("실험실", key = "lab_btn_off", type = "tertiary", icon = ":material/experiment:"):
-                                        #st.toast("현재 :red[지원하지 않는 기능]입니다.", icon = ":material/block:")
-                                        st.session_state["setting_display"] = "lab"
-                                        st.rerun()
-                #관리자 패널 
-                if st.session_state.admin is not True:
-                        if st.button("관리자 로그인", key = "admin_set_btn", type = "tertiary", icon = ":material/admin_panel_settings:"):
-                                show_login_admin()
-                else:
-                        #대기열
-                        if st.session_state["setting_display"] == "queue":
-                                if st.button("대기열", key = "admin_queue_btn_on", type = "tertiary", icon = ":material/queue:"):
-                                       st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
-                        else:
-                                if st.button("대기열", key = "admin_queue_btn_off", type = "tertiary", icon = ":material/queue:"):
-                                        st.session_state["setting_display"] = "queue"
-                                        st.rerun()
-                        #양식
-                        if st.session_state["setting_display"] == "admin_format":
-                               if st.button("양식", key = "admin_format_btn_on", type = "tertiary", icon = ":material/edit:"):
-                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
-                        else:
-                                if st.button("양식", key = "admin_format_btn_off", type = "tertiary", icon = ":material/edit:"):
-                                        st.session_state["setting_display"] = "admin_format"
-                                        st.rerun()
-                        #비밀번호 변경
-                        if st.session_state["setting_display"] == "admin_password":
-                               if st.button("비밀번호 변경", key = "admin_password_btn_on", type = "tertiary", icon = ":material/key:"):
-                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
-                        else:
-                                if st.button("비밀번호 변경", key = "admin_password_btn_off", type = "tertiary", icon = ":material/key:"):
-                                        st.session_state["setting_display"] = "admin_password"
-                                        st.rerun()
-                        #데이터베이스
-                        if st.session_state["setting_display"] == "db":
-                               if st.button("데이터베이스", key = "admin_db_btn_on", type = "tertiary", icon = ":material/database:"):
-                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+        if config['page']['settingpage']:
+                with st.container(key = "total_set_container", horizontal=True):
+                        with st.container(key = "setting_menu_container"):
+                                #화면
+                                if st.session_state["setting_display"] == "display":
+                                        if st.button("화면",key = "display_on", type = 'tertiary' ,icon = ":material/display_settings:"):
+                                                st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                                else:
+                                        if st.button("화면",key = "display_off", type = 'tertiary' ,icon = ":material/display_settings:"):
+                                                st.session_state["setting_display"] = "display"
+                                                st.rerun()
+                                #AI
+                                if st.session_state["setting_display"] == "ai":
+                                        if st.button("AI", key = "ai_set_btn_on", type = "tertiary", icon = ":material/robot:"):
+                                         st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                                else:
+                                        if st.button("AI", key = "ai_set_btn_off", type = "tertiary", icon = ":material/robot:"):
+                                                st.session_state["setting_display"] = "ai"
+                                                st.rerun()
+                                #실험실
+                                if config['app']['lab'] == 'on':
+                                        if st.session_state["setting_display"] == "lab":
+                                                if st.button("실험실", key = "lab_btn_on", type = "tertiary", icon = ":material/experiment:"):
+                                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                                        else:
+                                                if st.button("실험실", key = "lab_btn_off", type = "tertiary", icon = ":material/experiment:"):
+                                                        #st.toast("현재 :red[지원하지 않는 기능]입니다.", icon = ":material/block:")
+                                                        st.session_state["setting_display"] = "lab"
+                                                        st.rerun()
+                                #관리자 패널 
+                                if st.session_state.admin is not True:
+                                        if st.button("관리자 로그인", key = "admin_set_btn", type = "tertiary", icon = ":material/admin_panel_settings:"):
+                                                show_login_admin()
+                                else:
+                                        #대기열
+                                        if st.session_state["setting_display"] == "queue":
+                                                if st.button("대기열", key = "admin_queue_btn_on", type = "tertiary", icon = ":material/queue:"):
+                                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                                        else:
+                                                if st.button("대기열", key = "admin_queue_btn_off", type = "tertiary", icon = ":material/queue:"):
+                                                        st.session_state["setting_display"] = "queue"
+                                                        st.rerun()
+                                        #양식
+                                        if st.session_state["setting_display"] == "admin_format":
+                                                if st.button("양식", key = "admin_format_btn_on", type = "tertiary", icon = ":material/edit:"):
+                                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                                        else:
+                                                if st.button("양식", key = "admin_format_btn_off", type = "tertiary", icon = ":material/edit:"):
+                                                        st.session_state["setting_display"] = "admin_format"
+                                                        st.rerun()
+                                        #기본값 수정
+                                        if st.session_state["setting_display"] == "grade_edit":
+                                                if st.button("기본값 수정", key = "admin_grade_btn_on", type = "tertiary", icon = ":material/computer:"):
+                                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                                        else:
+                                                if st.button("기본값 수정", key = "admin_grade_btn_off", type = "tertiary", icon = ":material/computer:"):
+                                                        st.session_state["setting_display"] = "grade_edit"
+                                                        st.rerun()
+                                        #비밀번호 변경
+                                        if st.session_state["setting_display"] == "admin_password":
+                                                if st.button("비밀번호 변경", key = "admin_password_btn_on", type = "tertiary", icon = ":material/key:"):
+                                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                                        else:
+                                                if st.button("비밀번호 변경", key = "admin_password_btn_off", type = "tertiary", icon = ":material/key:"):
+                                                        st.session_state["setting_display"] = "admin_password"
+                                                        st.rerun()
+                                        #데이터베이스
+                                        if st.session_state["setting_display"] == "db":
+                                                if st.button("데이터베이스", key = "admin_db_btn_on", type = "tertiary", icon = ":material/database:"):
+                                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
 
-                        else:
-                                if st.button("데이터베이스", key = "admin_db_btn_off", type = "tertiary", icon = ":material/database:"):
-                                        st.session_state["setting_display"] = "db"
-                                        st.rerun()
-                        #통계
-                        if st.session_state["setting_display"] == "static":
-                                if st.button("통계", key = "admin_static_btn_on", type = "tertiary", icon = ":material/analytics:"):
-                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
-                        else:
-                                if st.button("통계", key = "admin_static_btn_off", type = "tertiary", icon = ":material/analytics:"):
-                                        st.session_state["setting_display"] = "static"
-                                        st.rerun()
+                                        else:
+                                                if st.button("데이터베이스", key = "admin_db_btn_off", type = "tertiary", icon = ":material/database:"):
+                                                        st.session_state["setting_display"] = "db"
+                                                        st.rerun()
+                                        #통계
+                                        if st.session_state["setting_display"] == "static":
+                                                if st.button("통계", key = "admin_static_btn_on", type = "tertiary", icon = ":material/analytics:"):
+                                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                                        else:
+                                                if st.button("통계", key = "admin_static_btn_off", type = "tertiary", icon = ":material/analytics:"):
+                                                        st.session_state["setting_display"] = "static"
+                                                        st.rerun()
+                                        
+                                        if st.session_state["setting_display"] == "page_set":
+                                                if st.button("페이지", key = "admin_page_btn_on", type = "tertiary", icon = ":material/page_control:"):
+                                                        st.toast("현재 위치하고 있는 페이지입니다.", icon = ":material/page_control:")
+                                        else:
+                                               if st.button("페이지", key = "admin_page_btn_off", type = "tertiary", icon = ":material/page_control:"):
+                                                       st.session_state["setting_display"] = "page_set"
+                                                       st.rerun()
 
-        with st.container(key = "setting_main_container"):
-                match (st.session_state["setting_display"]):
-                        case "display":
-                              show_display()
-                        case "ai":
-                              show_ai_set()
-                        case "lab":
-                                show_lab()
-                        case "static":
-                              show_static()
-                        case "admin_password":
-                              show_edit_password()
-                        case "admin_format":
-                              show_edit_format()
-                        case "db":
-                              show_db()
-                        case "queue":
-                              show_queue()
+                        with st.container(key = "setting_main_container"):
+                                
+                                        match (st.session_state["setting_display"]):
+                                                case "display":
+                                                        show_display()
+                                                case "ai":
+                                                        show_ai_set()
+                                                case "lab":
+                                                        show_lab()
+                                                case "static":
+                                                        show_static()
+                                                case "admin_password":
+                                                        show_edit_password()
+                                                case "admin_format":
+                                                        show_edit_format()
+                                                case "grade_edit":
+                                                        show_gradeset()
+                                                case "db":
+                                                        show_db()
+                                                case "queue":
+                                                        show_queue()
+                                                case "page_set":
+                                                        show_pageset()
+        else:
+                st.error("해당 페이지는 현재 비활성화되어있습니다.")
 
 
         
