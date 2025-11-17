@@ -20,7 +20,7 @@ from util.create_answer import *
 #메인 화면
 # 해당 부분 추가 함으로서 (벡터 db 를 생성후) home 을 출력 합니다
 def show_home():
-    ui_change = True
+    ui_change = config['page']['new_ui']
     #st.session_state['page'] = '홈'
     #manual_col, file_col = st.tabs([":material/person: 직접 입력", ":material/table: 파일 입력"])#st.columns((8,1,8))
     #단일 입력
@@ -36,61 +36,64 @@ def show_home():
                         st.session_state.home_manual_show = False
                         st.session_state.home_input_btn = False
                         st.rerun()
-            with st.form(key = "manual_input", border = False):
-                with st.container(horizontal=True, key = "manual_input_infor"):
-                    name = st.text_input("이름", placeholder="이름을 입력해주세요.")
-                    department = st.text_input("부서명", placeholder="부서명을 입력해주세요. ex) 사하구청")
-                    tel = st.text_input("전화번호", placeholder="전화번호를 입력해주세요. ex) 000-000-0000")
-                minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300, key = "minwon_input_area")
-                with st.container(key = f"copy_paste_manual", horizontal=True):
-                    #copy_button(target_key="minwon_input_area", button_key = f"copy_btn_minwon", area_number=0)
-                    #paste_button(target_key="minwon_input_area", button_key = f"paste_btn_minwon")
-                    manual_btn = st.form_submit_button("민원 입력", icon = ':material/edit_note:')
-            if manual_btn:
-                if name != '' and department != '' and tel != '' and minwon != '':
-                    if st.session_state.file_check:
-                        show_popup(":red[:material/block:] 입력 불가", f"현재 파일 입력으로 민원이 입력되어 있습니다 페이지를 새로고침 후 다시 입력해주세요.", popup_check=True)
+            if config['page']['manualpage']:
+                with st.form(key = "manual_input", border = False):
+                    with st.container(horizontal=True, key = "manual_input_infor"):
+                        name = st.text_input("이름", placeholder="이름을 입력해주세요.")
+                        department = st.text_input("부서명", placeholder="부서명을 입력해주세요. ex) 사하구청")
+                        tel = st.text_input("전화번호", placeholder="전화번호를 입력해주세요. ex) 000-000-0000")
+                    minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300, key = "minwon_input_area")
+                    with st.container(key = f"copy_paste_manual", horizontal=True):
+                        #copy_button(target_key="minwon_input_area", button_key = f"copy_btn_minwon", area_number=0)
+                        #paste_button(target_key="minwon_input_area", button_key = f"paste_btn_minwon")
+                        manual_btn = st.form_submit_button("민원 입력", icon = ':material/edit_note:')
+                if manual_btn:
+                    if name != '' and department != '' and tel != '' and minwon != '':
+                        if st.session_state.file_check:
+                            show_popup(":red[:material/block:] 입력 불가", f"현재 파일 입력으로 민원이 입력되어 있습니다 페이지를 새로고침 후 다시 입력해주세요.", popup_check=True)
+                        else:
+                            st.session_state.id = make_random_id()
+                            st.session_state.df = pd.DataFrame(columns=[
+                            '이름', '부서명', '전화번호', '민원내용',
+                            '답변요지', '민원요지', '최종답변','최종답변 체크', '최종평점',
+                            '민원 카테고리', '민원 긴급도', '답변 평점', 'RAG 평점', '최종답변 최초 설정', '수정','평점 수정','평점 알림', '재생성', '답변요지 방식', '재생성 알림'
+                        ])
+
+                            st.session_state.df.loc[0] = {
+                        '이름': name,
+                        '부서명': department,
+                        '전화번호': tel,
+                        '민원내용': minwon,
+                        '답변요지': "",
+                        '민원요지': "",
+                        '최종답변': "",
+                        '최종답변 체크':"답변결과",
+                        '최종평점': config['app']['default_grade'],
+                        '민원 카테고리': "일반",
+                        '카테고리 체크':False,
+                        '긴급도 체크': False,
+                        '민원 긴급도': "매우 낮음",
+                        '답변 평점': 0,
+                        'RAG 평점': 0,
+                        '최종답변 최초 설정': False, 
+                        '수정': False,
+                        '평점 수정': True,
+                        '평점 알림': True,
+                        '답변요지 방식': "직접 입력",
+                        '재생성': False,
+                        '재생성 알림': False
+                    }
+                            
+
+                            st.session_state.manual = True
+                            st.session_state['btn_show'] = True
+                            st.toast(f":green[민원 요지 생성] 버튼을 눌러 민원 요지를 생성해주세요. 입력된 민원답변인 : :green[{name}]", icon = ":material/done:")
                     else:
-                        st.session_state.id = make_random_id()
-                        st.session_state.df = pd.DataFrame(columns=[
-                        '이름', '부서명', '전화번호', '민원내용',
-                        '답변요지', '민원요지', '최종답변','최종답변 체크', '최종평점',
-                        '민원 카테고리', '민원 긴급도', '답변 평점', 'RAG 평점', '최종답변 최초 설정', '수정','평점 수정','평점 알림', '재생성', '답변요지 방식', '재생성 알림'
-                    ])
-
-                        st.session_state.df.loc[0] = {
-                    '이름': name,
-                    '부서명': department,
-                    '전화번호': tel,
-                    '민원내용': minwon,
-                    '답변요지': "",
-                    '민원요지': "",
-                    '최종답변': "",
-                    '최종답변 체크':"답변결과",
-                    '최종평점': 0,
-                    '민원 카테고리': "일반",
-                    '카테고리 체크':False,
-                    '긴급도 체크': False,
-                    '민원 긴급도': "매우 낮음",
-                    '답변 평점': 0,
-                    'RAG 평점': 0,
-                    '최종답변 최초 설정': False, 
-                    '수정': False,
-                    '평점 수정': True,
-                    '평점 알림': True,
-                    '답변요지 방식': "직접 입력",
-                    '재생성': False,
-                    '재생성 알림': False
-                }
-                        
-
-                        st.session_state.manual = True
-                        st.session_state['btn_show'] = True
-                        st.toast(f":green[민원 요지 생성] 버튼을 눌러 민원 요지를 생성해주세요. 입력된 민원답변인 : :green[{name}]", icon = ":material/done:")
-                else:
-                    show_popup(":red[:material/block:]  입력 오류", f'''입력 필드에 내용을 전부 입력해주세요.'''
-                    , popup_check=True)
-                #st.toast(":red[입력 필드]를 확인해주세요.", icon = ":material/block:")
+                        show_popup(":red[:material/block:]  입력 오류", f'''입력 필드에 내용을 전부 입력해주세요.'''
+                        , popup_check=True)
+                    #st.toast(":red[입력 필드]를 확인해주세요.", icon = ":material/block:")
+            else:
+                st.error("현재 비활성화된 페이지입니다.")
         else:
             st.subheader(":material/block: 단일 민원 입력 불가")
             with st.container(key = "manual_select_guide"):
@@ -110,56 +113,58 @@ def show_home():
                             st.session_state.home_file_show = False
                             st.session_state.home_input_btn = False
                             st.rerun()
-                with st.container(key = "file_input", border = True):
+                if config['page']['filepage']:
+                    with st.container(key = "file_input", border = True):
 
-                    upload_files = st.file_uploader(
-                    "민원을 입력할 파일을 선택해주세요. (지원하는 파일 양식: csv, xlsx)",
-                    type = ['csv', 'xlsx'],
-                    key = "file_uploader_1", label_visibility="collapsed")
-                    #uploader_set()
-                if upload_files:
-                        data_filename = r"{}".format(upload_files.name)
-                #st.write(data_filename)
-                        if data_filename[-4:] == ".csv":
-                            st.session_state.df = pd.read_csv(upload_files, keep_default_na=False, encoding = 'cp949')
-                        else:
-                            st.session_state.df = pd.read_excel(upload_files, keep_default_na=False)
-                        st.session_state.id = make_random_id()
-                        st.session_state.df['답변요지'] = ""
-                        st.session_state.df['최종답변'] = ""
-                        st.session_state.df['최종평점'] = 0
-                        st.session_state.df['민원 카테고리'] = "일반"
-                        st.session_state.df['민원 긴급도'] = "매우 낮음"
-                        st.session_state.df['답변 평점'] = 0
-                        st.session_state.df['RAG 평점'] = 0
-                        st.session_state.df['카테고리 체크'] = False
-                        st.session_state.df['긴급도 체크'] = False
-                        st.session_state.df['최종답변 최초 설정'] = False
-                        st.session_state.df['수정'] = False
-                        st.session_state.df['평점 수정'] = True
-                        st.session_state.df['평점 알림'] = True
-                        st.session_state.df['답변요지 방식'] = "직접 입력"
-                        st.session_state.df['재생성'] = False
-                        st.session_state.df['재생성 알림'] = False
-                        st.session_state.df['최종답변 체크'] = '답변결과'
-                        #print(st.session_state.df)
-                        #st.markdown(f"##### {len(st.session_state.df)}개의 민원 데이터가 입력되었습니다.")
-                        #print(st.session_state.df)
-                        st.session_state['btn_show'] = True 
-                        if st.session_state.file_check   is not True:
-                            #10개 이상의 민원이 입력되면 페이지네이션 모드가 켜지게 되어 있음
-                            if len(st.session_state.df) > 10:
-                                st.session_state.multimode = True #페이지네이션 구분
-                                tabs_per_page = 10 #한 탭당 제한하는 민원 개수
-                                st.session_state.total_page = (len(st.session_state.df) + 9) // tabs_per_page
-                                print(st.session_state.total_page)
-                            if st.session_state.manual:
-                                st.session_state.manual = False
-                            st.session_state.file_check = True
-                            st.toast(f''':green[민원 요지 생성] 버튼을 눌러 민원 요지를 생성해주세요. 입력 파일: :green[{data_filename}]''', icon = ":material/done:")
-                            #show_popup(":green[:material/done:] 파일 입력", f''':green[{data_filename}]이 입력되었습니다.   
-                            #           :green[민원 요지 생성] 버튼을 눌러 민원 요지를 생성할 수 있습니다.''', popup_check=True)
-                            
+                        upload_files = st.file_uploader(
+                        "민원을 입력할 파일을 선택해주세요. (지원하는 파일 양식: csv, xlsx)",
+                        type = ['csv', 'xlsx'],
+                        key = "file_uploader_1", label_visibility="collapsed")
+                        #uploader_set()
+                    if upload_files:
+                            data_filename = r"{}".format(upload_files.name)
+                    #st.write(data_filename)
+                            if data_filename[-4:] == ".csv":
+                                st.session_state.df = pd.read_csv(upload_files, keep_default_na=False, encoding = 'cp949')
+                            else:
+                                st.session_state.df = pd.read_excel(upload_files, keep_default_na=False)
+                            st.session_state.id = make_random_id()
+                            st.session_state.df['답변요지'] = ""
+                            st.session_state.df['최종답변'] = ""
+                            st.session_state.df['최종평점'] = config['app']['default_grade']
+                            st.session_state.df['민원 카테고리'] = "일반"
+                            st.session_state.df['민원 긴급도'] = "매우 낮음"
+                            st.session_state.df['답변 평점'] = 0
+                            st.session_state.df['RAG 평점'] = 0
+                            st.session_state.df['카테고리 체크'] = False
+                            st.session_state.df['긴급도 체크'] = False
+                            st.session_state.df['최종답변 최초 설정'] = False
+                            st.session_state.df['수정'] = False
+                            st.session_state.df['평점 수정'] = True
+                            st.session_state.df['평점 알림'] = True
+                            st.session_state.df['답변요지 방식'] = "직접 입력"
+                            st.session_state.df['재생성'] = False
+                            st.session_state.df['재생성 알림'] = False
+                            st.session_state.df['최종답변 체크'] = '답변결과'
+                            #print(st.session_state.df)
+                            #st.markdown(f"##### {len(st.session_state.df)}개의 민원 데이터가 입력되었습니다.")
+                            #print(st.session_state.df)
+                            st.session_state['btn_show'] = True 
+                            if st.session_state.file_check   is not True:
+                                #10개 이상의 민원이 입력되면 페이지네이션 모드가 켜지게 되어 있음
+                                if len(st.session_state.df) > 10:
+                                    st.session_state.multimode = True #페이지네이션 구분
+                                    tabs_per_page = 10 #한 탭당 제한하는 민원 개수
+                                    st.session_state.total_page = (len(st.session_state.df) + 9) // tabs_per_page
+                                    print(st.session_state.total_page)
+                                if st.session_state.manual:
+                                    st.session_state.manual = False
+                                st.session_state.file_check = True
+                                st.toast(f''':green[민원 요지 생성] 버튼을 눌러 민원 요지를 생성해주세요. 입력 파일: :green[{data_filename}]''', icon = ":material/done:")
+                                #show_popup(":green[:material/done:] 파일 입력", f''':green[{data_filename}]이 입력되었습니다.   
+                                #           :green[민원 요지 생성] 버튼을 눌러 민원 요지를 생성할 수 있습니다.''', popup_check=True)
+                else:
+                    st.error("현재 비활성화된 페이지입니다.")            
             else:
                 st.subheader(":material/block: 복수 민원 입력 불가")
                 with st.container(key = "file_select_guide"):
@@ -203,9 +208,12 @@ def show_home():
             match (st.session_state.home_manual_show, st.session_state.home_file_show):
                 case (True, False):
                     show_manual()
+
                 
                 case (False, True):
+                    
                     show_file()
+
     else:
         st.write("# 새올민원답변생성기")
         with st.container(key = "old_ui_container", horizontal=True):
@@ -492,10 +500,10 @@ def show_result():
             st.session_state[f"result_first_{index}"] = result.at[index, '답변결과']
         match result.iloc[index]['최종답변 체크']:
                     case '답변결과':
-                        if st.button("답변 (현재 선택된 최종 답변)", key = f"select_answer_{index}", type = "tertiary", icon = ":material/comment:"):
+                        if st.button("답변 (현재 선택된 최종 답변)", key = f"select_answer_{index}", type = "tertiary", icon = ":material/check:"):
                             st.toast("이미 :red[선택하신 옵션]입니다.", icon = ":material/block:")
                     case 'RAG':
-                        if st.button("답변 (클릭 시 최종 답변으로 전환)", key = f"select_off_answer_{index}", type = "tertiary", icon = ":material/comment:", help = "클릭 시 최종 답변이 답변결과로 전환됩니다."):
+                        if st.button("답변 (클릭 시 최종 답변으로 전환)", key = f"select_off_answer_{index}", type = "tertiary", icon = ":material/swap_horiz:", help = "클릭 시 최종 답변이 답변결과로 전환됩니다."):
                             result.at[index, '최종답변'] = result.iloc[index]['답변결과']
                             result.at[index,'최종답변 체크'] = '답변결과'
                             st.rerun()
@@ -517,10 +525,10 @@ def show_result():
         #    result.at[index, '재생성 알림'] = False
         match result.iloc[index]['최종답변 체크']:
             case 'RAG':
-                if st.button("유사 답변 (현재 선택된 최종 답변)", key = f"select_rag_{index}", type = "tertiary", icon = ":material/comment:"):
+                if st.button("유사 답변 (현재 선택된 최종 답변)", key = f"select_rag_{index}", type = "tertiary", icon = ":material/check:"):
                     st.toast("이미 :red[선택하신 옵션]입니다.", icon = ":material/block:")
             case '답변결과':
-                if st.button("유사 답변 (클릭 시 최종 답변으로 전환)", key = f"select_off_rag_{index}", type = "tertiary", icon = ":material/comment:", help = "클릭 시 유사 답변이 최종 답변이 됩니다."):
+                if st.button("유사 답변 (클릭 시 최종 답변으로 전환)", key = f"select_off_rag_{index}", type = "tertiary", icon = ":material/swap_horiz:", help = "클릭 시 유사 답변이 최종 답변이 됩니다."):
                     result.at[index, '최종답변'] = result.iloc[index]['RAG']
                     result.at[index,'최종답변 체크'] = 'RAG'
                     st.rerun()
@@ -654,7 +662,6 @@ def show_result():
                 if toast_check:
                     st.toast(f"{index+1}번 민원 답변 점수가 :green[{result.iloc[index]['최종평점']}]점으로 채점되었습니다.",  icon = ":material/check:")
                     result.at[index, '평점 알림'] = False
-
                 st.button(f"점수 재채점(점수 : {result.iloc[index]['최종평점']}점)", 
                 key = f"recoll_rating_{index}", type = "tertiary", 
                 icon= ":material/edit:",
@@ -674,6 +681,7 @@ def show_result():
                 final_score = 0
             result.at[index, '최종평점'] = int(final_score)
             result.at[index, '평점 수정'] = False
+
             #st.toast(f"{index}번 민원 답변 점수가 :green[{final_score}]점으로 책정되었습니다.",  icon = ":material/check:")
 
     @st.fragment
@@ -713,21 +721,6 @@ def show_result():
                     case True:
                         show_edit(index)
                     case False:
-                        # if result.iloc[index]['최종답변 최초 설정'] is not True:
-                            #with st.container(key = f"result_checkbox_rag_container_{index}", horizontal=True, gap = "medium", width=330):
-                        
-                        #with st.container(key = f"second_answer_{index}"):
-                        '''if st.button("유사 답변(최종 답변으로 전환)", key = f"select_rag_{index}", icon = ":material/comment_bank:", type = "tertiary", help = "유사 답변을 최종 답변으로 채택합니다."):
-                            result.at[index, '최종답변'] = result.iloc[index]['RAG']'''
-                        '''match result.iloc[index]['최종답변 체크']:
-                            case 'RAG':
-                                if st.button("유사 답변(현재 선택된 답변)", key = f"select_rag_{index}", type = "tertiary", icon = ":material/comment:"):
-                                    st.toast("이미 선택하신 옵션입니다.")
-                            case '답변결과':
-                                if st.button("유사 답변(최종 답변으로 전환)", key = f"nonselect_rag_{index}", type = "tertiary", icon = ":material/comment:"):
-                                    result.at[index, '최종답변'] = result.iloc[index]['RAG']
-                                    result.iloc[index]['최종답변 체크'] = 'RAG'
-                                    st.rerun()'''
                         show_second(index)
                         with st.container(key = f"result_right_checkbox_container_{index}", horizontal=True, gap = "medium"):
                             #edit =  st.toggle("민원 수정 및 재생성", key = f"edit_answer_sub_{index}")
@@ -761,7 +754,18 @@ def show_result():
                 #show_edit(index)
                 else:
                     result.at[index, '수정'] = False
-    
+    #탭 타이틀 구별 테스트
+    def create_tab_title(i, result):
+        final_rating = result.iloc[i].get('최종평점', 0)
+        
+        if final_rating > 0:
+            return f":material/check: {i+1}번 민원"
+        else:
+            return f":material/comment: {i+1}번 민원"
+
+
+
+
     #메인 답변 구조 출력
     # 메뉴 출력 방식에 따라 탭, 확장형 탭으로 구성
     # rag 옵션 on/off 여부에 따라 값이 달라지며 off일 경우 rag 창은 출력되지 않는다.
@@ -770,7 +774,7 @@ def show_result():
     @st.fragment
     def show_total_container(check):
         tab_list = []
-        tab_list = [f":material/comment: {i+1}번 민원 답변" for i in range(len(result))]
+        tab_list = [f":material/comment: {i+1}번 민원" for i in range(len(result))]
         match check:
             case"탭":    
                 if st.session_state.multimode: 
@@ -856,3 +860,4 @@ def show_page():
             show_input()
         case 'result':
             show_result()
+  

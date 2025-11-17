@@ -8,6 +8,7 @@ from css.theme import *
 from util.toml_edit import *
 from util.menu import *
 from util.info import *
+
 st.html(
     """
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;700&display=swap" as="style">
@@ -29,4 +30,3 @@ set_menu_side()
 page = st.navigation(pages, position="top")
 page.run()
 set_menu_btn()
-#show_copyright()

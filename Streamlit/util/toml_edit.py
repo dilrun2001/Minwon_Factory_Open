@@ -24,7 +24,7 @@ def change_toml(main, sub, edit, title):
     data[main][sub] = edit
     with open(".streamlit/custom_option.toml", 'w', encoding='utf-8') as f:
         dump(data, f)
-    st.toast(f"설정이 수정되었습니다. 수정된 설정 : {title}", icon = ":material/done:")
+    
     
 
 def load_set():
