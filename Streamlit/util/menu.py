@@ -5,7 +5,7 @@ from util.state_copy import *
 from streamlit.components.v1 import html
 from io import BytesIO
 from datetime import datetime
-#from streamlit_float import *
+from streamlit_float import *
 #데이버베이스 입력
 #데이터프레임 임시 입력 작업 추가
 #6/11 선택한 답변 값이 들어가도록 수정
@@ -237,6 +237,48 @@ def set_menu_btn():
                     if st.session_state.manual == True or st.session_state.file_check == True:
                         if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", type = "tertiary"):
                             show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
+                    if st.button("테스트 버튼", key = "test_float_btn", type = 'tertiary', icon = ":material/refresh:"):
+                        st.session_state.test_float = True
+                        st.rerun()
+                if st.session_state.test_float:
+                    float_test_container = st.container(key = "float_test_container")
+                    with float_test_container:
+                            st.write("##### 플로트 화면 테스트")
+                            with st.container( horizontal=True, gap = "medium"):
+                                match st.session_state.model:
+                                        case '기본 모델':
+                                                if st.button("기본 모델", key = "normal_model_on", type = "secondary", width = 150):
+                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                                if st.button("민원팩토리 모델", key = "mf_model_off", type = "secondary", width = 150):
+                                                        st.session_state.model = '민원팩토리 모델'
+                                                        st.rerun()
+                                                if st.button("사하아이 연동", key = "sahaai_model_off", type = "secondary", width = 150):
+                                                        st.session_state.model = '사하아이 연동'
+                                                        st.rerun()
+                                        case '민원팩토리 모델':
+                                                if st.button("기본 모델", key = "normal_model_off", type = "secondary", width = 150):
+                                                        st.session_state.model = '기본 모델'
+                                                        st.rerun()
+                                                if st.button("민원팩토리 모델", key = "mf_model_on", type = "secondary", width = 150):
+                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                                if st.button("사하아이 연동", key = "sahaai_model_off", type = "secondary", width = 150):
+                                                        st.session_state.model = '사하아이 연동'
+                                                        st.rerun()
+                                        case '사하아이 연동':
+                                                if st.button("기본 모델", key = "normal_model_off", type = "secondary", width = 150):
+                                                        st.session_state.model = '기본 모델'
+                                                        st.rerun()
+                                                if st.button("민원팩토리 모델", key = "mf_model_off", type = "secondary", width = 150):
+                                                        st.session_state.model = '민원팩토리 모델'
+                                                        st.rerun()
+                                                if st.button("사하아이 연동", key = "sahaai_model_on", type = "secondary", width = 150):
+                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                
+                            if st.button("화면 끄기", key = "test_close_float"):
+                                 st.session_state.test_float = False
+                                 st.rerun()
+                
+                    float_test_container.float("    height:50rem;")
                     
                 #with st.container(key = "main_header_container",horizontal=True):    
                 with st.container(key = "main_total_menu_container", horizontal=True):
