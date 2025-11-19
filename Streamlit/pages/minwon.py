@@ -9,12 +9,10 @@ from util.state_copy import *
 from util.page_convert import *
 import util.llama3_korea_bllossomQ8 as useAi #우리가 만든 ai를 사용하기위한 임포트
 #import util.find_similar as ragai
-from io import BytesIO
 from util.toml_edit import *
-import random
-import string
 from util.AI_queue import *
 from util.create_answer import *
+import re
 #from st_copy import copy_button
 
 #메인 화면
@@ -22,7 +20,41 @@ from util.create_answer import *
 def show_home():
     ui_change = config['page']['new_ui']
     #st.session_state['page'] = '홈'
-    #manual_col, file_col = st.tabs([":material/person: 직접 입력", ":material/table: 파일 입력"])#st.columns((8,1,8))
+    #전화번호 자동 포맷팅
+    # EX) 0000000000 -> 000-000-0000 변환
+    def format_number():
+        number = st.session_state['phone_number']
+
+        if '-' in number:
+            pass
+        else:
+            clean_number = re.sub(r'[^0-9]', '', number)
+            formatted_number = clean_number
+
+            #서울인 경우
+            if clean_number.startswith('02'):
+                match len(clean_number):
+                    case  l if l < 3:
+                        formatted_number = clean_number
+                    case l if l< 6:
+                        formatted_number = f"{clean_number[:2]}-{clean_number[2:]}"
+                    case l if l < 10:
+                        formatted_number = f"{clean_number[:2]}-{clean_number[2:5]}-{clean_number[5:]}"
+                    case _:
+                        formatted_number = f"{clean_number[:2]}-{clean_number[2:6]}-{clean_number[6:]}"
+            #그 외 지역
+            else:
+                match len(clean_number):
+                    case  l if l < 4:
+                        formatted_number = clean_number
+                    case l if l< 7:
+                        formatted_number = f"{clean_number[:3]}-{clean_number[3:]}"
+                    case l if l < 11:
+                        formatted_number = f"{clean_number[:3]}-{clean_number[3:6]}-{clean_number[6:]}"
+                    case _:
+                        formatted_number = f"{clean_number[:3]}-{clean_number[3:7]}-{clean_number[7:]}"
+                st.session_state['phone_number'] = formatted_number
+                
     #단일 입력
     def show_manual():
         if st.session_state.file_check is not True:
@@ -37,12 +69,14 @@ def show_home():
                         st.session_state.home_input_btn = False
                         st.rerun()
             if config['page']['manualpage']:
-                with st.form(key = "manual_input", border = False):
-                    with st.container(horizontal=True, key = "manual_input_infor"):
+                #with st.form(key = "manual_input", border = False):
+                with st.container(horizontal=True, key = "manual_input_infor"):
                         name = st.text_input("이름", placeholder="이름을 입력해주세요.")
-                        department = st.text_input("부서명", placeholder="부서명을 입력해주세요. ex) 사하구청")
-                        tel = st.text_input("전화번호", placeholder="전화번호를 입력해주세요. ex) 000-000-0000")
+                        department = st.selectbox("부서명", options = config['app']['department'], key = "department_option", accept_new_options=True)#st.text_input("부서명", placeholder="부서명을 입력해주세요. ex) 사하구청")
+                        tel = st.text_input("전화번호", placeholder="전화번호를 특수 문자 없이 입력해주세요.", key = "phone_number", on_change=format_number)
+                with st.form(key = "manual_input", border = False):
                     minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300, key = "minwon_input_area")
+                
                     with st.container(key = f"copy_paste_manual", horizontal=True):
                         #copy_button(target_key="minwon_input_area", button_key = f"copy_btn_minwon", area_number=0)
                         #paste_button(target_key="minwon_input_area", button_key = f"paste_btn_minwon")

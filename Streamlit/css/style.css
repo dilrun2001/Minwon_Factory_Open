@@ -453,41 +453,16 @@ div.st-key-main_clear_container{
     transition: left 0.3s ease-in-out;
 }
 
+div[data-testid="stApp"]:has(section[data-testid="stSidebar"][aria-expanded="true"]) .st-key-main_clear_container {
+        left:20.6rem;
+} 
+
 div.st-key-show_display_sidebar{
     gap: 0.03rem;
     padding-top:0.5rem;
     padding-left:0.5rem;
     padding-bottom:1rem;
 }
-/*@media (min-width: 1628px) and (max-width:1698px){
-    div.st-key-main_clear_container{
-        left: -23%;
-    }
-}
-@media (min-width: 1400px) and (max-width:1627px){
-    div.st-key-main_clear_container{
-        left: -20%;
-    }
-}
-@media (min-width: 1200px) and (max-width:1399px){
-    div.st-key-main_clear_container{
-        left: -15%;
-    }
-}*/
-
-
-
-/*
-div.st-key-main_header_container{
-    position:absolute;
-    top:1.1rem;
-    left:90%;
-    gap: 2rem;
-
-    border-radius: 1rem;
-    width:170px;
-    z-index: 999999 !important;
-}*/
 
 div.st-key-home_text_container{
     text-align: center;
