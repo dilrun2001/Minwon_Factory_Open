@@ -329,7 +329,8 @@ div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
 }
 
 
-div.st-key-clear_btn >div > button{
+div.st-key-clear_btn >div > button,
+div.st-key-test_float_btn >div > button{
     position: absolute;
     width:110px;
     border-radius: 1.2rem;
@@ -345,12 +346,14 @@ div.st-key-download_Excel >div>div>div>div > button{
 }
 
 div.st-key-clear_btn > div > button > span > span,
+div.st-key-test_float_btn > div > button > span > span,
 div.st-key-download_CSV  > div > div > div > div  > button > span > span,
 div.st-key-download_Excel  > div > div > div > div  > button > span > span{
     font-size: 1.7rem;
 }
 
 div.st-key-clear_btn > div > button > div > p,
+div.st-key-test_float_btn  > div > button > div > p,
 div.st-key-download_CSV  > div > div > div > div > button > div > p,
 div.st-key-download_Excel  > div > div > div > div > button > div > p{
     font-size: 17px;

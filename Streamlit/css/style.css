@@ -448,8 +448,14 @@ div.st-key-main_clear_container{
     padding-right:1rem;
     padding-top:0.3rem;
     padding-bottom: 0.3rem;
+    gap: 6.5rem;
+    justify-content: left;
     transition: left 0.3s ease-in-out;
 }
+
+div[data-testid="stApp"]:has(section[data-testid="stSidebar"][aria-expanded="true"]) .st-key-main_clear_container {
+        left:20.6rem;
+} 
 
 div.st-key-show_display_sidebar{
     gap: 0.03rem;
@@ -457,35 +463,6 @@ div.st-key-show_display_sidebar{
     padding-left:0.5rem;
     padding-bottom:1rem;
 }
-/*@media (min-width: 1628px) and (max-width:1698px){
-    div.st-key-main_clear_container{
-        left: -23%;
-    }
-}
-@media (min-width: 1400px) and (max-width:1627px){
-    div.st-key-main_clear_container{
-        left: -20%;
-    }
-}
-@media (min-width: 1200px) and (max-width:1399px){
-    div.st-key-main_clear_container{
-        left: -15%;
-    }
-}*/
-
-
-
-/*
-div.st-key-main_header_container{
-    position:absolute;
-    top:1.1rem;
-    left:90%;
-    gap: 2rem;
-
-    border-radius: 1rem;
-    width:170px;
-    z-index: 999999 !important;
-}*/
 
 div.st-key-home_text_container{
     text-align: center;
@@ -577,6 +554,17 @@ div.st-key-llm_model_select .st-br{
     display:none;
 }
 
+div.st-key-float_test_container{
+    position: fixed; 
+    top: 8%;
+    left: 5%;
+    width:95rem; 
+    background: white; 
+    padding: 30px; 
+    border-radius: 0.975rem; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
+    z-index: 1000;
+}
 
 
 div.st-key-edit_main_format_container,

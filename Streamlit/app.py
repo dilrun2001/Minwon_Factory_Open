@@ -7,7 +7,7 @@ import pages as pg
 from css.theme import * 
 from util.toml_edit import *
 from util.menu import *
-from util.info import *
+
 
 st.html(
     """

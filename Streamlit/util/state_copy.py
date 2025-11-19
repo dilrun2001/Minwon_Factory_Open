@@ -158,6 +158,8 @@ def clear_state():
     if "result_show_index" not in st.session_state:
         st.session_state.result_show_index = 0  # 결과창 인덱스
     
+    if "test_float" not in st.session_state:
+        st.session_state.test_float = False
     
     # ============================================================
     # 페이지네이션 관련
