@@ -21,6 +21,7 @@ def show_home():
         #st.write("### AI 사용 데이터 통계")
         if config['page']['staticpage']:
                 with st.container(key = "home_test"):
+                        
                         st.write("#### AI 사용 통계")
                         with st.container(key = "Ai_count", horizontal=True, gap="large"):
                                 with st.container(key = "AI_total_count", width = 500, height = 250, border = True):
