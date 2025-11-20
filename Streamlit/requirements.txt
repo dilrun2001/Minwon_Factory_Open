@@ -2,7 +2,8 @@ langchain_core==0.3.60
 langchain_ollama==0.3.2
 pandas==2.2.3
 PyMySQL==1.1.1
-streamlit==1.46.1
+python_bcrypt==0.3.2
+streamlit==1.51.0
 huggingface_hub==0.31.2
 openpyxl==3.1.5
 langchain-chroma==0.2.4
@@ -10,3 +11,6 @@ langchain==0.3.25
 langchain-huggingface==0.2.0
 xlsxwriter==3.2.3
 cryptography==45.0.4
+tomlkit==0.13.3
+python-dotenv==1.1.0
+ollama==0.4.8

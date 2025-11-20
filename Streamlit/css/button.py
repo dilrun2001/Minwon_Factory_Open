@@ -3,6 +3,10 @@ from contextlib import contextmanager
 import streamlit.components.v1 as components
 from css.theme import *
 
+
+# ========================================================================================================================
+# 결과 창에서 복사 버튼
+# ========================================================================================================================
 def copy_button(target_key: str, button_key: str, area_number: int):
     """
     target_key: 복사할 text_area의 key
@@ -206,8 +210,9 @@ def copy_button(target_key: str, button_key: str, area_number: int):
     if result and isinstance(result, dict) and result.get('action') == 'copied':
         st.toast(f"{result['area_number']}번 영역의 내용이 복사되었습니다.", icon="✅")
 
-
-#붙여넣기 버튼(현재 사용될 예정은 없음 테스트 안됨)
+# ========================================================================================================================
+#붙여넣기 버튼(HTTPS 인증 문제로 로컬호스트 외로 사용 불가)
+# ========================================================================================================================
 def paste_button(target_key: str, button_key: str):
     """
     target_key: 붙여넣을 text_area의 key

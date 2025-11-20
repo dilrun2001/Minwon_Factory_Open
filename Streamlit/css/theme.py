@@ -18,58 +18,29 @@ def load_font():
     """
     ) 
 
-    
+# ========================================================================================================================
+#메인 css 로드 함수    
+# ========================================================================================================================
 def load_css():
     #1.48.0
+    #스타일
     with open('./css/style.css', encoding = "UTF-8") as f:
         css = f.read()
+    #버튼
     with open('./css/button.css', encoding = "UTF-8") as f:
         btn = f.read()
+    #애니메이션
     with open('./css/animation.css', encoding = "UTF-8") as f:
         animation = f.read()
     st.html(f'<style>{animation}</style>')
     st.html(f'<style>{css}</style>')
     st.html(f'<style>{btn}</style>')#, unsafe_allow_html=True)
 
-def highlight_js(highlight_data):
-    json_data = json.dumps(highlight_data)
-
-    js_code = f"""
-    <script>
-    setTimeout(() => {{
-        const textareas = window.parent.document.querySelectorAll("textarea");
-        const highlightData = {json_data};
-
-        // 초기화
-        textareas.forEach(t => t.classList.remove("active-highlight"));
-
-        highlightData.forEach(item => {{
-            const base = item.index * 2;
-            const normal = textareas[base];
-            const rag = textareas[base + 1];
-
-            if (item.option === "답변" && normal) {{
-                normal.classList.add("active-highlight");
-            }} else if (item.option === "유사 답변" && rag) {{
-                rag.classList.add("active-highlight");
-            }}
-        }});
-    }}, 100);
-    </script>
-    """
-
-    components.html(js_code, height=0, width=0)
 
 
-def slider_css():
-    with open ('./css/slider.css', encoding = 'UTF-8') as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    
-
-def custom_textarea():
-    pass
-
-
+# ========================================================================================================================
+# 로딩 화면(AI 생성 시 보이는 화면)
+# ========================================================================================================================
 @contextmanager
 def show_loading_overlay(message="로딩 중입니다.", page_title="처리 중...", dialog=False):
     
@@ -158,7 +129,7 @@ def show_loading_overlay(message = "로딩 중입니다.", page_title="처리 �
         yield update_message
     finally:
         overlay.empty()'''
-
+#사용하지 않는 함수
 def scroll_to_top():
     st.components.v1.html(
         """
@@ -171,13 +142,17 @@ def scroll_to_top():
         height=0,
     )
 
+# ========================================================================================================================
+# st.dialog 활용 팝업창
+# ========================================================================================================================
+
 @st.fragment
 def show_popup(
-        title: str ,
-        text: str,
-        btn_action = None,
-        popup_check = False,
-        action_args: dict = {},
+        title: str , #제목
+        text: str, #내용
+        btn_action = None, #버튼 눌렀을 떄 동작
+        popup_check = False, #팝업 화면 방식 체크
+        action_args: dict = {}, 
         agree_button_txt: str = "예",
         disagree_button_txt: str = "아니오",
 ):

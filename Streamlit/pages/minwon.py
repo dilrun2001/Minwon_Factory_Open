@@ -15,13 +15,16 @@ from util.create_answer import *
 import re
 #from st_copy import copy_button
 
-#메인 화면
-# 해당 부분 추가 함으로서 (벡터 db 를 생성후) home 을 출력 합니다
+# ========================================================================================================================
+#메인 화면(파일 입력, 직접 입력)
+# ========================================================================================================================
 def show_home():
     ui_change = config['page']['new_ui']
-    #st.session_state['page'] = '홈'
+
+    # ============================================================
     #전화번호 자동 포맷팅
     # EX) 0000000000 -> 000-000-0000 변환
+    # ============================================================
     def format_number():
         number = st.session_state['phone_number']
 
@@ -54,8 +57,10 @@ def show_home():
                     case _:
                         formatted_number = f"{clean_number[:3]}-{clean_number[3:7]}-{clean_number[7:]}"
                 st.session_state['phone_number'] = formatted_number
-                
-    #단일 입력
+    
+    # ============================================================
+    #직접 입력
+    # ============================================================
     def show_manual():
         if st.session_state.file_check is not True:
             if ui_change:
@@ -134,7 +139,9 @@ def show_home():
                 st.write('''- 복수 민원 탭을 통해 이미 민원을 :red[입력]받은 상태입니다.''')
                 st.write('''- :red[복수 민원]을 이미 입력하신 경우 단일 민원은 :red[입력할 수 없습니다.]''')
                 st.write('''- 다시 입력하시고 싶으시면 새로 고침(F5)을 해주시거나 위 버튼을 눌러 초기화해주세요.''')
-        
+    # ============================================================
+    # 파일 입력
+    # ============================================================
     def show_file():
             if st.session_state.manual is not True:
                 if ui_change:
@@ -243,7 +250,6 @@ def show_home():
                 case (True, False):
                     show_manual()
 
-                
                 case (False, True):
                     
                     show_file()
@@ -267,12 +273,13 @@ def show_home():
             st.write('''---''')
             st.button("민원 요지 생성", key = "input_page_show", on_click  = generate_answer, icon = ':material/edit:', args=(0,False,False,True))
            
-
+# ========================================================================================================================
 # show_home에서 10개의 민원이 초과될 경우 해당 함수가 사용됩니다.
 # 페이지네이션 함수
 # 각 페이지당 10개의 민원이 저장
 # 민원 입력, 민원 답변에서 저장
 # 10개 이하의 민원에서는 실행되지 않음
+# ========================================================================================================================
 @st.fragment
 def show_multi_page():
             
@@ -312,6 +319,10 @@ def show_multi_page():
 #답변요지 입력 창
 #구조
 #show_input_comment(멘트 및 간단 설명), show_input_container(메인 컨테이너), 페이지네이션 상태일때 show_multi_page 사용
+
+# ========================================================================================================================
+#답변 요지 입력 화면
+# ========================================================================================================================
 @st.fragment
 def show_input():
     @st.fragment
@@ -329,8 +340,9 @@ def show_input():
             #        ''')
     minwon = st.session_state.df
 
-
-    #좌측 입력창
+    # ============================================================
+    #좌측 입력창(민원 카테고리, 민원 긴급도, 민원 요약)
+    # ============================================================
     @st.fragment
     def input_left_container(index):
         # 페이지네이션 떄문이라도 필요
@@ -355,7 +367,9 @@ def show_input():
                                             "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =277  , value= minwon.iloc[index]['민원요지'], key = f"minwon_sub_{index}"
         )
     
-    #중앙 입력창
+    # ============================================================
+    #중앙 입력창(답변요지 입력, 답변요지 프리셋 버튼 포함)
+    # ============================================================
     @st.fragment
     def input_center_container(index):
         #widget_key = f"answer_sub_{index}"
@@ -414,13 +428,18 @@ def show_input():
                 , height = 277, key = f"answer_sub_{index}"#, on_change=input_status_change, args=(i,)
             )     
         minwon.at[index, '답변요지'] = st.session_state[f'answer_sub_{index}']
-    #우측 입력창
+
+    # ============================================================
+    #우측 입력창(답변 양식 출력)
+    # ===========================================================
     @st.fragment
     def input_right_container(index):
         minwon.at[index,'답변양식'] = st.text_area(
                 "답변 양식", height = 360, value = minwon.at[index, '답변양식'], key = f"answer_format_{index}"
             )  
-
+    # ============================================================
+    #전체 띄우는 함수(left, center, right)
+    # ============================================================
     @st.fragment
     def show_main_input(index):
             minwon_column, spacer, answer_column = st.columns((7,8,8)) #8, 1.2,
@@ -432,7 +451,7 @@ def show_input():
                 input_right_container(index)
 
 
-    #st.session_state.input_status = [False] * len(minwon)   
+    #show_main_input을 담는 메인 컨테이너
     @st.fragment 
     def show_input_container(check):
         #container.empty()
@@ -491,13 +510,18 @@ def show_input():
         #i =  페이지 내부의 인덱스, index, row = 데이터프레임의 인덱스 번호 
         #with st.container(key = f'tab_container'):
 
+    # ============================================================
+    #답변 생성 버튼
+    # ============================================================
     @st.fragment
     def show_generate_btn():
 
         if st.button("답변 생성", icon=":material/edit:", key = f"input_minwon_generate"):
-            input_answer()
-            #st.rerun()
-           #
+            input_answer() #util.create_answer.py
+            
+    # ============================================================
+    #모든 컨테이너를 모아서 출력
+    # ============================================================
     @st.fragment
     def show_input_total():
         show_input_comment()
@@ -518,18 +542,18 @@ def show_input():
 
 
 
-#결과창     
-#결과창 구조: show_total이라는 함수 안에 show_total_container를 호출, 이때 RAG가 켜져 있으면 show_first, show_second에서 각각 값을 리턴받아 실행
-# 토글 값에 따라 민원 수정 창이 결과창 바로 밑에 붙어 출력되며 이때 토글이 켜져 있는 민원 들은 답변 재생성이 가능해지는 구조
+# ========================================================================================================================
+# 최종 답변 출력 화면
+# ========================================================================================================================
 def show_result():
     result = st.session_state.df
-
+    # ============================================================
     #좌측 컨테이너
     #최초 세팅은 민원에 대해 LLM이 리턴한 답변이 출력
+    # ============================================================
     @st.fragment
     def show_first(index):
-        #st.write("###### 답변")
-        #st.write(result)
+
         if f"result_first_{index}" not in st.session_state:
             st.session_state[f"result_first_{index}"] = result.at[index, '답변결과']
         match result.iloc[index]['최종답변 체크']:
@@ -549,14 +573,12 @@ def show_result():
             result.at[index,'최종답변'] = result.iloc[index]['답변결과']
             result.at[index,'최종답변 최초 설정'] = True
 
+    # ============================================================
     #우측 컨테이너  
     #최초 세팅은 민원에 대해 RAG가 찾은 유사 답변을 출력
+    # ============================================================
     @st.fragment
     def show_second(index):
-        #st.write("###### 유사 답변")
-        #if result.iloc[index]['재생성 알림']:
-        #    st.toast(f"{index+1}번 민원의 :green[답변 요지 편집 및 재생성 기능]이 종료되었습니다.", icon= ":material/check:")
-        #    result.at[index, '재생성 알림'] = False
         match result.iloc[index]['최종답변 체크']:
             case 'RAG':
                 if st.button("유사 답변 (현재 선택된 최종 답변)", key = f"select_rag_{index}", type = "tertiary", icon = ":material/check:"):
@@ -573,8 +595,6 @@ def show_result():
 
     # 스위치 버튼을 눌렀을 경우 발생하는 함수
     # 10월 27일 추가 기능 구현 과정에서 현재 사용 불가능
-    # 두 area의 값이 바뀌는게 아니라 두 area의 위치가 통째로 바뀌는 구조
-    # test(추후 수정)의 bool 리턴값에 따라 위치 변경
     @st.fragment
     def switch_result(index):
         temp = result.iloc[index]['최종답변 최초 설정']
@@ -585,16 +605,17 @@ def show_result():
              result.at[index, '최종답변 최초 설정'] = True
         st.rerun()
 
-    # 재생성(수정) 토글을 킬 시 생기는 함수
-    # show_input UI를 따라가며 카테고리, 긴급도가 임시 삭제된 형태
-    # 결과창 바로 밑에 붙는 구조
+    # ============================================================
+    # 재생성(수정) 토글을 누를 시 생성되는 창
+    # show_second 위치에 대신 생성되는 함수
+    # ============================================================
+    
     @st.fragment
     def show_edit(index):
-        #if result.iloc[index]['재생성 알림'] is not True:
-        #    st.toast(f"{index+1}번 민원 :green[답변 요지 편집 및 재생성 기능]이 활성화되었습니다.", icon= ":material/check:")
-        #    result.at[index, '재생성 알림'] = True
 
         with st.container(key = f"answer_sub_pills_{index}"):
+            # 페이지네이션 사용 중 데이터 날아감 방지 st.session_state 선언
+            # 이때 st.session_state는 버튼과 selectbox의 key 값
             if f"answer_sub_{index}" not in st.session_state:
                 st.session_state[f"answer_edit_sub_{index}"] = result.at[index, '답변요지']
             if f"minwon_category_{index}" not in st.session_state:
@@ -605,6 +626,7 @@ def show_result():
             st.write(f"#### :material/edit: {index+1}번 답변 요지 편집 ")
             st.markdown("""""")
             st.markdown("""""") 
+            #민원 카테고리 및 민원 긴급도 관련 함수
             with st.container(key = f"selectbox_select_{index}"):
                 st.write("민원 카테고리 및 민원 긴급도")
                 with st.container(key = f"test_{index}", horizontal=True):
@@ -616,12 +638,9 @@ def show_result():
                     )
                 result.at[index, '민원 카테고리'] =  st.session_state[f"minwon_edit_category_{index}"]
                 result.at[index, '민원 긴급도'] =  st.session_state[f"minwon_edit_urgency_{index}"]
-            #st.write(f'''
-            ######## 답변 요지를 수정하신 후 버튼을 눌러 재생성 할 수 있습니다. 
-            ###### 다중 민원은 해당 화면이 뜨는 :green[모든 민원의 답변]을 재생성 할 수 있습니다.
-            #''')
+
+            #답변 요지 프리셋 버튼(중간 화면과 코드 동일)
             with st.container(key = f"answer_sub_total_{index}"):
-                
                 st.write("답변 요지 편집")
                 with st.container(key = f"answer_sub_btngroup_{index}", horizontal=True):
                     if result.iloc[index]['답변요지 방식'] == "직접 입력":
@@ -678,11 +697,15 @@ def show_result():
             if st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:"):
                 generate_answer(index, True, False)
     
-
+    #답변 평점 체크 되었는지 체크하는 용
     def edit_rating_true(index):
         result.at[index, '평점 수정'] = True
         result.at[index,'평점 알림'] = True
 
+    # ============================================================
+    #평점 함수
+    #기본 구조: 1-5 중 하나의 버튼을 눌렀을 시 재채점 버튼을 사용하지 않으면 채점을 불가능하게 하는 구조
+    # ============================================================
     @st.fragment
     def feedback_component(index):
         feedback_check = result.iloc[index]['평점 수정']
@@ -705,6 +728,7 @@ def show_result():
 
 
     #@st.fragment
+    # 평점 매기는 함수
     def rating_score(key, index):
         mapping = [1,2,3,4,5]
         if result.iloc[index]['평점 수정']:
@@ -717,7 +741,9 @@ def show_result():
             result.at[index, '평점 수정'] = False
 
             #st.toast(f"{index}번 민원 답변 점수가 :green[{final_score}]점으로 책정되었습니다.",  icon = ":material/check:")
-
+    # ============================================================
+    #결과 화면의 안내 멘트 출력 컨테이너
+    # ============================================================
     @st.fragment
     def show_total_infor():
         st.write("### :material/output: 답변 결과")
@@ -732,13 +758,18 @@ def show_result():
             #민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.
         #st.session_state.layout_check = st.toggle("기능 테스트", key = "result_layout_check"
 
-    
-    
+    # ============================================================
+    # 결과 화면의 메인 컨테이너 레이아웃
+    # show_first, show_second, show_edit포함
+    # ============================================================
+
     @st.fragment
     def show_total_main(index):
         result = st.session_state.df
+        #현재 RAG 설정이 off여도 RAG 화면이 나오게 출력 세팅되어있습니다.
+        # off인 경우 기존 show_edit이 show_second 자리에 등장합니다.
         if config['app']['rag'] == "off":                
-            first, spacer, second = st.columns((7.2, 1, 7.2)) #8,1.2,8 6.8, 1.6, 6.8
+            first, spacer, second = st.columns((7.2, 1, 7.2)) #show_first, 공백, show_second(혹은 show_edit) 순
             
             with first:
                 #if result.iloc[index]['최종답변 최초 설정'] is not True:  
@@ -799,11 +830,12 @@ def show_result():
 
 
 
-
+    # ============================================================
     #메인 답변 구조 출력
     # 메뉴 출력 방식에 따라 탭, 확장형 탭으로 구성
     # rag 옵션 on/off 여부에 따라 값이 달라지며 off일 경우 rag 창은 출력되지 않는다.
-    # 9월 25일 추가 업데이트 반영-> 민원 내용 편집 시 기존에 화면 아래에 붙었던걸 이제 RAG를 죽이고     )
+    # ============================================================
+    
         #st.write(st.session_state[f"minwon_rating_{index}"])
     @st.fragment
     def show_total_container(check):
@@ -859,8 +891,10 @@ def show_result():
                     with st.container(key = f"result_response_container", gap="medium"):
                         show_total_main(st.session_state['result_show_index'])
 
-
+    # ============================================================
     #show_result 안에 있는 모든 함수들이 모여서 실행시키는 함수
+    # ============================================================
+   
     @st.fragment
     def show_total():
         show_total_infor()
@@ -882,16 +916,19 @@ def show_result():
             if st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다."):
                 reinput_answer()
     show_total()
-#각 페이지 호출
+
+
+# ========================================================================================================================
+# 메인 페이지 호출 방식 함수 
+# st.session_state['minwon_check'] 값에 따라 출력되는 함수가 달라집니다.
+# ========================================================================================================================
 def show_page():
     st.session_state.page = "main"
     match st.session_state['minwon_check']:
         case 'file_select':
-                #st.write("복수, 단일 민원 둘 중 하나의 입력이 끝나면 처음으로 버튼을 눌러 초기화가 가능합니다.")
-                #st.write("민원이 입력된 순간 다른 민원으로의 설정은 :red[불가능]합니다.")
-            show_home()
+            show_home() #파일 혹은 직접 입력 함수
         case 'minwon_input':
-            show_input()
+            show_input() #답변 요지 입력 함수
         case 'result':
-            show_result()
+            show_result() #결과 화면 함수
   
