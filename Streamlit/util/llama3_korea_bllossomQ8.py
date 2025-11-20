@@ -1,6 +1,6 @@
 
 from ollama import Client, ResponseError
-from util.config import OLLAMA_HOST
+from util.OLLAMA_HOST_config import OLLAMA_HOST
 import util.state_copy as state_util
 import streamlit   as st
 
@@ -14,7 +14,6 @@ def SahaAi_request(minwon,answer,answer_format,model_name: str = "gpt-oss:20b"):
 ※ 반드시 출력은 [답변 템플릿] 안에 있는 형식을 따르며, 템플릿 외 문장은 추가하지 마십시오.
 ※ 템플릿 내 `[민원요지]` 부분은 민원 내용을 행정 문서 문체로 정중하게 요약하여 대체하되, `[민원요지]`라는 단어는 최종 출력에 **표시되지 않아야 합니다**.
 ※ 템플릿 내 `[답변요지]` 부분은 답변 요지를 정중하고 행정적인 문체로 바꾸어 넣되, `[답변요지]`라는 단어는 최종 출력에 **표시되지 않아야 합니다**.
-※ 출력에는 들여쓰기, 불필요한 줄바꿈, 공백 없이 문장 맨 앞에서 바로 시작하십시오.
 """
     user_prompt = """
 다음은 민원에 대한 [답변 요지]와 [민원 내용]입니다.
