@@ -1,5 +1,5 @@
 [app]
-ai = "on" #ai on/off 기능
+ai = "off" #ai on/off 기능
 rag = "off" #ragai on/off 기능
 lab = "off" #실험실 기능 on/off
 admin_password = "1234" #관리자 비밀번호

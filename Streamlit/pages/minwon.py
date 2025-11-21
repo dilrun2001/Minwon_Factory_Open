@@ -144,6 +144,7 @@ def show_home():
     # 파일 입력
     # ============================================================
     def show_file():
+            
             if st.session_state.manual is not True:
                 if ui_change:
                     with st.container(key = "change_display", horizontal=True):
@@ -164,12 +165,50 @@ def show_home():
                         key = "file_uploader_1", label_visibility="collapsed")
                         #uploader_set()
                     if upload_files:
-                            data_filename = r"{}".format(upload_files.name)
-                    #st.write(data_filename)
-                            if data_filename[-4:] == ".csv":
-                                st.session_state.df = pd.read_csv(upload_files, keep_default_na=False, encoding = 'cp949')
-                            else:
-                                st.session_state.df = pd.read_excel(upload_files, keep_default_na=False)
+                            # ========================================================================================================================
+                            # 파일 입력 로직 변경된 점
+                            # 1. 바로 st.session_state로 들어가기 전 입력된 파일의 컬럼을 체크
+                            # 2. 엑셀 파일에서 필수 컬럼이 없는 경우 이후 코드 진행을 막아버림
+                            # 3. 이후 각 행의 내용에서 빈 값이 있을 경우에도 코드 진행 멈춤 
+                            # 4. 문제가 없을 경우 세션에 올려 프레임화 이후 생성 가능하게 유도 
+                            # ========================================================================================================================
+                            data_filename = r"{}".format(upload_files.name) 
+                            try:
+                                if data_filename[-4:] == ".csv":
+                                    df = pd.read_csv(upload_files, keep_default_na=False, encoding = 'cp949')
+                                else:
+                                    df = pd.read_excel(upload_files, keep_default_na=False)
+                            except Exception as e:
+                                st.error(f"파일을 읽는 중 오류가 발생했습니다: {e}")
+                                st.stop()
+                            requirement_column = ["이름", "부서명", "전화번호", "민원내용"] #엑셀(CSV) 파일에 필수로 들어가야 하는 컬럼 리스트 + 행 내용 검색의 기준이 됨
+                            # ========================================================================================================================
+                            # 컬럼의 빈 값이 있는지 체크
+                            # ========================================================================================================================
+                            file_column = set(df.columns) #입력한 파일의 컬럼 체크
+                            missing_columns = [col for col in requirement_column if col not in file_column]  # 하나라도 있을 경우 아래 오류 메시지 출력 및 이후 코드 진행 중단(서버가 터지는 건 아니니 걱정 안 해도 됨)
+                            if missing_columns:
+                                st.error(f" 입력하신 엑셀(CSV) 파일에 필요한 컬럼이 존재하지 않습니다.\n\n파일 업로더의 x 버튼을 눌러 파일을 다시 입력해주세요.\n\n- 누락된 컬럼: {', '.join(missing_columns)}", icon = ":material/error:")
+                                st.stop()
+                            # ========================================================================================================================
+                            # 각 행의 빈 값이 있는지 체크
+                            # ========================================================================================================================
+                            empty_col = df[requirement_column].applymap(lambda x: str(x).strip() == "") #행에서 빈값이 있는지 체크
+                            if empty_col.any().any():
+                                error_col = empty_col.columns[empty_col.any()].tolist() #비어 있는 행 번호 추출
+                                error_msg = "입력하신 엑셀(CSV) 파일에 비어 있는 값이 존재합니다.\n\n"
+                                for col in error_col:
+                                    row_indices = df.index[empty_col[col]].tolist()
+                                    row_msg = ", ".join(map(str, [i+2 for i in row_indices[:5]]))
+                                    if len(row_indices) > 5: #5개보다 많아질 경우 아래와 같이 처리
+                                        row_mst += "..."
+                                    error_msg += f"- **{col}**: {len(row_indices)}개 누락 ({row_msg}번 행)\n" #몇번 행에서 어떤 값이 비었는지 출력해주는 함수
+                                st.error(error_msg, icon = ":material/error:")
+                                st.stop()
+                            # ========================================================================================================================
+                            # 모든 로직 통과시 데이터프레임 제작
+                            # ========================================================================================================================
+                            st.session_state.df = df
                             st.session_state.id = make_random_id()
                             st.session_state.df['답변요지'] = ""
                             st.session_state.df['최종답변'] = ""
