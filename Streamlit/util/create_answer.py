@@ -67,9 +67,10 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
             task_id = get_queue(st.session_state.id)
             if not task_id:
                 num = search_queue(st.session_state.id)
+                test = get_waiting_count_ahead(st.session_state.id)
                 update(f"선행 처리 중인 작업이 있습니다. 대기열에 등록됩니다.")
                 time.sleep(3)
-                update(f"현재 대기번호는 {num}번입니다. 잠시만 기다려주세요.")
+                update(f"대기 중...", rank = num, ahead=test)
                 time.sleep(3)
         update("대기열에 등록되었습니다. 요청하신 작업을 시작합니다.")
         time.sleep(0.5)
@@ -155,7 +156,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                     data['민원요지'] = results
                 else:
                     for i, row in data.iterrows():
-                        data['민원요지'] = data['민원내용']
+                        data.at[i, '민원요지'] = f"{i+1}번 민원의 요약이 들어갈 자리"
                     time.sleep(2)
                 end_task(task_id)
                 page_convert()

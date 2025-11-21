@@ -4,6 +4,7 @@ import streamlit.components.v1 as components
 import json
 import time
 import uuid # 고유한 ID 생성을 위해 import
+from datetime import datetime
 
 
 
@@ -42,93 +43,87 @@ def load_css():
 # 로딩 화면(AI 생성 시 보이는 화면)
 # ========================================================================================================================
 @contextmanager
-def show_loading_overlay(message="로딩 중입니다.", page_title="처리 중...", dialog=False):
-    
+def show_loading_overlay(initial_msg="로딩 중입니다.", dialog=False):
+    st.set_page_config("생성중", page_icon=":material/cycle:")
+    # 1. CSS 로드
     with open('./css/spinner.css', encoding="UTF-8") as f:
         st.html(f"<style>{f.read()}</style>")
 
-    # 오버레이 컨테이너 (한 번만 생성, 절대 재생성 안 함)
+    # 2. 컨테이너 생성
+    # 오버레이용 (한 번 그리고 절대 안 건드림)
     overlay_container = st.empty()
-    
-    # 메시지 업데이트용 컨테이너 (별도)
-    message_container = st.empty()
-    
-    # 초기 오버레이 생성 (이후 절대 건드리지 않음)
-    initial_msg_html = message.replace('\n', '<br>')
-    overlay_container.html(f"""
+    # JS 실행용 (업데이트 때마다 사용)
+    js_container = st.empty()
+
+    # 3. 초기 HTML 그리기 (ID를 부여해서 나중에 JS로 찾을 수 있게 함)
+    # 타임스탬프(heartbeat)는 spin-box 밖으로 빼서 우측 하단에 배치했습니다.
+    overlay_container.markdown(f"""
         <div class="spin_overlay">
             <div class="spin-box">
                 <div class="spinner"></div>
-                <div id="loading-message-display">{initial_msg_html}</div>
+                <div id="msg-main" class="queue-message-content">{initial_msg}</div>
+                <div id="msg-sub" class="queue-detail-content"></div>
             </div>
+            <div class="heartbeat" id="heartbeat-timer">Initializing...</div>
             <div class="alert-box">
-                <h3>⚠️ 경고: 대기열, 민원 생성 중에 절대로 새로고침을 하지 말아주세요!</h3>
+                <h3>⚠️ 경고: 작업이 진행 중입니다. 절대로 새로고침 하지 마세요!</h3>
             </div>
         </div>
-    """)
-    
-    # 메시지 업데이트 함수 (오버레이는 절대 건드리지 않음)
-    def update_message(msg):
-        msg_html = msg.replace('\n', '<br>').replace("'", "\\'").replace('"', '\\"')
-        message_container.empty()
-        # components.html로 JavaScript 실행
-        with message_container:
-            components.html(f"""
-                <script>
+    """, unsafe_allow_html=True)
+
+    # 4. 업데이트 함수 (JS 스크립트를 주입하여 텍스트만 변경)
+    def update_message(msg, rank=None, ahead=None):
+        current_time = datetime.now().strftime("%H:%M:%S")
+        
+        # 표시할 텍스트 결정
+        main_text = msg
+        
+        sub_text = ""
+        
+        if rank is not None and rank > 0:
+            if ahead > 0:
+                main_text = f"현재 대기 순번은 <span style='color:#e53935'>{rank}</span>번입니다. ({ahead}명 대기 중)"
+            else:
+                main_text = f"현재 대기 순번은 <span style='color:#e53935'>{rank}</span>번입니다. (바로 다음 순서)"
+        
+        # 줄바꿈, 따옴표 처리 (JS 에러 방지)
+        safe_main = main_text.replace('\n', '<br>').replace("'", "\\'").replace('"', '\\"')
+        safe_sub = sub_text.replace("'", "\'").replace('"', '\"')
+
+        # JavaScript 실행: 화면을 다시 그리지 않고 ID로 찾아서 내용만 바꿈
+        js_code = f"""
+            <script>
                 (function() {{
-                    const msgEl = window.parent.document.getElementById('loading-message-display');
-                    if (msgEl) {{
-                        msgEl.innerHTML = '{msg_html}';
-                        console.log('메시지 업데이트됨:', '{msg_html}');
-                    }} else {{
-                        console.error('loading-message-display를 찾을 수 없습니다.');
+                    try {{
+                        // 부모 창(Streamlit 앱)의 요소 찾기
+                        const mainEl = window.parent.document.getElementById('msg-main');
+                        const subEl = window.parent.document.getElementById('msg-sub');
+                        const timeEl = window.parent.document.getElementById('heartbeat-timer');
+                        
+                        if(mainEl) mainEl.innerHTML = '{safe_main}';
+                        if(subEl) subEl.innerHTML = '{safe_sub}';
+                        if(timeEl) timeEl.innerText = '마지막으로 체크한 시간: {current_time}';
+                    }} catch(e) {{
+                        console.log(e);
                     }}
                 }})();
-                </script>
-            """, height=0, width=0)
-    
-    if dialog:
-        if st.session_state.dialog_check:
-            update_message(message)
-            st.session_state.dialog_check = False
-    else:
-        update_message(message)
-    
+            </script>
+        """
+        # JS 컨테이너를 비우고 새로 실행 (스크립트 재실행 트리거)
+        with js_container:
+            components.html(js_code, height=0, width=0)
+
+    # 다이얼로그 초기 처리
+    if dialog and st.session_state.get('dialog_check', False):
+        update_message(initial_msg)
+        st.session_state.dialog_check = False
+
     try:
         yield update_message
     finally:
+        # 작업 종료 시 오버레이 제거
         overlay_container.empty()
-        message_container.empty()
-'''@contextmanager
-def show_loading_overlay(message = "로딩 중입니다.", page_title="처리 중...", dialog = False):
-
-    with open('./css/spinner.css', encoding = "UTF-8") as f:
-        st.html(f"<style>{f.read()}</style>")
-
-    overlay = st.empty()
-
-    def update_message(msg):
-        msg_html  = msg.replace('\n', '<br>')
-        overlay.html(f"""
-            <div class="spin_overlay">
-                <div class = "spin-box">
-                    <div class="spinner"></div>
-                    <div>{msg}</div>
-                </div>
-                <div class = "alert-box">
-                    <h3>⚠️ <경고> 대기열, 민원 생성 중에 절대로 새로고침을 하지 말아주세요!</h3>
-            </div>
-        """)
-    if dialog:
-        if st.session_state.dialog_check:
-            update_message(message)
-            st.session_state.dialog_check = False
-    else:
-        update_message(message)
-    try:
-        yield update_message
-    finally:
-        overlay.empty()'''
+        js_container.empty()
 #사용하지 않는 함수
 def scroll_to_top():
     st.components.v1.html(

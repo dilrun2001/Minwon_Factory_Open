@@ -346,8 +346,12 @@ div[class *= "answer_sub_total_"]{
 
 
 div[class *= "selectbox_select_"] > div > div > div > p,
-div[class *= "answer_sub_total_"] > div > div > div > p{
+div[class *= "answer_sub_total_"] > div > div > div > p,
+div[class *= "minwon_sub_title_container_"] > div > div > div > p{
     font-size: 14px;
+}
+div[class *= "minwon_sub_container_"]{
+    gap:3px;
 }
 
 /*div[class *= "result_first_"] [data-baseweb = "base-input"],

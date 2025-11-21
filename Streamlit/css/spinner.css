@@ -57,6 +57,30 @@
     padding: 0;
 }
 
+/* --- 기존 코드는 유지하고 아래 내용만 추가 --- */
+
+.queue-info {
+    font-size: 1.3em; /* 글자 크기 키움 */
+    font-weight: bold;
+    color: #333333; /* 잘 보이는 진한 회색 */
+    margin-top: 15px;
+}
+
+.queue-detail {
+    font-size: 0.9em;
+    color: #666666;
+    margin-bottom: 10px;
+}
+
+.heartbeat {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 0.8em;
+    margin-top: 5px;
+
+}
+
 
 /* 로딩 스피너(st.spinner 대체*/
 .spinner {
