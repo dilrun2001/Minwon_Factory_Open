@@ -144,6 +144,42 @@ def dequeue_task(task_id):
     if run_query("SELECT 1 FROM task_queue LIMIT 1").empty:
         clear_queue()
 
+#선행 대기가 몇명인지 체크하는 함수
+def get_waiting_count_ahead(user_id):
+    """
+    내 앞의 대기 인원 수를 반환합니다.
+    (내 순번 - 1)과 같은 개념이지만, 명시적으로 내 작업보다 먼저 생성된 작업의 수를 카운트합니다.
+    """
+    # 1. 내 대기 작업의 생성 시간(created_at) 조회
+    # 내 작업이 여러 개일 경우 가장 먼저 등록한 작업을 기준으로 합니다 (ORDER BY created_at ASC)
+    my_task_query = """
+        SELECT created_at 
+        FROM task_queue 
+        WHERE user_id = %s AND status = 'waiting' 
+        ORDER BY created_at ASC 
+        LIMIT 1
+    """
+    
+    df_my_task = run_query(my_task_query, (user_id,), fetch=True)
+    
+    # 대기 중인 내 작업이 없으면 앞사람도 0명 (혹은 로직에 따라 None 처리 가능)
+    if df_my_task.empty:
+        return 0
+
+    my_created_at = df_my_task.iloc[0]['created_at']
+
+    # 2. 내 작업 시간보다 '이전(작다, <)'에 생성된 waiting 상태의 작업 개수 카운트
+    count_query = """
+        SELECT COUNT(*) as count_ahead
+        FROM task_queue 
+        WHERE status = 'waiting' 
+        AND created_at < %s
+    """
+    
+    df_count = run_query(count_query, (my_created_at,), fetch=True)
+    
+    return df_count.iloc[0]['count_ahead']
+
 def clear_queue():
     run_query("TRUNCATE TABLE task_queue", fetch=False)
 

@@ -95,7 +95,7 @@ def show_home():
                             st.session_state.df = pd.DataFrame(columns=[
                             '이름', '부서명', '전화번호', '민원내용',
                             '답변요지', '민원요지', '최종답변','최종답변 체크', '최종평점',
-                            '민원 카테고리', '민원 긴급도', '답변 평점', 'RAG 평점', '최종답변 최초 설정', '수정','평점 수정','평점 알림', '재생성', '답변요지 방식', '재생성 알림'
+                            '민원 카테고리', '민원 긴급도', '답변 평점', 'RAG 평점', '최종답변 최초 설정', '수정','평점 수정','평점 알림', '재생성', '답변요지 방식', '재생성 알림', '민원 요약 출력'
                         ])
 
                             st.session_state.df.loc[0] = {
@@ -120,7 +120,8 @@ def show_home():
                         '평점 알림': True,
                         '답변요지 방식': "직접 입력",
                         '재생성': False,
-                        '재생성 알림': False
+                        '재생성 알림': False,
+                        '민원 요약 출력': True
                     }
                             
 
@@ -187,6 +188,7 @@ def show_home():
                             st.session_state.df['재생성'] = False
                             st.session_state.df['재생성 알림'] = False
                             st.session_state.df['최종답변 체크'] = '답변결과'
+                            st.session_state.df['민원 요약 출력'] = True#'민원 요약 출력': True
                             #print(st.session_state.df)
                             #st.markdown(f"##### {len(st.session_state.df)}개의 민원 데이터가 입력되었습니다.")
                             #print(st.session_state.df)
@@ -351,6 +353,8 @@ def show_input():
     
         if f"minwon_urgency_{index}" not in st.session_state:
             st.session_state[f"minwon_urgency_{index}"] = minwon.at[index, '민원 긴급도']
+        if f"minwon_sub_{index}" not in st.session_state:
+            st.session_state[f"minwon_sub_{index}"] = minwon.at[index, '민원요지']
         with st.container(key  = f"total_input_left_container_{index}"):
             with st.container(key = f"selectbox_select_{index}"):
                 st.write("민원 카테고리 및 민원 긴급도")
@@ -363,9 +367,26 @@ def show_input():
                 ) 
             minwon.at[index, '민원 카테고리'] = st.session_state[f"minwon_category_{index}"]
             minwon.at[index, '민원 긴급도'] = st.session_state[f"minwon_urgency_{index}"]
-        minwon.at[index, '민원요지'] = st.text_area(
-                                            "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =277  , value= minwon.iloc[index]['민원요지'], key = f"minwon_sub_{index}"
-        )
+        with st.container(key = f"minwon_sub_container_{index}"):
+            with st.container(key = f"minwon_sub_title_container_{index}", horizontal=True):
+                #
+                if minwon.iloc[index]['민원 요약 출력']:
+                    st.write("민원 요약")
+                    if st.button("민원 원문 보기", icon = ":material/swap_horiz:", key = f"switch_original_{index}", type="tertiary"):
+                        minwon.at[index, '민원 요약 출력'] = False
+                        st.session_state[f"minwon_sub_{index}"] = minwon.iloc[index]['민원내용']
+                        st.rerun(scope="fragment")
+                else:
+                    st.write("민원 내용")
+                    if st.button("민원 요약 보기", icon = ":material/swap_horiz:", key = f"switch_sub_{index}", type="tertiary"):
+                        minwon.at[index, '민원 요약 출력'] = True
+                        st.session_state[f"minwon_sub_{index}"] = minwon.iloc[index]['민원요지']
+                        st.rerun(scope="fragment")
+            #value= minwon.iloc[index]['민원요지'],
+            st.text_area(
+                                                "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =245  ,  key = f"minwon_sub_{index}", label_visibility="collapsed"
+            )
+
     
     # ============================================================
     #중앙 입력창(답변요지 입력, 답변요지 프리셋 버튼 포함)

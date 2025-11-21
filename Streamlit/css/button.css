@@ -59,6 +59,26 @@ div[class *= "switch_option_"] [data-testid="stIconMaterial"]{
     font-size: 3.125rem; /* 50px -> 3.125rem */
 }
 
+div[class *= "switch_original_"]>div >button,
+div[class *= "switch_sub_"]>div >button{
+ 
+    min-height: 0rem;
+}
+
+div[class *= "switch_original_"]>div >button:hover,
+div[class *= "switch_sub_"]>div >button:hover{
+    background-color: transparent;
+}
+
+div[class *= "switch_original_"]>div >button > span > span,
+div[class *= "switch_sub_"]>div >button > span > span{
+    font-size: 18px;
+}
+div[class *= "switch_original_"] >div >button > div > p,
+div[class *= "switch_sub_"] >div >button > div > p{
+    font-size:14px;
+}
+
 /*div[class *= "select_answer_"] [data-testid = "stBaseButton-tertiary"]{
     color: var(--accept-color);
 
@@ -549,8 +569,6 @@ div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > span >[data-
     font-size: 3.125rem;
     justify-content:flex-end;
 }
-
-
 
 
 
