@@ -66,13 +66,17 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
         while not task_id:
             task_id = get_queue(st.session_state.id)
             if not task_id:
+                st.set_page_config("생성 대기중...", page_icon=":material/add_to_queue:")
                 num = search_queue(st.session_state.id)
                 test = get_waiting_count_ahead(st.session_state.id)
+                proc_info = get_starting_process_time()
+                print(proc_info)
                 update(f"선행 처리 중인 작업이 있습니다. 대기열에 등록됩니다.")
                 time.sleep(3)
                 update(f"대기 중...", rank = num, ahead=test)
                 time.sleep(3)
         update("대기열에 등록되었습니다. 요청하신 작업을 시작합니다.")
+        
         time.sleep(0.5)
         match (recreate, multi, yogi):
             # ========================================================================================================================
@@ -81,6 +85,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
             
             case (True, False, False): 
                 if st.session_state.ai_option:
+                        st.set_page_config(f"{index+1} 답변 재생성중...", page_icon=":material/cycle:")
                         update(f"{index+1}번 민원의 답변을 재생성하는 중입니다.")
                         if st.session_state.model == "사하아이 연동":
                             answer = useAi.SahaAi_request(minwon=data.iloc[index]['민원내용'], answer=data.iloc[index]['답변요지'],answer_format=data.iloc[index]['답변양식'])
@@ -104,6 +109,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
             #답변 멀티 재생성
             # ========================================================================================================================            
             case (True, True, False):
+                    st.set_page_config("답변 생성중...", page_icon=":material/cycle:")
                     if st.session_state.ai_option:
                         for i, row in data.iterrows():
                             cnt = data['수정'].sum() 
@@ -144,10 +150,11 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                     case "사하아이 연동":
                         st.session_state.saha_count += len(data)
                 print(f"default: {st.session_state.default_count}, minwon factory: {st.session_state.mf_count}, sahaAI: {st.session_state.saha_count}" )
+                st.set_page_config("민원 요약 생성중...", page_icon=":material/cycle:")
                 if st.session_state.ai_option:
                     time.sleep(0.5)
                     for i, row in data.iterrows():
-                        update(f"{i+1}번 민원에 대한 민원 요지를 생성 중입니다. 현재 진행 상황 {i+1}/{len(data)}")
+                        update(f"{i+1}번 민원에 대한 민원 요약을 생성 중입니다. 현재 진행 상황 {i+1}/{len(data)}")
                         if st.session_state.model == "사하아이 연동":
                             result_sub = useAi.SahaAi_request_sub(row['민원내용'])
                         else:
@@ -172,6 +179,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                     case "사하아이 연동":
                         st.session_state.saha_count += len(data)
                 print(f"default: {st.session_state.default_count}, minwon factory: {st.session_state.mf_count}, sahaAI: {st.session_state.saha_count}" )
+                st.set_page_config("답변 생성중...", page_icon=":material/cycle:")
                 for i, row in data.iterrows():
                     if st.session_state.ai_option:
                         
@@ -185,6 +193,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                         #ragai.find_similar_respond(minwon_summary=st.session_state.minwon_sub,answer_yogi=st.session_state.answer_sub)
                     else:
                         update(f"AI가 비활성화되었습니다.")
+                        time.sleep(2)
                         answer = row['답변양식']#useAi.AI_print_answer(minwon=st.session_state.minwon, answer=st.session_state.answer_sub,answer_format=st.session_state.answer_format)
                         #answers.append(answer)
                     #data.at['답변결과', i] = answer

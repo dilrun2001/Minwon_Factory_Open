@@ -116,9 +116,9 @@ def grade_check():
 # 사이드바
 # ========================================================================================================================
 def set_menu_side():
-    with st.sidebar.container(key = "menu_sidebar"):
+    with st.sidebar.container(key = "menu_sidebar", border=True):
         #if st.session_state['page'] == 'main' or st.session_state['page'] == 'static':
-            st.write("## :material/person: AI 모델 선택")
+            st.write("### :material/person: AI 모델 선택")
             st.divider()
             with st.container(key = "popover_llm_main"):
                 match st.session_state.model:

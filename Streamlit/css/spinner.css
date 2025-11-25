@@ -81,6 +81,22 @@
 
 }
 
+.processing-badge {
+    background-color: rgba(52, 152, 219, 0.15);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 0.8em;
+    color: #3498db;
+    border: 1px solid rgba(52, 152, 219, 0.5);
+    border-radius: 8px; /* 둥근 사각형 */
+    padding: 8px 12px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+}
 
 /* 로딩 스피너(st.spinner 대체*/
 .spinner {
