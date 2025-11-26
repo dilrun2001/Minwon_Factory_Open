@@ -144,6 +144,22 @@ def dequeue_task(task_id):
     if run_query("SELECT 1 FROM task_queue LIMIT 1").empty:
         clear_queue()
 
+# 작업 시작한 함수의 시작 시간 체크
+def get_starting_process_time():
+    query = """
+    SELECT id, DATE_FORMAT(created_at, '%%Y-%%m-%%d %%H:%%i') as start_time
+    FROM task_queue
+    WHERE status = 'processing'
+    ORDER BY created_at ASC
+    LIMIT 1
+    """
+    result = run_query(query)
+    if not result.empty:
+       return result.iloc[0]['start_time']
+       
+    else:
+       return None
+   
 #선행 대기가 몇명인지 체크하는 함수
 def get_waiting_count_ahead(user_id):
     """

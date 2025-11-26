@@ -5,7 +5,7 @@
     --main-color: #2766c2;
     --main-background: #e7edf7;
     --background: #0d0d0d00;
-    --error-color: #ff2b2b;
+    --error-color: #bd4043;
     --error-background: #f7f2f2;
     --accept-color: #158237;
     --accept-background:#f4fcf4;
@@ -19,8 +19,7 @@
 }
 
 [data-testid = "stHeader"]{
-    top: 0.5rem;
-    left:1rem;  
+    
     container-type: inline-size;
     /*background-color: #e5e9f0;
     border-radius: 1.5rem;
@@ -54,9 +53,8 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
 [data-baseweb = "base-input"] > input{
     font-weight: 600;
 }
-
-.stApp,
 .stAppToolbar,
+.stApp,
 .stMainBlockContainer,
 [data-testid = "stFileUploaderDropzone"],
 [data-baseweb = "base-input"]{
@@ -194,14 +192,14 @@ button[data-baseweb="tab"] {
     border-radius: 0.9375rem; /* 15px -> 0.9375rem */
 }
 
-[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 43, 43)"]) {
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(189, 64, 67)"]) {/*rgb(255, 43, 43)*/
     border: 0.0625rem solid var(--error-color); /* 1px -> 0.0625rem */
     background-color: var(--error-background)   
 }
-[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 43, 43)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]{
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(189, 64, 67)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]{
     background-color: var(--error-background);
 }
-[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(255, 43, 43)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
+[data-testid="stDialog"] div[role="dialog"]:has(span[style*="color: rgb(189, 64, 67)"]) div.st-key-check_btn [data-testid="stBaseButton-secondary"]:hover{
     color: var(--error-color)!important;
     border: 0.0625rem solid var(--error-color) !important; /* 1px -> 0.0625rem */
     background-color: var(--error-background);
@@ -303,7 +301,7 @@ button[data-baseweb="tab"] {
 [data-testid = "stMainBlockContainer"]{
     padding-left: 7rem;
     padding-right: 7rem;
-    padding-top: 6rem;
+    padding-top: 5rem;
 
 }
 
@@ -425,14 +423,20 @@ div.st-key-llm_model_select{
         left:30%;
     }
 }*/
+div.st-key-menu_sidebar{
+    background-color: var(--main-background);
+    gap:0.01rem;
+    border:1px solid #6994d6;
+    padding: 1.2rem 1.2rem;
+}
 div.st-key-main_total_menu_container{
     position: absolute;
 
     gap: 0.3rem;
     width: 300px;
     border-radius: 1.5rem;
-    top:0.8rem; 
-    right: 1rem;
+    top:0.3rem; 
+    right: 0.6rem;
     z-index: 999999 !important;
     padding-left:5rem;
     padding-top:0.3rem;
@@ -445,8 +449,8 @@ div.st-key-main_clear_container{
     width: fit-content;
     border-radius: 1.4rem;
     height: 1.875rem;
-    top:0.8rem;
-    left: 23.6rem;
+    top:0.3rem;
+    left: 23rem;
     z-index: 999999 !important;
     padding-left: 1rem;
     padding-right:1rem;
@@ -454,11 +458,11 @@ div.st-key-main_clear_container{
     padding-bottom: 0.3rem;
     gap: 6.5rem;
     justify-content: left;
-    transition: left 0.3s ease-in-out;
+    transition: left 0.2s ease-in-out;
 }
 
 div[data-testid="stApp"]:has(section[data-testid="stSidebar"][aria-expanded="true"]) .st-key-main_clear_container {
-        left:20.6rem;
+        left:19.6rem;
 } 
 
 div.st-key-show_display_sidebar{

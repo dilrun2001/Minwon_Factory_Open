@@ -266,6 +266,9 @@ div.st-key-option_tab_menu_off [data-testid = "stBaseButton-tertiary"]{
     justify-content: left;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: 1rem;
+
 }
 
 div.st-key-normal_popover_off [data-testid = "stBaseButton-tertiary"]:hover,
@@ -275,6 +278,7 @@ div.st-key-option_tab_menu_off [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-option_expand_menu_off [data-testid = "stBaseButton-tertiary"]:hover{
     transition: all 0.4s ease;
     background-color:var(--main-background);
+    border: 1px solid var(--main-color);
     border-radius: 1rem;
 
 }
@@ -349,15 +353,18 @@ div.st-key-llm_model_select [data-testid = "stPopoverButton"]:hover{
 }
 
 
-div.st-key-clear_btn >div > button,
-div.st-key-test_float_btn >div > button{
+div.st-key-clear_btn >div > button{
     position: absolute;
     width:110px;
     border-radius: 1.2rem;
     z-index:99999999;
+    padding:0.3rem;
 }
 
-
+div.st-key-clear_btn{
+    border-radius: 1.2rem;
+}
+div.st-key-clear_btn  >div>div>div>div > button,
 div.st-key-download_CSV  >div>div>div>div > button,
 div.st-key-download_Excel >div>div>div>div > button{
     width:100px;
@@ -365,30 +372,19 @@ div.st-key-download_Excel >div>div>div>div > button{
     padding: 0.3rem;
 }
 
-div.st-key-clear_btn > div > button > span > span,
-div.st-key-test_float_btn > div > button > span > span,
+div.st-key-clear_btn > div >div >div >div> button > span > span,
 div.st-key-download_CSV  > div > div > div > div  > button > span > span,
 div.st-key-download_Excel  > div > div > div > div  > button > span > span{
     font-size: 1.7rem;
 }
 
-div.st-key-clear_btn > div > button > div > p,
-div.st-key-test_float_btn  > div > button > div > p,
+div.st-key-clear_btn > div >div>div>div> button > div > p,
 div.st-key-download_CSV  > div > div > div > div > button > div > p,
 div.st-key-download_Excel  > div > div > div > div > button > div > p{
     font-size: 17px;
 }
 
-div.st-key-download_CSV{
-    position: relative;
-    width:4rem;
 
-}
-div.st-key-download_Excel{
-    position: relative;
-    width:4rem;
-
-}
 
 
 div.st-key-main_header_container > div.st-key-hidden_download_file{
@@ -598,6 +594,7 @@ div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > span >[data-
 
 .rc-overflow [data-testid = "stTopNavLink"]{
     width:fit-content;
+    border-radius: 1rem;
     justify-content: center;
 }
 .rc-overflow [data-testid = "stTopNavLink"]:hover{
@@ -617,7 +614,7 @@ div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > span >[data-
 
 .rc-overflow a[aria-current="page"]{
     border-radius: 1rem;
-    background-color: var(--main-background);
+    background-color: transparent;
     
 }
 

@@ -140,6 +140,24 @@ def show_home():
                 st.write('''- 복수 민원 탭을 통해 이미 민원을 :red[입력]받은 상태입니다.''')
                 st.write('''- :red[복수 민원]을 이미 입력하신 경우 단일 민원은 :red[입력할 수 없습니다.]''')
                 st.write('''- 다시 입력하시고 싶으시면 새로 고침(F5)을 해주시거나 위 버튼을 눌러 초기화해주세요.''')
+
+    # ============================================================
+    # Excel 샘플 다운로드 로직
+    # ============================================================
+    @st.cache_data
+    def sample_excel():
+        excel_path = "./data/엑셀 샘플.xlsx"
+        with open(excel_path, "rb") as f:
+            return f.read()
+    # ============================================================
+    # CSV 샘플 다운로드 로직
+    # ============================================================
+    @st.cache_data
+    def sample_csv():
+        csv_path = "./data/csv 샘플.csv"
+        with open(csv_path, "rb") as f:
+            return f.read()
+
     # ============================================================
     # 파일 입력
     # ============================================================
@@ -156,6 +174,23 @@ def show_home():
                             st.session_state.home_file_show = False
                             st.session_state.home_input_btn = False
                             st.rerun()
+                        #엑셀 샘플 데이터 다운로드 버튼
+                        st.download_button(
+                            "양식 샘플 다운로드", 
+                            data = sample_excel(), 
+                            file_name = "민원 입력 샘플.xlsx",
+                            icon = ":material/download:", 
+                            key = "excel_sample_download",
+                            help = "엑셀 파일의 샘플 데이터입니다. 해당 부분을 활용해서 제작이 가능합니다.")
+                        #csv 샘플 데이터 다운로드 버튼
+                        '''st.download_button(
+                            "CSV 샘플 다운로드", 
+                            data = sample_csv(),
+                            file_name = "민원 입력 샘플.csv",
+                            icon = ":material/download:",
+                            key = "csv_sample_download", 
+                            help = "CSV 파일의 샘플 데이터입니다. 해당 부분을 활용해서 제작이 가능합니다.")'''
+                            
                 if config['page']['filepage']:
                     with st.container(key = "file_input", border = True):
 
@@ -193,7 +228,7 @@ def show_home():
                             # ========================================================================================================================
                             # 각 행의 빈 값이 있는지 체크
                             # ========================================================================================================================
-                            empty_col = df[requirement_column].applymap(lambda x: str(x).strip() == "") #행에서 빈값이 있는지 체크
+                            empty_col = df[requirement_column].map(lambda x: str(x).strip() == "") #행에서 빈값이 있는지 체크
                             if empty_col.any().any():
                                 error_col = empty_col.columns[empty_col.any()].tolist() #비어 있는 행 번호 추출
                                 error_msg = "입력하신 엑셀(CSV) 파일에 비어 있는 값이 존재합니다.\n\n"

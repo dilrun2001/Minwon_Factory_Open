@@ -5,6 +5,7 @@ import json
 import time
 import uuid # 고유한 ID 생성을 위해 import
 from datetime import datetime
+from util.AI_queue import *
 
 
 
@@ -44,7 +45,7 @@ def load_css():
 # ========================================================================================================================
 @contextmanager
 def show_loading_overlay(initial_msg="로딩 중입니다.", dialog=False):
-    st.set_page_config("생성중", page_icon=":material/cycle:")
+    
     # 1. CSS 로드
     with open('./css/spinner.css', encoding="UTF-8") as f:
         st.html(f"<style>{f.read()}</style>")
@@ -64,7 +65,7 @@ def show_loading_overlay(initial_msg="로딩 중입니다.", dialog=False):
                 <div id="msg-main" class="queue-message-content">{initial_msg}</div>
                 <div id="msg-sub" class="queue-detail-content"></div>
             </div>
-            <div class="heartbeat" id="heartbeat-timer">Initializing...</div>
+            <div class="processing-badge" id="heartbeat-timer">Initializing...</div>
             <div class="alert-box">
                 <h3>⚠️ 경고: 작업이 진행 중입니다. 절대로 새로고침 하지 마세요!</h3>
             </div>
@@ -72,9 +73,11 @@ def show_loading_overlay(initial_msg="로딩 중입니다.", dialog=False):
     """, unsafe_allow_html=True)
 
     # 4. 업데이트 함수 (JS 스크립트를 주입하여 텍스트만 변경)
-    def update_message(msg, rank=None, ahead=None):
-        current_time = datetime.now().strftime("%H:%M:%S")
-        
+    def update_message(msg, rank=None, ahead=None, proc_info = None):
+        if get_starting_process_time() is not None:
+            current_time = get_starting_process_time()
+        else:
+            current_time = datetime.now().strftime("%H:%M:%S")
         # 표시할 텍스트 결정
         main_text = msg
         
@@ -85,10 +88,22 @@ def show_loading_overlay(initial_msg="로딩 중입니다.", dialog=False):
                 main_text = f"현재 대기 순번은 <span style='color:#e53935'>{rank}</span>번입니다. ({ahead}명 대기 중)"
             else:
                 main_text = f"현재 대기 순번은 <span style='color:#e53935'>{rank}</span>번입니다. (바로 다음 순서)"
-        
+        if proc_info:
+            pid = proc_info.get('id')
+            p_time = proc_info.get('start_time', 'Unknown')
+            # HTML로 깔끔하게 포맷팅
+            proc_html = f"""
+                <div class='processing-badge'>
+                    🔄 진행 중: Task #{pid}<br>
+                    <span style='font-size:0.8em; color:#5dade2;'>시작: {p_time}</span>
+                </div>
+            """
+        else:
+            proc_html = "" # 현재 처리 중인게 없으면 공란
         # 줄바꿈, 따옴표 처리 (JS 에러 방지)
         safe_main = main_text.replace('\n', '<br>').replace("'", "\\'").replace('"', '\\"')
         safe_sub = sub_text.replace("'", "\'").replace('"', '\"')
+        safe_proc = proc_html.replace('\n', '').replace("'", "\\'").replace('"', '\\"')
 
         # JavaScript 실행: 화면을 다시 그리지 않고 ID로 찾아서 내용만 바꿈
         js_code = f"""
@@ -102,7 +117,7 @@ def show_loading_overlay(initial_msg="로딩 중입니다.", dialog=False):
                         
                         if(mainEl) mainEl.innerHTML = '{safe_main}';
                         if(subEl) subEl.innerHTML = '{safe_sub}';
-                        if(timeEl) timeEl.innerText = '마지막으로 체크한 시간: {current_time}';
+                        if(timeEl) timeEl.innerHTML = '현재 진행 중인 작업 시작 시간: {current_time}';
                     }} catch(e) {{
                         console.log(e);
                     }}

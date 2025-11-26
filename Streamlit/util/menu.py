@@ -116,9 +116,9 @@ def grade_check():
 # 사이드바
 # ========================================================================================================================
 def set_menu_side():
-    with st.sidebar.container(key = "menu_sidebar"):
+    with st.sidebar.container(key = "menu_sidebar", border=True):
         #if st.session_state['page'] == 'main' or st.session_state['page'] == 'static':
-            st.write("## :material/person: AI 모델 선택")
+            st.write("### :material/person: AI 모델 선택")
             st.divider()
             with st.container(key = "popover_llm_main"):
                 match st.session_state.model:
@@ -162,8 +162,11 @@ def set_menu_btn():
                 #처음으로 돌아가는 버튼 컨테이너
                 with st.container(key = "main_clear_container", horizontal=True):
                     if st.session_state.manual == True or st.session_state.file_check == True:
-                        if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", type = "tertiary"):
-                            show_popup(':material/refresh: 작업 초기화', '지금까지 했던 작업을 초기화하시겠습니까?', minwon_clear)
+                        if st.button("처음으로", key = "clear_btn", icon = ":material/refresh:", type = "tertiary", help = "모든 작업을 초기화하고 처음으로 돌아갑니다."):
+                            show_popup(':material/refresh: 작업 초기화',
+                                        '''지금까지 했던 작업을 초기화하시겠습니까?   
+                                       :yellow[:material/warning:] 모든 작업이 초기화됩니다.''' ,
+                                         minwon_clear)
 
                 #엑셀, csv 다운로드 파일   
                 with st.container(key = "main_total_menu_container", horizontal=True):
