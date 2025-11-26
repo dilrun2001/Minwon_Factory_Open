@@ -176,20 +176,20 @@ def show_home():
                             st.rerun()
                         #엑셀 샘플 데이터 다운로드 버튼
                         st.download_button(
-                            "Excel 샘플 다운로드", 
+                            "양식 샘플 다운로드", 
                             data = sample_excel(), 
                             file_name = "민원 입력 샘플.xlsx",
                             icon = ":material/download:", 
                             key = "excel_sample_download",
                             help = "엑셀 파일의 샘플 데이터입니다. 해당 부분을 활용해서 제작이 가능합니다.")
                         #csv 샘플 데이터 다운로드 버튼
-                        st.download_button(
+                        '''st.download_button(
                             "CSV 샘플 다운로드", 
                             data = sample_csv(),
                             file_name = "민원 입력 샘플.csv",
                             icon = ":material/download:",
                             key = "csv_sample_download", 
-                            help = "CSV 파일의 샘플 데이터입니다. 해당 부분을 활용해서 제작이 가능합니다.")
+                            help = "CSV 파일의 샘플 데이터입니다. 해당 부분을 활용해서 제작이 가능합니다.")'''
                             
                 if config['page']['filepage']:
                     with st.container(key = "file_input", border = True):
