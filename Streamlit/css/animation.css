@@ -158,8 +158,8 @@ div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"],
     
 }
 
-div[class *= "current_page_"] [data-testid = "stBaseButton-secondary"],
-div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"]:hover,
+/*div[class *= "current_page_"] [data-testid = "stBaseButton-secondary"],
+div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"]:hover,*/
 .stTabs [data-baseweb="tab"]:hover,
 .stTabs [data-baseweb="tab"][aria-selected="true"]{
     transform: translateY(-0.2rem);

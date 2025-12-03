@@ -26,7 +26,7 @@ st.Page(pg.show_setting, title = "설정", icon = ":material/settings:"),
 
 
 ]
-set_menu_side()
+#set_menu_side()
 page = st.navigation(pages, position="top")
 page.run()
-set_menu_btn()
+#set_menu_btn()
