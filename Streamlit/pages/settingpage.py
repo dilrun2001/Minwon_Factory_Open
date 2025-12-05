@@ -350,21 +350,21 @@ def show_pageset():
                                                                 if st.button("OFF", key = "manual_page_btn2_on", type = "secondary", width = 100):
                                                                         st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
                                 #첫 화면 UI 온오프
-                                st.write("메인 화면")
+                                st.write("UI")
                                 with st.container(key="admin_page_btn_4", gap = "medium", horizontal = True):
                                         match config['page']['new_ui']:
                                                         case True:
-                                                                if st.button("ON", key = "ui_page_btn1_on", type = "secondary", width =100):
+                                                                if st.button("신형", key = "ui_page_btn1_on", type = "secondary", width =100):
                                                                         st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
-                                                                if st.button("OFF", key = "ui_page_btn2_off", type = "secondary", width = 100):
+                                                                if st.button("구형", key = "ui_page_btn2_off", type = "secondary", width = 100):
                                                                         change_toml('page', 'new_ui', False, f'직접입력 비활성화')
                                                                         st.rerun()
                                                         
                                                         case False:
-                                                                if st.button("ON", key = "ui_page_btn1_off", type = "secondary", width =100):
+                                                                if st.button("신형", key = "ui_page_btn1_off", type = "secondary", width =100):
                                                                         change_toml('page', 'new_ui', True, f'직접입력 활성화')
                                                                         st.rerun()
-                                                                if st.button("OFF", key = "ui_page_btn2_on", type = "secondary", width = 100):
+                                                                if st.button("구형", key = "ui_page_btn2_on", type = "secondary", width = 100):
                                                                         st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
                                 
 #기본값 점수 편집

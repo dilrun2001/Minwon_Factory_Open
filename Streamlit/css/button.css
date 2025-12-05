@@ -729,7 +729,8 @@ div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"],
 div.st-key-reset_btn_container [data-testid = "stPopoverButton"],
 div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"],
 div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"],
-div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"]{
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"],
+div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"]{
     padding:0.5rem;
     padding-top: 0.5rem;
     border-radius: 1.2rem;
@@ -741,7 +742,8 @@ div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"] > span > 
 div.st-key-reset_btn_container [data-testid = "stPopoverButton"] > span > span,
 div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"] > span > span,
 div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"] > span > span,
-div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"] > span > span{
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"] > span > span,
+div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"] > span > span{
     font-size: 23px;
 }
 
@@ -751,7 +753,8 @@ div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"] > div > p
 div.st-key-reset_btn_container [data-testid = "stPopoverButton"] > div > p,
 div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"] > div > p,
 div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"] > div > p,
-div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"] > div > p{
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"] > div > p,
+div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"] > div > p{
     font-size:17px;
 }
 
@@ -762,7 +765,8 @@ div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-reset_btn_container [data-testid = "stPopoverButton"]:hover,
 div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"]:hover,
-div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"]:hover{
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"]:hover{
     color:var(--main-color);
     background-color: #f6f6f8;
     transition: all 0.3s ease;

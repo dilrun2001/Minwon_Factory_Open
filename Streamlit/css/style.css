@@ -264,16 +264,17 @@ button[data-baseweb="tab"] {
 
 .stToast [data-testid = "stMarkdownContainer"]{
     top: 0.5rem;
-    font-size: 0.9375rem; /* 15px -> 0.9375rem */
+    font-size: 1rem; /* 15px -> 0.9375rem */
 }
 .stToast:has(span[style*="color: rgb(21, 130, 55)"])  {
     border: 0.0625rem solid var(--accept-color); /* 1px -> 0.0625rem */
     background-color: #f4fcf4; 
 }
 
-.stToast:has(span[style*="color: rgb(255, 43, 43)"]){
+.stToast:has(span[style*="color: rgb(189, 64, 67)"]){
     border: 0.0625rem solid var(--error-color); /* 1px -> 0.0625rem */
     background-color: var(--error-background);
+
 }
 
 .stToast:has(span[style*="color: rgb(217, 90, 0)"]){
@@ -284,7 +285,7 @@ button[data-baseweb="tab"] {
 .stToast:has(span[style*="color: rgb(21, 130, 55)"])  [data-testid = "stToastDynamicIcon"]{
     color:var(--accept-color);
 }
-.stToast:has(span[style*="color: rgb(255, 43, 43)"])  [data-testid = "stToastDynamicIcon"]{
+.stToast:has(span[style*="color: rgb(189, 64, 67)"])  [data-testid = "stToastDynamicIcon"]{
     color:var(--error-color);
 }
 
@@ -458,7 +459,7 @@ div.st-key-main_clear_container{
     border-radius: 1.4rem;
     height: 1.875rem;
     top:0.6rem;
-    left: 20rem;
+    left: 22.5rem;
     z-index: 999999 !important;
     padding-left: 1rem;
     padding-right:1rem;
@@ -481,19 +482,22 @@ div.st-key-show_display_sidebar{
 }
 
 div.st-key-home_text_container,
-div.st-key-title_container_new{
+div.st-key-title_container_new,
+div.st-key-feedback_comment_container{
     text-align: center;
 
 }
 div.st-key-setting_menu_container,
 div.st-key-input_menu_container_test{
-    align-items: left;
+    
     border-radius:1.2rem;
+    padding:1rem 0.5rem;
 }
 
 
 div.st-key-total_set_container{
     gap: 3rem;
+    
 }
 
 div.st-key-total_set_container > div[data-testid = "stLayoutWrapper"]:first-child{
@@ -627,7 +631,8 @@ div.st-key-minwon_result_guide_container > div{
 div.st-key-input_main_container,
 div.st-key-input_main_container_test,
 div.st-key-manual_total_infor,
-div.st-key-file_input{
+div.st-key-file_input,
+div.st-key-feedback_main_container{
 
     background-color: var(--front-main);
     border:1px solid var(--main-background);

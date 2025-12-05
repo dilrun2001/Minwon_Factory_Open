@@ -240,73 +240,86 @@ def set_option_menu():
                                         '''지금까지 했던 작업을 초기화하시겠습니까?   
                                        :yellow[:material/warning:] 모든 작업이 초기화됩니다.''' ,
                                          minwon_clear)
-                #with st.container(key = "home_popover", horizontal=True):
-                with st.popover("AI 모델 선택", icon = ":material/robot:", type = "tertiary"):
-                    with st.container(key = "popover_llm_main"):
-                        match st.session_state.model:
-                            case '기본 모델':
-                                    if st.button("기본 모델", key = "normal_popover_on", type = "tertiary"):
-                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
-                                    if st.button("민원팩토리 모델", key = "mf_popover_off", type = "tertiary"):
-                                        st.session_state.model = '민원팩토리 모델'
-                                        st.rerun()
-                                    if st.button("사하아이 연동", key = "sahaai_popover_off", type = "tertiary"):
-                                        st.session_state.model = '사하아이 연동'
-                                        st.rerun()
-
-                            case '민원팩토리 모델':
-                                    if st.button("기본 모델", key = "normal_popover_off", type = "tertiary"):
-                                        st.session_state.model = '기본 모델'
-                                        st.rerun()
-
-                                    if st.button("민원팩토리 모델", key = "mf_popover_on", type = "tertiary"):
-                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
-                                    if st.button("사하아이 연동", key = "sahaai_popover_off", type = "tertiary"):
-                                        st.session_state.model = '사하아이 연동'
-                                        st.rerun()
-
-                            case '사하아이 연동':
-                                    if st.button("기본 모델", key = "normal_popover_off", type = "tertiary", width = 150):
-                                        st.session_state.model = '기본 모델'
-                                        st.rerun()
-                                    if st.button("민원팩토리 모델", key = "mf_popover_off", type = "tertiary", width = 150):
+                if st.session_state['minwon_check'] == 'feedback':
+                    if st.button("이전 페이지로", key = "feedback_page", help = "이전 페이지로 이동합니다.",type = "tertiary", icon = ":material/arrow_back:"):
+                        st.session_state['minwon_check'] = st.session_state.save_page
+                        st.session_state.save_page = ''
+                        st.rerun()
+                else:
+                    if st.button("피드백 남기기", key = "feedback_page", help = "시스템, 답변 결과에 따른 피드백을 남기는 페이지로 이동합니다.",type = "tertiary",icon = ":material/edit:"):
+                        st.session_state.save_page = st.session_state['minwon_check']
+                        st.session_state['minwon_check'] = 'feedback'
+                        st.rerun()
+                        #with st.container(key = "home_popover", horizontal=True):
+                    with st.popover("AI 모델 선택", icon = ":material/robot:", type = "tertiary"):
+                        with st.container(key = "popover_llm_main"):
+                            match st.session_state.model:
+                                case '기본 모델':
+                                        if st.button("기본 모델", key = "normal_popover_on", type = "tertiary"):
+                                            st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("민원팩토리 모델", key = "mf_popover_off", type = "tertiary"):
                                             st.session_state.model = '민원팩토리 모델'
                                             st.rerun()
-                                    if st.button("사하아이 연동", key = "sahaai_popover_on", type = "tertiary", width = 150):
-                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
-                if st.session_state['minwon_check'] == 'result':
-                        if st.button("Excel",key = "download_Excel2", icon = ":material/download:", help = "엑셀 다운로드를 하기전 답변의 평점을 채점해주세요.", type = "tertiary"):
-                                st.session_state.xlsx_count += 1
-                                start_download("Excel")
-                                
-                        if st.button("CSV",key = "download_CSV2", icon = ":material/download:", help = "CSV 다운로드를 하기전 답변의 평점을 채점해주세요.", type = "tertiary"):
-                            st.session_state.csv_count += 1
-                            start_download("CSV")
-                                          
-                if st.session_state.file_download:
-                    st.download_button(
-                        label="히든 다운로드 버튼",
-                        data=st.session_state.file,
-                        file_name=f"민원 결과.csv" if st.session_state.file_set =="CSV" else f"민원 결과.xlsx",
-                        key='hidden_download_file' , type = "tertiary"
-                    )
-                    st.toast(f":green[{st.session_state.file_set}] 파일을 다운로드 중입니다 잠시만 기다려주세요.", icon = ":material/download:")
-                    time.sleep(0.5)
-                    js_code = f"""
-                            <script>
-                                const downloader = window.parent.document.querySelector('.st-key-hidden_download_file button');
-                                if (downloader) {{
-                                    downloader.click();
-                                    console.log('Downloader found and clicked!');
-                                }} else {{
-                                    console.error('Downloader element not found!');
-                                }}
-                            </script>
-                        """
-                    html(js_code, height=0, width=0)
-                    st.session_state.save_df = pd.DataFrame(columns = ["민원내용", "답변내용"])
-                    st.session_state.file_download = False
-                match st.session_state.layout_check:
+                                        if st.button("사하아이 연동", key = "sahaai_popover_off", type = "tertiary"):
+                                            st.session_state.model = '사하아이 연동'
+                                            st.rerun()
+
+                                case '민원팩토리 모델':
+                                        if st.button("기본 모델", key = "normal_popover_off", type = "tertiary"):
+                                            st.session_state.model = '기본 모델'
+                                            st.rerun()
+
+                                        if st.button("민원팩토리 모델", key = "mf_popover_on", type = "tertiary"):
+                                            st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                        if st.button("사하아이 연동", key = "sahaai_popover_off", type = "tertiary"):
+                                            st.session_state.model = '사하아이 연동'
+                                            st.rerun()
+
+                                case '사하아이 연동':
+                                        if st.button("기본 모델", key = "normal_popover_off", type = "tertiary"):
+                                            st.session_state.model = '기본 모델'
+                                            st.rerun()
+                                        if st.button("민원팩토리 모델", key = "mf_popover_off", type = "tertiary"):
+                                                st.session_state.model = '민원팩토리 모델'
+                                                st.rerun()
+                                        if st.button("사하아이 연동", key = "sahaai_popover_on", type = "tertiary"):
+                                            st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                    if st.session_state['minwon_check'] == 'result':
+                            if st.button("Excel",key = "download_Excel2", icon = ":material/download:", help = "엑셀 다운로드를 하기전 답변의 평점을 채점해주세요.", type = "tertiary"):
+                                    st.session_state.xlsx_count += 1
+                                    start_download("Excel")
+                                    
+                            if st.button("CSV",key = "download_CSV2", icon = ":material/download:", help = "CSV 다운로드를 하기전 답변의 평점을 채점해주세요.", type = "tertiary"):
+                                st.session_state.csv_count += 1
+                                start_download("CSV")
+                                            
+                    if st.session_state.file_download:
+                        st.download_button(
+                            label="히든 다운로드 버튼",
+                            data=st.session_state.file,
+                            file_name=f"민원 결과.csv" if st.session_state.file_set =="CSV" else f"민원 결과.xlsx",
+                            key='hidden_download_file' , type = "tertiary"
+                        )
+                        st.toast(f":green[{st.session_state.file_set}] 파일을 다운로드 중입니다 잠시만 기다려주세요.", icon = ":material/download:")
+                        time.sleep(0.5)
+                        js_code = f"""
+                                <script>
+                                    const downloader = window.parent.document.querySelector('.st-key-hidden_download_file button');
+                                    if (downloader) {{
+                                        downloader.click();
+                                        console.log('Downloader found and clicked!');
+                                    }} else {{
+                                        console.error('Downloader element not found!');
+                                    }}
+                                </script>
+                            """
+                        html(js_code, height=0, width=0)
+                        st.session_state.save_df = pd.DataFrame(columns = ["민원내용", "답변내용"])
+                        st.session_state.file_download = False
+                
+                        
+                
+                '''match st.session_state.layout_check:
                     case "탭":
                         if st.button("확장형 화면으로 전환", key = "switch_expander", help = "확장형(세로) 화면으로 전환할 수 있습니다.", icon = ":material/compare_arrows:", type = "tertiary"):
                             st.session_state.layout_check = "확장형"
@@ -315,7 +328,7 @@ def set_option_menu():
                         if st.button("탭 화면으로 전환", key = "switch_tab", help = "탭(가로) 화면으로 전환할 수 있습니다.", icon = ":material/compare_arrows:", type = "tertiary"):
                             st.session_state.layout_check = "탭"
                             st.rerun()
-                
+                '''
 
 
 
@@ -339,6 +352,10 @@ def set_home_menu():
                         st.session_state.home_file_show = False
                         st.session_state.home_input_btn = False
                         st.rerun()
+                    if st.button("피드백 남기기", key = "feedback_page", help = "시스템, 답변 결과에 따른 피드백을 남기는 페이지로 이동합니다.",icon = ":material/edit:",type = "tertiary"):
+                        st.session_state.save_page = st.session_state['minwon_check']
+                        st.session_state['minwon_check'] = 'feedback'
+                        st.rerun()
                 case (False, True):
                     if st.button("직접 입력으로 전환", key = "change_manual", help = "파일 입력으로 전환할 수 있습니다.", icon = ":material/compare_arrows:", type = "tertiary"):
                         st.session_state.home_file_show = False
@@ -349,7 +366,11 @@ def set_home_menu():
                             st.session_state.home_file_show = False
                             st.session_state.home_input_btn = False
                             st.rerun()
-                        #엑셀 샘플 데이터 다운로드 버튼
+                        #엑셀 샘플 데이터 다운로드 버튼            
+                    if st.button("피드백 남기기", key = "feedback_page", help = "시스템, 답변 결과에 따른 피드백을 남기는 페이지로 이동합니다.",icon = ":material/edit:",type = "tertiary"):
+                        st.session_state.save_page = st.session_state['minwon_check']
+                        st.session_state['minwon_check'] = 'feedback'
+                        st.rerun()
                     st.download_button(
                         "양식 샘플 다운로드", 
                         data = sample_excel(), 
@@ -357,7 +378,7 @@ def set_home_menu():
                         icon = ":material/download:", 
                         key = "excel_sample_download",
                         help = "엑셀 파일의 샘플 데이터입니다. 해당 부분을 활용해서 제작이 가능합니다.", type = "tertiary")
-            
+
             with st.container(key = "home_popover", horizontal=True):
                 with st.popover("AI 모델 선택", icon = ":material/robot:", type = "tertiary"):
                     with st.container(key = "popover_llm_main"):
