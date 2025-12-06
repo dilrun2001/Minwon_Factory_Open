@@ -18,10 +18,10 @@ def input_answer():
     yogi_check =(data[data['답변요지'] == ""].index+1).tolist()
     print(yogi_check)
     if yogi_check:#((data['답변요지'] =="") ).any():
-        show_popup(":red[:material/block:]  답변 생성 오류", f'''입력하신 민원에 대한 :red[답변 요지]를 전부 입력해주세요.    
+        """show_popup(":red[:material/block:]  답변 생성 오류", f'''입력하신 민원에 대한 :red[답변 요지]를 전부 입력해주세요.    
                    미입력 민원: :red[{'번, '.join(map(str, yogi_check))}번]'''
-                   , popup_check=True)
-        #st.toast(f"해당 민원에 대한 답변 요지를 입력해주세요. :red[미입력 민원: {', '.join(map(str, yogi_check))}]", icon =":material/block:")
+                   , popup_check=True)"""
+        st.toast(f":red[{', '.join(map(str, yogi_check))}]번 민원의 답변 요지가 입력되지 않았습니다.", icon =":material/block:")
         return
     else:    
         #show_popup("민원 입력", f"민원을 생성하겠습니까?", generate_answer)
@@ -43,8 +43,8 @@ def reinput_answer():
     st.session_state.recreate_count = recreate_check
     print(st.session_state.recreate_count)
     if recreate_check == 0:
-        show_popup(":red[:material/block:]  답변 재생성 오류", f"""재생성할 답변이 존재하지 않습니다.\n답변 영역 내 민원 수정 체크 박스를 확인해주세요.""", popup_check = True)
-        #st.toast(f"재생성할 민원을 체크해주세요. 답변 영역 내 :red[좌측 상단]을 확인해주세요.", icon = ":material/block:")
+        #show_popup(":red[:material/block:]  답변 재생성 오류", f"""재생성할 답변이 존재하지 않습니다.\n답변 영역 내 민원 수정 체크 박스를 확인해주세요.""", popup_check = True)
+        st.toast(f"재생성할 답변이 존재하지 않습니다.   답변 영역 내 민원 수정 체크 박스를 확인해주세요.", icon = ":material/block:")
     else:
         
         generate_answer(recreate = True, multi=True)

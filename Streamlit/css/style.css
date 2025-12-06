@@ -12,6 +12,7 @@
     --warning-color: #d95a00;
     --warning-background: #f7f3ef;
     --font-color: inherit;
+    --front-main: #fafdff; /*#f9f9fa;*/
 }
 
 * {
@@ -21,6 +22,7 @@
 [data-testid = "stHeader"]{
     
     container-type: inline-size;
+    padding-top: 0.6rem;
     /*background-color: #e5e9f0;
     border-radius: 1.5rem;
     /*border-bottom-right-radius: 1.2rem;*/
@@ -53,7 +55,10 @@ div[class *= "switch_option_"] [data-testid="stMarkdownContainer"] p {
 [data-baseweb = "base-input"] > input{
     font-weight: 600;
 }
-.stAppToolbar,
+.stAppToolbar{
+    background-color: transparent;
+    height:4.5rem;
+}
 .stApp,
 .stMainBlockContainer,
 [data-testid = "stFileUploaderDropzone"],
@@ -259,16 +264,17 @@ button[data-baseweb="tab"] {
 
 .stToast [data-testid = "stMarkdownContainer"]{
     top: 0.5rem;
-    font-size: 0.9375rem; /* 15px -> 0.9375rem */
+    font-size: 1rem; /* 15px -> 0.9375rem */
 }
 .stToast:has(span[style*="color: rgb(21, 130, 55)"])  {
     border: 0.0625rem solid var(--accept-color); /* 1px -> 0.0625rem */
     background-color: #f4fcf4; 
 }
 
-.stToast:has(span[style*="color: rgb(255, 43, 43)"]){
+.stToast:has(span[style*="color: rgb(189, 64, 67)"]){
     border: 0.0625rem solid var(--error-color); /* 1px -> 0.0625rem */
     background-color: var(--error-background);
+
 }
 
 .stToast:has(span[style*="color: rgb(217, 90, 0)"]){
@@ -279,7 +285,7 @@ button[data-baseweb="tab"] {
 .stToast:has(span[style*="color: rgb(21, 130, 55)"])  [data-testid = "stToastDynamicIcon"]{
     color:var(--accept-color);
 }
-.stToast:has(span[style*="color: rgb(255, 43, 43)"])  [data-testid = "stToastDynamicIcon"]{
+.stToast:has(span[style*="color: rgb(189, 64, 67)"])  [data-testid = "stToastDynamicIcon"]{
     color:var(--error-color);
 }
 
@@ -378,8 +384,11 @@ div[class *= "resilt_first_"] [data-testid = "stWidgetLabel"]{
 div.st-key-input_page_option [data-testid = "stHorizontalBlock"]{
     position:fixed;
     left: 25%;
+    
 }
-
+div.st-key-input_page_option{
+    gap:1rem;
+}
 
 [data-testid = "stPopoverBody"]{
     border: 0.0625rem solid var(--main-color); /* 1px -> 0.0625rem */
@@ -435,7 +444,7 @@ div.st-key-main_total_menu_container{
     gap: 0.3rem;
     width: 300px;
     border-radius: 1.5rem;
-    top:0.3rem; 
+    top:0.6rem; 
     right: 0.6rem;
     z-index: 999999 !important;
     padding-left:5rem;
@@ -449,8 +458,8 @@ div.st-key-main_clear_container{
     width: fit-content;
     border-radius: 1.4rem;
     height: 1.875rem;
-    top:0.3rem;
-    left: 23rem;
+    top:0.6rem;
+    left: 22.5rem;
     z-index: 999999 !important;
     padding-left: 1rem;
     padding-right:1rem;
@@ -472,19 +481,23 @@ div.st-key-show_display_sidebar{
     padding-bottom:1rem;
 }
 
-div.st-key-home_text_container{
+div.st-key-home_text_container,
+div.st-key-title_container_new,
+div.st-key-feedback_comment_container{
     text-align: center;
 
 }
 div.st-key-setting_menu_container,
 div.st-key-input_menu_container_test{
-    align-items: left;
+    
     border-radius:1.2rem;
+    padding:1rem 0.5rem;
 }
 
 
 div.st-key-total_set_container{
     gap: 3rem;
+    
 }
 
 div.st-key-total_set_container > div[data-testid = "stLayoutWrapper"]:first-child{
@@ -589,6 +602,8 @@ div.st-key-AI_data_container,
 div.st-key-page_set_container{
     border-radius: 0.5rem;
     padding: 1.5rem;
+    background-color:var(--front-main);
+    border:1px solid var(--main-background);
 }
 
 /*선택된 textarea 영역 */
@@ -604,3 +619,56 @@ textarea.active-highlight {
     width: 300px !important;
 }
 
+/*
+===========================================================
+테스트 팝오버
+===========================================================
+*/
+div.st-key-minwon_result_guide_container {
+    gap:0.3rem;
+}
+div.st-key-minwon_result_guide_container > div{
+    max-width: 50%;
+}
+div.st-key-input_main_container,
+div.st-key-input_main_container_test,
+div.st-key-manual_total_infor,
+div.st-key-file_input,
+div.st-key-feedback_main_container{
+
+    background-color: var(--front-main);
+    border:1px solid var(--main-background);
+    border-radius: 0.6rem;
+    padding: 1.5rem;
+
+    
+}
+
+div.st-key-input_under_ui_option,
+div.st-key-result-button,
+div.st-key-result_under_ui_option{
+    background-color: var(--front-main);
+    border:1px solid var(--main-background);
+    border-radius: 0.8rem;
+    padding: 1rem;
+}
+div.st-key-change_display,
+div.st-key-reset_btn_container{
+    background-color: var(--front-main);
+    border:1px solid var(--main-background);
+    border-radius: 0.8rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+div.stTextArea >div{
+    background-color: white;
+}
+
+.stSelectbox > div > div > div,
+[data-baseweb = "base-input"]{
+    background-color: white;
+}
+div[class *= "input_selectbox"] > div > div >div >div{
+    background-color: white;
+}

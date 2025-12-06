@@ -42,8 +42,7 @@ def clear_state():
     if "minwon_select" not in st.session_state:
         st.session_state.minwon_select = False  # 민원 데이터 선택 체크
     
-    if "minwon_check" not in st.session_state:
-        st.session_state.minwon_check = "file_select"  # 현재 표시되는 민원페이지
+
     
     
     # ============================================================
@@ -127,7 +126,11 @@ def clear_state():
     if "admin_page" not in st.session_state:
         st.session_state.admin_page = False  # 관리자 페이지 여부
     
-    
+    if "minwon_check" not in st.session_state:
+        st.session_state.minwon_check = "file_select"  # 현재 표시되는 민원페이지
+
+    if "save_page" not in st.session_state:
+        st.session_state.save_page = ""
     # ============================================================
     # UI 및 버튼 상태
     # ============================================================
@@ -181,7 +184,7 @@ def clear_state():
     
     if "save_page" not in st.session_state:
         st.session_state.save_page = 1  # 저장 페이지
-    
+        
     
     # ============================================================
     # 관리자 및 DB 관련

@@ -26,7 +26,10 @@ st.Page(pg.show_setting, title = "설정", icon = ":material/settings:"),
 
 
 ]
-set_menu_side()
+
+if config['page']['new_ui'] is not True:
+    set_menu_side()
+    set_menu_btn()
 page = st.navigation(pages, position="top")
 page.run()
-set_menu_btn()
+

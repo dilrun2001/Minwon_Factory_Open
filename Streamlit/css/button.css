@@ -61,22 +61,26 @@ div[class *= "switch_option_"] [data-testid="stIconMaterial"]{
 
 div[class *= "switch_original_"]>div >button,
 div[class *= "switch_sub_"]>div >button{
- 
+    padding-left:0.5rem;
+    padding-right: 0.5rem;
     min-height: 0rem;
 }
 
 div[class *= "switch_original_"]>div >button:hover,
 div[class *= "switch_sub_"]>div >button:hover{
-    background-color: transparent;
+    background-color: var(--main-background);
+
 }
 
 div[class *= "switch_original_"]>div >button > span > span,
 div[class *= "switch_sub_"]>div >button > span > span{
     font-size: 18px;
+    color:var(--main-color);
 }
 div[class *= "switch_original_"] >div >button > div > p,
 div[class *= "switch_sub_"] >div >button > div > p{
     font-size:14px;
+    color:var(--main-color);
 }
 
 /*div[class *= "select_answer_"] [data-testid = "stBaseButton-tertiary"]{
@@ -249,7 +253,8 @@ div.st-key-admin_format_btn_on,
 div.st-key-admin_grade_btn_on,
 div.st-key-lab_btn_on,
 div.st-key-admin_page_btn_on{
-    background-color:#dfe5ee;
+    background-color:var(--front-main);
+    border:1px solid var(--main-background);
     transition: all 0.4s ease;
     color:var(--main-color);
     text-align: left;
@@ -323,7 +328,9 @@ div.st-key-file_page_btn2_on [data-testid = "stBaseButton-secondary"],
 div.st-key-manual_page_btn1_on [data-testid = "stBaseButton-secondary"],
 div.st-key-manual_page_btn2_on [data-testid = "stBaseButton-secondary"],
 div.st-key-ui_page_btn1_on [data-testid = "stBaseButton-secondary"],
-div.st-key-ui_page_btn2_on [data-testid = "stBaseButton-secondary"]{
+div.st-key-ui_page_btn2_on [data-testid = "stBaseButton-secondary"],
+div.st-key-feedback_page_btn1_on [data-testid = "stBaseButton-secondary"],
+div.st-key-feedback_page_btn2_on [data-testid = "stBaseButton-secondary"]{
     border: 1px solid var(--main-color);
     
     color:var(--main-color);
@@ -671,5 +678,127 @@ button[data-testid = "stBaseButton-headerNoPadding"] span[data-testid = "stIconM
     font-weight: 600;
     color: rgb(49, 51, 63);
     padding-top:25%;
+}
+
+/*
+===========================================================
+테스트 버튼
+===========================================================
+*/
+
+/*div.st-key-switch_expander [data-testid = "stBaseButton-secondary"],
+div.st-key-switch_tab [data-testid = "stBaseButton-secondary"]{
+    width: 13rem;
+    border-radius: 1.3rem;
+    border: 1px solid transparent;
+}
+div.st-key-switch_expander [data-testid = "stBaseButton-secondary"]:hover,
+div.st-key-switch_tab [data-testid = "stBaseButton-secondary"]:hover{
+    border: 1px solid var(--main-color);
+}*/
+
+div.st-key-popover_test > div > div > div >  button{
+    width: 13rem;
+    border-radius: 1.3rem;
+    border: 1px solid transparent;
+}
+div.st-key-popover_test > div > div > div >  button:hover{
+    border: 1px solid var(--main-color);
+    color: var(--main-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+
+
+div.st-key-change_display [data-testid = "stBaseButton-secondary"]:hover{
+    border: 1px solid var(--main-color);
+    color: var(--main-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+/*
+===========================================================
+체인지 버튼, 홈 버튼, 모델선택(홈버튼)
+===========================================================
+*/
+
+
+
+div.st-key-change_display [data-testid = "stBaseButton-tertiary"],
+div.st-key-change_display [data-testid = "stPopoverButton"],
+div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"],
+div.st-key-reset_btn_container [data-testid = "stPopoverButton"],
+div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"],
+div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"],
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"],
+div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"]{
+    padding:0.5rem;
+    padding-top: 0.5rem;
+    border-radius: 1.2rem;
+}
+
+div.st-key-change_display [data-testid = "stBaseButton-tertiary"] > span > span,
+div.st-key-change_display [data-testid = "stPopoverButton"]> span > span,
+div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"] > span > span,
+div.st-key-reset_btn_container [data-testid = "stPopoverButton"] > span > span,
+div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"] > span > span,
+div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"] > span > span,
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"] > span > span,
+div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"] > span > span{
+    font-size: 23px;
+}
+
+div.st-key-change_display [data-testid = "stBaseButton-tertiary"] > div > p,
+div.st-key-change_display [data-testid = "stPopoverButton"] > div > p,
+div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"] > div > p,
+div.st-key-reset_btn_container [data-testid = "stPopoverButton"] > div > p,
+div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"] > div > p,
+div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"] > div > p,
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"] > div > p,
+div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"] > div > p{
+    font-size:17px;
+}
+
+
+div.st-key-change_display [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-change_display [data-testid = "stPopoverButton"]:hover,
+div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-reset_btn_container [data-testid = "stPopoverButton"]:hover,
+div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"]:hover,
+div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"]:hover{
+    color:var(--main-color);
+    background-color: #f6f6f8;
+    transition: all 0.3s ease;
+}
+
+div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"]{
+    width:3rem !important;
+    background-color: var(--front-main);
+}
+/*div.st-key-change_display [data-testid = "stPopoverButton"]{
+    width: 12rem;
+    border-radius: 1.3rem;
+    
+}
+div.st-key-change_display [data-testid = "stPopoverButton"]:hover{
+    border: 1px solid var(--main-color);
+    color: var(--main-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+div.st-key-change_display [data-testid = "stBaseButton-secondary"]{
+    width: 12rem;
+}*/
+
+div.st-key-change_file > div > div > div > div > button,
+div.st-key-change_manual > div > div > div > div > button,
+div.st-key-change_default > div > div > div > div > button,
+div.st-key-excel_sample_download > div > div > div > div > button{
+    width:11rem;
 }
 

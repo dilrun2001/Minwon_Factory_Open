@@ -12,6 +12,7 @@ import util.llama3_korea_bllossomQ8 as useAi #우리가 만든 ai를 사용하�
 from util.toml_edit import *
 from util.AI_queue import *
 from util.create_answer import *
+from util.menu import set_option_menu, set_home_menu
 import re
 #from st_copy import copy_button
 
@@ -64,28 +65,21 @@ def show_home():
     def show_manual():
         if st.session_state.file_check is not True:
             if ui_change:
-                with st.container(key = "reset_btn_container", horizontal=True):
-                    if st.button("파일 입력으로 전환", key = "change_file", help = "파일 입력으로 전환할 수 있습니다.", icon = ":material/compare_arrows:"):
-                        st.session_state.home_manual_show = False
-                        st.session_state.home_file_show = True
-                        st.rerun()
-                    if st.button("처음 화면으로", key = "change_defaut", help = "처음 화면으로 전환할 수 있습니다.", icon = ":material/home:"):
-                        st.session_state.home_manual_show = False
-                        st.session_state.home_input_btn = False
-                        st.rerun()
+                set_home_menu()
             if config['page']['manualpage']:
                 #with st.form(key = "manual_input", border = False):
-                with st.container(horizontal=True, key = "manual_input_infor"):
-                        name = st.text_input("이름", placeholder="이름을 입력해주세요.")
-                        department = st.selectbox("부서명", options = config['app']['department'], key = "department_option", accept_new_options=True)#st.text_input("부서명", placeholder="부서명을 입력해주세요. ex) 사하구청")
-                        tel = st.text_input("전화번호", placeholder="전화번호를 특수 문자 없이 입력해주세요.", key = "phone_number", on_change=format_number)
-                with st.form(key = "manual_input", border = False):
-                    minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300, key = "minwon_input_area")
+                with st.container( key = "manual_total_infor"):
+                    with st.container(horizontal=True, key = "manual_input_infor"):
+                            name = st.text_input("이름", placeholder="이름을 입력해주세요.")
+                            department = st.selectbox("부서명", options = config['app']['department'], key = "department_option", accept_new_options=True)#st.text_input("부서명", placeholder="부서명을 입력해주세요. ex) 사하구청")
+                            tel = st.text_input("전화번호", placeholder="전화번호를 특수 문자 없이 입력해주세요.", key = "phone_number", on_change=format_number)
+                    with st.form(key = "manual_input", border = False):
+                        minwon = st.text_area("민원 내용", placeholder = "민원내용을 입력해주세요.", height = 300, key = "minwon_input_area")
                 
-                    with st.container(key = f"copy_paste_manual", horizontal=True):
-                        #copy_button(target_key="minwon_input_area", button_key = f"copy_btn_minwon", area_number=0)
-                        #paste_button(target_key="minwon_input_area", button_key = f"paste_btn_minwon")
-                        manual_btn = st.form_submit_button("민원 입력", icon = ':material/edit_note:')
+                        with st.container(key = f"copy_paste_manual", horizontal=True):
+                            #copy_button(target_key="minwon_input_area", button_key = f"copy_btn_minwon", area_number=0)
+                            #paste_button(target_key="minwon_input_area", button_key = f"paste_btn_minwon")
+                            manual_btn = st.form_submit_button("민원 입력", icon = ':material/edit_note:')
                 if manual_btn:
                     if name != '' and department != '' and tel != '' and minwon != '':
                         if st.session_state.file_check:
@@ -165,34 +159,9 @@ def show_home():
             
             if st.session_state.manual is not True:
                 if ui_change:
-                    with st.container(key = "change_display", horizontal=True):
-                        if st.button("직접 입력으로 전환", key = "change_manual", help = "파일 입력으로 전환할 수 있습니다.", icon = ":material/compare_arrows:"):
-                            st.session_state.home_file_show = False
-                            st.session_state.home_manual_show = True
-                            st.rerun()
-                        if st.button("처음 화면으로", key = "change_defaut_file", help = "처음 화면으로 전환할 수 있습니다.", icon = ":material/home:"):
-                            st.session_state.home_file_show = False
-                            st.session_state.home_input_btn = False
-                            st.rerun()
-                        #엑셀 샘플 데이터 다운로드 버튼
-                        st.download_button(
-                            "양식 샘플 다운로드", 
-                            data = sample_excel(), 
-                            file_name = "민원 입력 샘플.xlsx",
-                            icon = ":material/download:", 
-                            key = "excel_sample_download",
-                            help = "엑셀 파일의 샘플 데이터입니다. 해당 부분을 활용해서 제작이 가능합니다.")
-                        #csv 샘플 데이터 다운로드 버튼
-                        '''st.download_button(
-                            "CSV 샘플 다운로드", 
-                            data = sample_csv(),
-                            file_name = "민원 입력 샘플.csv",
-                            icon = ":material/download:",
-                            key = "csv_sample_download", 
-                            help = "CSV 파일의 샘플 데이터입니다. 해당 부분을 활용해서 제작이 가능합니다.")'''
-                            
+                    set_home_menu()
                 if config['page']['filepage']:
-                    with st.container(key = "file_input", border = True):
+                    with st.container(key = "file_input"):
 
                         upload_files = st.file_uploader(
                         "민원을 입력할 파일을 선택해주세요. (지원하는 파일 양식: csv, xlsx)",
@@ -295,9 +264,11 @@ def show_home():
     #with manual_col:
     
     if ui_change:
-        with st.container(key = "home_text_container"):
-                st.write("# 새올민원답변생성기")
+        
         if st.session_state.home_input_btn is not True:
+            with st.container(key = "home_text_container"):
+                st.write("# 새올민원답변생성기")
+                st.space()
             with st.container(key = "home_info_container"):
                 st.write('''
                         입력된 민원을 정해진 양식, AI를 활용하여 답변을 생성하는 시스템입니다.
@@ -324,10 +295,15 @@ def show_home():
         else:
             match (st.session_state.home_manual_show, st.session_state.home_file_show):
                 case (True, False):
+                    with st.container(key = "home_text_container"):
+                        st.write("### 직접 입력")
+                        st.space()
                     show_manual()
 
                 case (False, True):
-                    
+                    with st.container(key = "home_text_container"):
+                        st.write("### 파일 입력")
+                        st.space()
                     show_file()
 
     else:
@@ -342,12 +318,12 @@ def show_home():
             show_manual()
         with file_col:
             show_file()
-                    
-    with st.container(key = "result button"):
+    if st.session_state['btn_show']:             
+        with st.container(key = "result-button"):
         
-        if st.session_state['btn_show']:
-            st.write('''---''')
-            st.button("민원 요지 생성", key = "input_page_show", on_click  = generate_answer, icon = ':material/edit:', args=(0,False,False,True))
+        
+            #st.write('''---''')
+            st.button("민원 요지 생성", key = "input_page_show", on_click  = generate_answer, icon = ':material/edit:', args=(0,False,False,True),type = "tertiary")
            
 # ========================================================================================================================
 # show_home에서 10개의 민원이 초과될 경우 해당 함수가 사용됩니다.
@@ -401,15 +377,24 @@ def show_multi_page():
 # ========================================================================================================================
 @st.fragment
 def show_input():
+    ui_change = config['page']['new_ui']
     @st.fragment
     def show_input_comment():
-        with st.container(key = "input_title_container"):
-            st.write("### :material/input: 답변 요지 입력")
-        with st.container(key = "input_guide_container", horizontal=True):
-            st.write('''
-                    입력하신 민원의 요약을 바탕으로 :green[답변 요지]를 입력해주세요.
-                    상단 메뉴(:material/menu:)를 눌러 AI 모델을 :green[변경]할 수 있습니다.
-''')
+        if ui_change:
+            with st.container(key = "title_container_new", horizontal=True):
+                st.write("### 답변 요지 입력")
+            st.space()
+            set_option_menu()
+        else:
+            with st.container(key = "input_title_container"):
+                st.write("### :material/input: 답변 요지 입력")
+            with st.container(key = "input_guide_container", horizontal=True):
+                st.write('''
+                        입력하신 민원의 요약을 바탕으로 :green[답변 요지]를 입력해주세요.
+                        상단 메뉴(:material/menu:)를 눌러 AI 모델을 :green[변경]할 수 있습니다.
+        ''')
+                st.space()
+                #set_option_menu()
             #st.write('''
             #         입력하신 민원의 :red[답변 요지]를 :red[입력]해주셔야 답변을 생성할 수 있습니다.
             #        상단 선택 메뉴(:material/menu: 모양 아이콘)에서 사용할 :red[AI 모델]을 :red[선택]할 수 있습니다.
@@ -432,7 +417,7 @@ def show_input():
         with st.container(key  = f"total_input_left_container_{index}"):
             with st.container(key = f"selectbox_select_{index}"):
                 st.write("민원 카테고리 및 민원 긴급도")
-            with st.container(key = f"test_{index}", horizontal=True):
+            with st.container(key = f"input_selectbox_{index}", horizontal=True):
                 st.selectbox(
                         "민원 카테고리 및 민원 긴급도", options = ["일반", "환경", "교통", "복지", "교육", "기타"], key = f"minwon_category_{index}", label_visibility="collapsed"
                     )
@@ -458,7 +443,7 @@ def show_input():
                         st.rerun(scope="fragment")
             #value= minwon.iloc[index]['민원요지'],
             st.text_area(
-                                                "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =245  ,  key = f"minwon_sub_{index}", label_visibility="collapsed"
+                                                "민원 요약", placeholder = "민원요지 : 00동 000로 00길 쓰레기 무단투기", height =275  ,  key = f"minwon_sub_{index}", label_visibility="collapsed" #+30
             )
 
     
@@ -520,7 +505,7 @@ def show_input():
                 
         st.text_area(
                 "답변 요지" ,label_visibility="collapsed", placeholder = "위 선택 박스 선택에 따라 일부 답변 요지를 자동 입력할 수 있습니다.\n그러나 답변의 퀄리티를 위해 수동 입력을 권장드립니다.\n ex)현장확인 후 조속히 처리하겠음."
-                , height = 277, key = f"answer_sub_{index}"#, on_change=input_status_change, args=(i,)
+                , height = 307, key = f"answer_sub_{index}"#, on_change=input_status_change, args=(i,) +30
             )     
         minwon.at[index, '답변요지'] = st.session_state[f'answer_sub_{index}']
 
@@ -530,7 +515,7 @@ def show_input():
     @st.fragment
     def input_right_container(index):
         minwon.at[index,'답변양식'] = st.text_area(
-                "답변 양식", height = 360, value = minwon.at[index, '답변양식'], key = f"answer_format_{index}"
+                "답변 양식", height = 390, value = minwon.at[index, '답변양식'], key = f"answer_format_{index}"
             )  
     # ============================================================
     #전체 띄우는 함수(left, center, right)
@@ -611,7 +596,7 @@ def show_input():
     @st.fragment
     def show_generate_btn():
 
-        if st.button("답변 생성", icon=":material/edit:", key = f"input_minwon_generate"):
+        if st.button("답변 생성", icon=":material/edit:", key = f"input_minwon_generate", type = "tertiary"):
             input_answer() #util.create_answer.py
             
     # ============================================================
@@ -626,11 +611,13 @@ def show_input():
                     pass
             show_input_container(st.session_state.layout_check)
         
-        st.divider()
+        #st.divider()
         with st.container(key = "input_under_ui_option", horizontal=True):
             if st.session_state.multimode:
                 show_multi_page()
-            show_generate_btn()
+            with st.container(key = "test_container", horizontal=True):
+                
+                show_generate_btn()
     show_input_total()
 
 
@@ -641,6 +628,7 @@ def show_input():
 # 최종 답변 출력 화면
 # ========================================================================================================================
 def show_result():
+    ui_change = config['page']['new_ui']
     result = st.session_state.df
     # ============================================================
     #좌측 컨테이너
@@ -657,15 +645,15 @@ def show_result():
                             st.toast("이미 :red[선택하신 옵션]입니다.", icon = ":material/block:")
                     case 'RAG':
                         if st.button("답변 (클릭 시 최종 답변으로 전환)", key = f"select_off_answer_{index}", type = "tertiary", icon = ":material/swap_horiz:", help = "클릭 시 최종 답변이 답변결과로 전환됩니다."):
-                            result.at[index, '최종답변'] = result.iloc[index]['답변결과']
+                            #result.at[index, '최종답변'] = result.iloc[index]['답변결과']
                             result.at[index,'최종답변 체크'] = '답변결과'
                             st.rerun()
         with st.container(key = f"first_answer_{index}"):
-            st.text_area("답변 결과",  height = 380, key=f"result_first_{index}",label_visibility="collapsed")
+            st.text_area("답변 결과",  height = 360, key=f"result_first_{index}",label_visibility="collapsed")
         result.at[index, '답변결과'] = st.session_state[f"result_first_{index}"]
         #기존 좌측 로직 부활
         if result.iloc[index]['최종답변 최초 설정'] == False:
-            result.at[index,'최종답변'] = result.iloc[index]['답변결과']
+            #result.at[index,'최종답변'] = result.iloc[index]['답변결과']
             result.at[index,'최종답변 최초 설정'] = True
 
     # ============================================================
@@ -681,10 +669,10 @@ def show_result():
             case '답변결과':
                 if st.button("유사 답변 (클릭 시 최종 답변으로 전환)", key = f"select_off_rag_{index}", type = "tertiary", icon = ":material/swap_horiz:", help = "클릭 시 유사 답변이 최종 답변이 됩니다."):
                     result.at[index, '최종답변'] = result.iloc[index]['RAG']
-                    result.at[index,'최종답변 체크'] = 'RAG'
+                    #result.at[index,'최종답변 체크'] = 'RAG'
                     st.rerun()
         with st.container(key = f"second_answer_{index}"):
-            result.at[index, 'RAG'] = st.text_area("유사 답변", value=  result.iloc[index]['RAG'], height= 380, key=f"result_second_{index}", label_visibility="collapsed")  
+            result.at[index, 'RAG'] = st.text_area("유사 답변", value=  result.iloc[index]['RAG'], height= 360, key=f"result_second_{index}", label_visibility="collapsed")  
         #if result.iloc[index]['최종답변 최초 설정'] == True:
         #     result.at[index,'최종답변'] = result.iloc[index]['RAG']
 
@@ -718,9 +706,9 @@ def show_result():
     
             if f"minwon_urgency_{index}" not in st.session_state:
                 st.session_state[f"minwon_edit_urgency_{index}"] = result.at[index, '민원 긴급도']
-            st.write(f"#### :material/edit: {index+1}번 답변 요지 편집 ")
-            st.markdown("""""")
-            st.markdown("""""") 
+            #st.write(f"#### :material/edit: {index+1}번 답변 요지 편집 ")
+            #st.markdown("""""")
+            #st.markdown("""""") 
             #민원 카테고리 및 민원 긴급도 관련 함수
             with st.container(key = f"selectbox_select_{index}"):
                 st.write("민원 카테고리 및 민원 긴급도")
@@ -788,8 +776,8 @@ def show_result():
                     )
                 result.at[index, '답변요지']  = st.session_state[f"answer_edit_sub_{index}"]
         #st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:", on_click=generate_answer, args = (index, True, False))
-        if st.session_state.file_check is not True and st.session_state.manual:
-            if st.button("답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:"):
+        if st.session_state.file_check:
+            if st.button(f"{index+1}번 답변 재생성", key  = f"recreate_answer_{index}", icon = ":material/refresh:"):
                 generate_answer(index, True, False)
     
     #답변 평점 체크 되었는지 체크하는 용
@@ -841,14 +829,30 @@ def show_result():
     # ============================================================
     @st.fragment
     def show_total_infor():
-        st.write("### :material/output: 답변 결과")
-        with st.container(key = "minwon_result_guide_container", horizontal=True):
-            #st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
-            st.write(f'''
-                    입력하신 민원 {len(result)}건의 답변 생성이 완료되었습니다. :green[재생성]이 필요하시면 민원 수정 토글을 눌러 편집 후 재생성 버튼을 눌러주세요.
-                    :green[파일 다운로드]를 위해서는 :material/star: 모양의 피드백 버튼을 눌러 채점해주세요. AI 성능 개선에 도움이 됩니다.
+        if ui_change:
+            with st.container(key = "title_container_new", gap = "small"):
+                st.write("### 답변 결과")
+                st.space()
+            """with st.container(key = "minwon_result_guide_container", horizontal=True):
+                #st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
+                st.write(f'''
+                        입력하신 민원 {len(result)}건의 답변 생성이 완료되었습니다.
+                        :green[재생성]이 필요하시면 민원 수정 토글을 눌러 편집 후 재생성 버튼을 눌러주세요.
+                        :green[파일 다운로드]를 위해서는 :material/star: 모양의 피드백 버튼을 눌러 채점해주세요. AI 성능 개선에 도움이 됩니다.
 
-            ''')
+                ''')"""
+            set_option_menu()
+        else:
+            st.write("### :material/output: 답변 결과")
+            with st.container(key = "minwon_result_guide_container", horizontal=True):
+                #st.write("- 이때 2개의 입력창 중 :green[왼쪽]의 입력창이 파일 생성 시 입력되는 값입니다.")
+                st.write(f'''
+                        입력하신 민원 {len(result)}건의 답변 생성이 완료되었습니다.
+                        :green[재생성]이 필요하시면 민원 수정 토글을 눌러 편집 후 재생성 버튼을 눌러주세요.
+                        :green[파일 다운로드]를 위해서는 :material/star: 모양의 피드백 버튼을 눌러 채점해주세요. AI 성능 개선에 도움이 됩니다.
+
+                ''')
+                #set_option_menu()
             #st.write("- 입력창 사이 버튼을 누를 시 두 입력 내용이 서로 :red[교환]됩니다.")
             #민원 수정 체크박스를 클릭 시 해당하는 민원 데이터 수정 및 답변 :red[재생성]이 가능합니다.
         #st.session_state.layout_check = st.toggle("기능 테스트", key = "result_layout_check"
@@ -863,7 +867,8 @@ def show_result():
         result = st.session_state.df
         #현재 RAG 설정이 off여도 RAG 화면이 나오게 출력 세팅되어있습니다.
         # off인 경우 기존 show_edit이 show_second 자리에 등장합니다.
-        if config['app']['rag'] == "off":                
+        if config['app']['rag'] == "off":  
+                     
             first, spacer, second = st.columns((7.2, 1, 7.2)) #show_first, 공백, show_second(혹은 show_edit) 순
             
             with first:
@@ -993,9 +998,9 @@ def show_result():
     @st.fragment
     def show_total():
         show_total_infor()
-        show_total_container(st.session_state.layout_check)
-       
-        st.write('''---''')
+        with st.container(key = "input_main_container", horizontal=True):
+            show_total_container(st.session_state.layout_check)
+        #if st.session_state.file_check:
         with st.container(key = "result_under_ui_option", horizontal=True):
             if st.session_state.multimode:
                 show_multi_page()
@@ -1008,15 +1013,50 @@ def show_result():
     @st.fragment
     def show_fragment_button():
         if st.session_state.file_check:
-            if st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다."):
+            if st.button("선택한 민원 재생성", key = "total_regenerate_btn", icon = ":material/refresh:", help = "현재 수정 중인 민원들의 답변을 재생성합니다.", type = "tertiary"):
                 reinput_answer()
+        else:
+            if st.button("답변 재생성", key  = f"recreate_answer_btn", icon = ":material/refresh:", type = "tertiary", help = "입력하신 민원의 답변을 재생성합니다."):
+                if result.iloc[0]['수정']:
+                    generate_answer(0, True, False)
+                else:
+                    st.toast("재생성 기능이 :red[비활성화 ]상태입니다.", icon = ":material/block:")
     show_total()
 
+# ========================================================================================================================
+# 임시 피드백 페이지
+# ========================================================================================================================
+@st.fragment
+def show_feedback():
+    @st.fragment
+    def show_feedback_comment():
+        with st.container(key = "feedback_comment_container"):
+            st.write('''### 피드백 테스트 페이지''')
+            st.space()
+            set_option_menu()
+    @st.fragment
+    def feedback_main():
+        with st.container(key = "feedback_main_container"):
+            system_feedback, answer_feedback = st.tabs(["시스템", "답변"])
+            with system_feedback:
+                st.selectbox("불편했던 시스템 영역", ['UI/UX', 'AI', '답변'], key = "system_feedback_category")
+                st.text_area("어떤 페이지에서 불편하셨는지 말씀해주세요.", height = 300, key = "system_feedback_textarea")
+            with answer_feedback:
+                    st.selectbox("사용 모델", ['기본 모델', '민원팩토리 모델', '사하아이 연동'], key = "answer_feedback_model")
+                    st.text_area("어떤 점을 개선하면 좋을까요", height = 300)
+
+
+
+    def show_total():
+        show_feedback_comment()
+        feedback_main()
+    show_total()
 
 # ========================================================================================================================
 # 메인 페이지 호출 방식 함수 
 # st.session_state['minwon_check'] 값에 따라 출력되는 함수가 달라집니다.
 # ========================================================================================================================
+
 def show_page():
     st.session_state.page = "main"
     match st.session_state['minwon_check']:
@@ -1026,4 +1066,6 @@ def show_page():
             show_input() #답변 요지 입력 함수
         case 'result':
             show_result() #결과 화면 함수
+        case 'feedback':
+            show_feedback() #피드백 페이지 함수
   
