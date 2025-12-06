@@ -366,6 +366,24 @@ def show_pageset():
                                                                         st.rerun()
                                                                 if st.button("구형", key = "ui_page_btn2_on", type = "secondary", width = 100):
                                                                         st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                        with st.container(key = "admin_page_set_2"):        
+                        #피드백 페이지 온오프
+                                st.write("피드백 페이지")
+                                with st.container(key="admin_page_btn_5", gap = "medium", horizontal = True):
+                                        match config['page']['feedback']:
+                                                        case True:
+                                                                if st.button("ON", key = "feedback_page_btn1_on", type = "secondary", width =100):
+                                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                                                if st.button("OFF", key = "feedback_page_btn2_off", type = "secondary", width = 100):
+                                                                        change_toml('page', 'feedback', False, f'직접입력 비활성화')
+                                                                        st.rerun()
+                                                        
+                                                        case False:
+                                                                if st.button("ON", key = "feedback_page_btn1_off", type = "secondary", width =100):
+                                                                        change_toml('page', 'feedback', True, f'직접입력 활성화')
+                                                                        st.rerun()
+                                                                if st.button("OFF", key = "feedback_page_btn2_on", type = "secondary", width = 100):
+                                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
                                 
 #기본값 점수 편집
 def show_gradeset():

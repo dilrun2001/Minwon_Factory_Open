@@ -13,6 +13,7 @@ settingpage = true #설정 페이지 온오프
 staticpage = true #통계페이지 온오프
 filepage = true #파일 입력 온오프
 manualpage = true #직접 입력 온오프
+feedback = false #피드백 페이지 온오프
 
 
 [sub]

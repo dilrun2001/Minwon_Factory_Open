@@ -246,10 +246,11 @@ def set_option_menu():
                         st.session_state.save_page = ''
                         st.rerun()
                 else:
-                    if st.button("피드백 남기기", key = "feedback_page", help = "시스템, 답변 결과에 따른 피드백을 남기는 페이지로 이동합니다.",type = "tertiary",icon = ":material/edit:"):
-                        st.session_state.save_page = st.session_state['minwon_check']
-                        st.session_state['minwon_check'] = 'feedback'
-                        st.rerun()
+                    if config['page']['feedback']:
+                        if st.button("피드백 남기기", key = "feedback_page", help = "시스템, 답변 결과에 따른 피드백을 남기는 페이지로 이동합니다.",type = "tertiary",icon = ":material/edit:"):
+                            st.session_state.save_page = st.session_state['minwon_check']
+                            st.session_state['minwon_check'] = 'feedback'
+                            st.rerun()
                         #with st.container(key = "home_popover", horizontal=True):
                     with st.popover("AI 모델 선택", icon = ":material/robot:", type = "tertiary"):
                         with st.container(key = "popover_llm_main"):
@@ -352,10 +353,11 @@ def set_home_menu():
                         st.session_state.home_file_show = False
                         st.session_state.home_input_btn = False
                         st.rerun()
-                    if st.button("피드백 남기기", key = "feedback_page", help = "시스템, 답변 결과에 따른 피드백을 남기는 페이지로 이동합니다.",icon = ":material/edit:",type = "tertiary"):
-                        st.session_state.save_page = st.session_state['minwon_check']
-                        st.session_state['minwon_check'] = 'feedback'
-                        st.rerun()
+                    if config['page']['feedback']:
+                        if st.button("피드백 남기기", key = "feedback_page", help = "시스템, 답변 결과에 따른 피드백을 남기는 페이지로 이동합니다.",icon = ":material/edit:",type = "tertiary"):
+                            st.session_state.save_page = st.session_state['minwon_check']
+                            st.session_state['minwon_check'] = 'feedback'
+                            st.rerun()
                 case (False, True):
                     if st.button("직접 입력으로 전환", key = "change_manual", help = "파일 입력으로 전환할 수 있습니다.", icon = ":material/compare_arrows:", type = "tertiary"):
                         st.session_state.home_file_show = False
@@ -366,11 +368,12 @@ def set_home_menu():
                             st.session_state.home_file_show = False
                             st.session_state.home_input_btn = False
                             st.rerun()
-                        #엑셀 샘플 데이터 다운로드 버튼            
-                    if st.button("피드백 남기기", key = "feedback_page", help = "시스템, 답변 결과에 따른 피드백을 남기는 페이지로 이동합니다.",icon = ":material/edit:",type = "tertiary"):
-                        st.session_state.save_page = st.session_state['minwon_check']
-                        st.session_state['minwon_check'] = 'feedback'
-                        st.rerun()
+                        #엑셀 샘플 데이터 다운로드 버튼   
+                    if config['page']['feedback']:         
+                        if st.button("피드백 남기기", key = "feedback_page", help = "시스템, 답변 결과에 따른 피드백을 남기는 페이지로 이동합니다.",icon = ":material/edit:",type = "tertiary"):
+                            st.session_state.save_page = st.session_state['minwon_check']
+                            st.session_state['minwon_check'] = 'feedback'
+                            st.rerun()
                     st.download_button(
                         "양식 샘플 다운로드", 
                         data = sample_excel(), 

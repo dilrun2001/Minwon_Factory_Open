@@ -602,6 +602,8 @@ div.st-key-AI_data_container,
 div.st-key-page_set_container{
     border-radius: 0.5rem;
     padding: 1.5rem;
+    background-color:var(--front-main);
+    border:1px solid var(--main-background);
 }
 
 /*선택된 textarea 영역 */

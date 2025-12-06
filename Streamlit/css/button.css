@@ -253,7 +253,8 @@ div.st-key-admin_format_btn_on,
 div.st-key-admin_grade_btn_on,
 div.st-key-lab_btn_on,
 div.st-key-admin_page_btn_on{
-    background-color:#dfe5ee;
+    background-color:var(--front-main);
+    border:1px solid var(--main-background);
     transition: all 0.4s ease;
     color:var(--main-color);
     text-align: left;
@@ -327,7 +328,9 @@ div.st-key-file_page_btn2_on [data-testid = "stBaseButton-secondary"],
 div.st-key-manual_page_btn1_on [data-testid = "stBaseButton-secondary"],
 div.st-key-manual_page_btn2_on [data-testid = "stBaseButton-secondary"],
 div.st-key-ui_page_btn1_on [data-testid = "stBaseButton-secondary"],
-div.st-key-ui_page_btn2_on [data-testid = "stBaseButton-secondary"]{
+div.st-key-ui_page_btn2_on [data-testid = "stBaseButton-secondary"],
+div.st-key-feedback_page_btn1_on [data-testid = "stBaseButton-secondary"],
+div.st-key-feedback_page_btn2_on [data-testid = "stBaseButton-secondary"]{
     border: 1px solid var(--main-color);
     
     color:var(--main-color);
