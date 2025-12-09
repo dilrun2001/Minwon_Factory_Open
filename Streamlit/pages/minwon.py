@@ -155,6 +155,47 @@ def show_home():
     # ============================================================
     # 파일 입력
     # ============================================================
+
+    @st.cache_data(show_spinner="파일을 분석 중입니다...")
+    def load_and_validate_data(uploaded_file):
+        #파일 읽기
+        try:
+            if uploaded_file.name.endswith(".csv"):
+                df = pd.read_csv(uploaded_file, keep_default_na=False, encoding='cp949')
+            else:
+                df = pd.read_excel(uploaded_file, keep_default_na=False)
+        except Exception as e:
+            return None, f"파일을 읽는 중 오류가 발생했습니다: {e}"
+
+        requirement_column = ["이름", "부서명", "전화번호", "민원내용"]
+        
+        # 컬럼 체크
+        file_column = set(df.columns)
+        missing_columns = [col for col in requirement_column if col not in file_column]
+        if missing_columns:
+            error_msg = f"입력하신 파일에 필요한 컬럼이 없습니다.\n\n- 누락된 컬럼: {', '.join(missing_columns)}"
+            return None, error_msg
+
+        #빈 값 체크
+        empty_col = df[requirement_column].map(lambda x: str(x).strip() == "")
+        if empty_col.any().any():
+            error_col = empty_col.columns[empty_col.any()].tolist()
+            error_msg = "입력하신 파일에 비어 있는 값이 존재합니다.\n\n"
+            
+            for col in error_col:
+                row_indices = df.index[empty_col[col]].tolist()
+                # 행 번호 +2 (헤더 및 0-index 보정)
+                display_indices = [i + 2 for i in row_indices]
+                
+                row_msg = ", ".join(map(str, display_indices[:5]))
+                if len(display_indices) > 5:
+                    row_msg += "..."
+                error_msg += f"- **{col}**: {len(display_indices)}개 누락 ({row_msg}번 행)\n"
+                
+            return None, error_msg
+
+        # 4. 모든 검사 통과 시 DF 반환
+        return df, None
     def show_file():
             
             if st.session_state.manual is not True:
@@ -169,6 +210,11 @@ def show_home():
                         key = "file_uploader_1", label_visibility="collapsed")
                         #uploader_set()
                     if upload_files:
+                            df, error_message = load_and_validate_data(upload_files)
+                            if error_message:
+                                st.error(error_message, icon = ":material/error:")
+                                st.stop()
+                            data_filename = r"{}".format(upload_files.name)
                             # ========================================================================================================================
                             # 파일 입력 로직 변경된 점
                             # 1. 바로 st.session_state로 들어가기 전 입력된 파일의 컬럼을 체크
@@ -176,7 +222,7 @@ def show_home():
                             # 3. 이후 각 행의 내용에서 빈 값이 있을 경우에도 코드 진행 멈춤 
                             # 4. 문제가 없을 경우 세션에 올려 프레임화 이후 생성 가능하게 유도 
                             # ========================================================================================================================
-                            data_filename = r"{}".format(upload_files.name) 
+                            '''data_filename = r"{}".format(upload_files.name) 
                             try:
                                 if data_filename[-4:] == ".csv":
                                     df = pd.read_csv(upload_files, keep_default_na=False, encoding = 'cp949')
@@ -208,7 +254,7 @@ def show_home():
                                         row_mst += "..."
                                     error_msg += f"- **{col}**: {len(row_indices)}개 누락 ({row_msg}번 행)\n" #몇번 행에서 어떤 값이 비었는지 출력해주는 함수
                                 st.error(error_msg, icon = ":material/error:")
-                                st.stop()
+                                st.stop()'''
                             # ========================================================================================================================
                             # 모든 로직 통과시 데이터프레임 제작
                             # ========================================================================================================================
@@ -1058,7 +1104,8 @@ def show_feedback():
 # ========================================================================================================================
 
 def show_page():
-    st.session_state.page = "main"
+    st.session_state.page = "main" 
+    st.session_state["setting_display"] = 'display'
     match st.session_state['minwon_check']:
         case 'file_select':
             show_home() #파일 혹은 직접 입력 함수

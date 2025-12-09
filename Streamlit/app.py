@@ -15,7 +15,7 @@ st.html(
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;700&display=swap">
     """
 )
-load_css()
+load_css_develop_ver()
 clear_state()
 
 pages = [
