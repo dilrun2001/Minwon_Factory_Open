@@ -201,7 +201,7 @@ def generate_answer(index = 0, recreate = False, multi = False, yogi = False):
                         st.session_state.name = row['이름']
                         st.session_state.department = row['부서명']
                         st.session_state.tel = row['전화번호']
-                        raganswer = "rag 미지원"#ragai.find_similar_respond(minwon_summary=row['민원요지'],answer_yogi=row['답변요지'])    
+                        raganswer = useAi.AI_RAG_print_answer(minwon=row['민원내용'], answer=row['답변요지'],answer_format=row['답변양식'])#ragai.find_similar_respond(minwon_summary=row['민원요지'],answer_yogi=row['답변요지'])    
                     else:
                         update(f"RAG가 비활성화되었습니다.")
                         raganswer= f"유사 답변 기능은 현재 지원하지 않습니다."#ragai.find_similar_respond(minwon_summary=st.session_state.minwon_sub,answer_yogi=st.session_state.answer_sub)

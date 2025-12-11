@@ -1,10 +1,10 @@
 [app]
-ai = "off" #ai on/off 기능
-rag = "off" #ragai on/off 기능
+ai = "on" #ai on/off 기능
+rag = "on" #ragai on/off 기능
 lab = "off" #실험실 기능 on/off
 admin_password = "1234" #관리자 비밀번호
 default_grade = 0
-default_model = "사하아이 연동"
+default_model = "민원팩토리 모델"
 department = ["주차관리과", "교통행정과", "건설과", "도시정비과", "건축과", "자원순환과", "환경위생과", "산림녹지과", "경제진흥과", "일자리정책과", "해양수산과", "안전총괄과", "도시재생과", "문화예술과", "관광홍보과", "복지정책과", "노인장애인복지과", "시설관리사업소", "체육홍보과", "보건행정과", "건강증진과", "기획혁신과"]
 
 [page]
