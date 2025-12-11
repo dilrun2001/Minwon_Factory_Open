@@ -13,6 +13,16 @@ RUN python3 -m pip install --upgrade pip
 #깃설치
 RUN apt update && apt install -y git
 
+RUN apt-get update && apt-get install -y locales
+
+# 한글 로케일 생성
+RUN locale-gen ko_KR.UTF-8
+
+# 환경변수 영구 설정
+ENV LC_ALL ko_KR.UTF-8
+ENV LANG ko_KR.UTF-8
+ENV LANGUAGE ko_KR.UTF-8
+
 # 필요한 모듈 안에있음
 COPY requirements.txt .
 

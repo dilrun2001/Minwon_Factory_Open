@@ -867,7 +867,7 @@ def show_result():
         result = st.session_state.df
         #현재 RAG 설정이 off여도 RAG 화면이 나오게 출력 세팅되어있습니다.
         # off인 경우 기존 show_edit이 show_second 자리에 등장합니다.
-        if config['app']['rag'] == "off":  
+        if config['app']['rag'] == "on":  
                      
             first, spacer, second = st.columns((7.2, 1, 7.2)) #show_first, 공백, show_second(혹은 show_edit) 순
             
