@@ -62,6 +62,8 @@ def show_login_admin():
                         if st.form_submit_button("관리자 페이지 열기"):
                                 if password == config['app']['admin_password']:
                                         st.session_state.admin = True
+                                        if config['lab']['new_logic']:
+                                                st.session_state['setting_display'] = 'display'
                                         st.rerun()
                                 else:
                                         st.toast("비밀번호가 틀립니다.", icon = ":material/block:")
@@ -384,6 +386,22 @@ def show_pageset():
                                                                         st.rerun()
                                                                 if st.button("OFF", key = "feedback_page_btn2_on", type = "secondary", width = 100):
                                                                         st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                st.write("피드백 페이지")
+                                with st.container(key="admin_page_btn_6", gap = "medium", horizontal = True):
+                                        match config['lab']['new_logic']:
+                                                        case True:
+                                                                if st.button("ON", key = "system_logic_btn1_on", type = "secondary", width =100):
+                                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
+                                                                if st.button("OFF", key = "system_logic_btn2_off", type = "secondary", width = 100):
+                                                                        change_toml('lab', 'new_logic', False, f'직접입력 비활성화')
+                                                                        st.rerun()
+                                                        
+                                                        case False:
+                                                                if st.button("ON", key = "system_logic_btn1_off", type = "secondary", width =100):
+                                                                        change_toml('lab', 'new_logic', True, f'직접입력 활성화')
+                                                                        st.rerun()
+                                                                if st.button("OFF", key = "system_logic_btn2_on", type = "secondary", width = 100):
+                                                                        st.toast("이미 선택하신 옵션입니다.", icon = ":material/page_control:")
                                 
 #기본값 점수 편집
 def show_gradeset():
@@ -451,8 +469,108 @@ def show_gradeset():
                 )"""
 
 
+# ==============================================================================
+# show_setting 신규 로직 테스트 
+# ==============================================================================
+def get_menu_items(config):
+    # 기본 메뉴
+    items = [
+        {"id": "display", "label": "화면", "icon": ":material/display_settings:", "condition": None},
+        {"id": "ai", "label": "AI", "icon": ":material/robot:", "condition": None},
+        {"id": "lab", "label": "실험실", "icon": ":material/experiment:", 
+         "condition": config['app']['lab'] == 'on'}, # 조건부 표시
+    ]
+    
+    # 관리자 메뉴 (로그인 안 된 경우)
+    if st.session_state.admin is not True:
+         items.append({"id": "admin_login", "label": "관리자 로그인", "icon": ":material/admin_panel_settings:", "condition": None})
+    
+    # 관리자 메뉴 (로그인 된 경우)
+    else:
+        admin_items = [
+            {"id": "queue", "label": "대기열", "icon": ":material/queue:"},
+            {"id": "admin_format", "label": "양식", "icon": ":material/edit:"},
+            {"id": "grade_edit", "label": "기본값 수정", "icon": ":material/computer:"},
+            {"id": "admin_password", "label": "비밀번호 변경", "icon": ":material/key:"},
+            {"id": "db", "label": "데이터베이스", "icon": ":material/database:"},
+            {"id": "static", "label": "통계", "icon": ":material/analytics:"},
+            {"id": "page_set", "label": "페이지", "icon": ":material/page_control:"},
+        ]
+        # 관리자 아이템들 추가
+        for item in admin_items:
+            item["condition"] = None # 이미 else 블록 안이라 조건 없음
+            items.append(item)
+            
+    return items
 
-def show_setting():
+@st.fragment
+def render_setting_content(current_tab):
+    match current_tab:
+        case "display": show_display()
+        case "ai": show_ai_set()
+        case "lab": show_lab()
+        case "admin_login": show_login_admin() # 로그인 페이지 별도 처리
+        case "static": show_static()
+        case "admin_password": show_edit_password()
+        case "admin_format": show_edit_format()
+        case "grade_edit": show_gradeset()
+        case "db": show_db()
+        case "queue": show_queue()
+        case "page_set": show_pageset()
+        case _: st.info("메뉴를 선택해주세요.")
+
+
+def show_setting_new():
+
+    st.session_state['page'] = 'setting'
+    
+    if not config['page']['settingpage']:
+        st.error("현재 비활성화된 페이지입니다.")
+        return
+
+    # 화면 분할 (좌측 메뉴, 우측 콘텐츠)
+    # st.container 대신 st.columns를 쓰면 레이아웃 잡기가 더 편합니다.
+    # 비율을 조절하세요 (예: 2:8)
+    col_menu, col_content = st.columns([1.3, 9], gap="large")
+
+    # --- [좌측] 메뉴 렌더링 (반복문 사용) ---
+    with col_menu:
+        with st.container(key = "setting_menu_container"):
+                menu_list = get_menu_items(config)
+                
+                for item in menu_list:
+                        # 조건 체크 (condition이 False면 건너뜀)
+                        if item["condition"] is not None and not item["condition"]:
+                                continue
+                        
+                        # 현재 활성화 여부 체크
+                        is_active = st.session_state.get("setting_display") == item["id"]
+                        
+                        # 버튼 스타일 동적 적용 (활성화된 탭은 primary로 강조 등)
+                        btn_type = "secondary" if is_active else "tertiary"
+                        
+                        # 버튼 렌더링 (키 중복 방지를 위해 id 활용)
+
+                        if st.button(item['label'], key=f"setting_btn_{item['id']}", type=btn_type, icon=item['icon'], use_container_width=True):
+                                # 버튼 클릭 로직
+                                if is_active:
+                                        st.toast("현재 위치하고 있는 페이지입니다.", icon=":material/page_control:")
+                                else:
+                                        if item['id'] == "admin_login":
+                                                # 관리자 로그인은 탭 이동이 아니라 바로 화면 호출 방식이면 예외 처리
+                                                st.session_state["setting_display"] = "admin_login" # 혹은 별도 로직
+                                        else:
+                                                st.session_state["setting_display"] = item["id"]
+                                        st.rerun()
+
+    # --- [우측] 콘텐츠 렌더링 ---
+    with col_content:
+        # 컨테이너로 감싸서 깔끔하게 처리
+        with st.container(border=False):
+            current_tab = st.session_state.get("setting_display", "display")
+            render_setting_content(current_tab)
+
+def show_setting_old():
         st.session_state['page'] = 'setting'
     #menu, main = st.columns([1.5, 9], gap="medium")
     #with menu:
@@ -548,32 +666,35 @@ def show_setting():
                                                        st.session_state["setting_display"] = "page_set"
                                                        st.rerun()
 
-                        with st.container(key = "setting_main_container"):
-                                
-                                        match (st.session_state["setting_display"]):
-                                                case "display":
-                                                        show_display()
-                                                case "ai":
-                                                        show_ai_set()
-                                                case "lab":
-                                                        show_lab()
-                                                case "static":
-                                                        show_static()
-                                                case "admin_password":
-                                                        show_edit_password()
-                                                case "admin_format":
-                                                        show_edit_format()
-                                                case "grade_edit":
-                                                        show_gradeset()
-                                                case "db":
-                                                        show_db()
-                                                case "queue":
-                                                        show_queue()
-                                                case "page_set":
-                                                        show_pageset()
+                        with st.container(key = "setting_main_container"):    
+                                match (st.session_state["setting_display"]):
+                                        case "display":
+                                                show_display()
+                                        case "ai":
+                                                show_ai_set()
+                                        case "lab":
+                                                show_lab()
+                                        case "static":
+                                                show_static()
+                                        case "admin_password":
+                                                show_edit_password()
+                                        case "admin_format":
+                                                show_edit_format()
+                                        case "grade_edit":
+                                                show_gradeset()
+                                        case "db":
+                                                show_db()
+                                        case "queue":
+                                                show_queue()
+                                        case "page_set":
+                                                show_pageset()
         else:
                 st.error("해당 페이지는 현재 비활성화되어있습니다.")
 
-
+def show_setting():
+        if config['lab']['new_logic']:
+                show_setting_new()
+        else:
+                show_setting_old()
         
         

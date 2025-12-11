@@ -58,7 +58,54 @@ def input_db():#format):
             st.session_state.db_check = True
         return True
     insert_data()
-        
+
+#파일 생성 로직 테스트 Ver
+@st.cache_data()
+def convert_df_to_file(df: pd.DataFrame, db_check: bool, file_format: str):
+    result_df = df[['민원내용']].copy()
+    if db_check:
+        def get_answer(row):
+            if row['최종답변 체크'] == '답변결과':
+                return row['답변결과']
+            elif row['최종답변 체크'] == 'RAG':
+                 return row.get('RAG', "")
+            else:
+                 return row['최종답변']
+        result_df['답변내용'] = df.apply(get_answer, axis = 1)
+    else:
+        result_df['답변내용'] = df['최종답변']
+    
+    match file_format:
+         case "CSV":
+            return result_df.to_csv().encode("utf-8-sig")
+         case "Excel":
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+                result_df.to_excel(writer, index=False, sheet_name='시트1')
+                
+                # (기존 스타일링 로직 유지)
+                workbook = writer.book
+                worksheet = writer.sheets['시트1']
+                wrap_format = workbook.add_format({'text_wrap': True})
+                
+                # 데이터프레임의 값들을 순회하며 컬럼 너비 설정 (이 부분도 유지)
+                # 다만, 전체 데이터를 순회하는 건 느리므로 컬럼 개수만큼만 설정하는 게 효율적입니다.
+                # 여기서는 사용자님의 의도를 존중해 기존 로직과 유사하게 갑니다.
+                for idx, col in enumerate(result_df.columns):
+                    worksheet.set_column(idx, idx, 30, wrap_format)
+                
+            return output.getvalue()
+
+def create_file_testver():
+    file_data = convert_df_to_file(
+          st.session_state.df,
+          st.session_state.db_check,
+          st.session_state.file_set
+     )
+    st.session_state.file = file_data
+    st.session_state.file_download = True
+
+
 
 def create_file():
     data = st.session_state.df
@@ -134,9 +181,9 @@ def grade_check():
     else:
         if st.session_state.db_check is not True:
             input_db()
-            create_file()
+            create_file_testver()
         else:
-            create_file()
+            create_file_testver()
 
 # ========================================================================================================================
 # 사이드바

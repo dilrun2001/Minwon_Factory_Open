@@ -6,7 +6,7 @@ import time
 import uuid # 고유한 ID 생성을 위해 import
 from datetime import datetime
 from util.AI_queue import *
-
+import os
 
 
 
@@ -20,11 +20,47 @@ def load_font():
     """
     ) 
 
+
+# ========================================================================================================================
+#메인 css 파일 로드 함수  
+# ========================================================================================================================
+@st.cache_data(show_spinner="css 로드 중")
+def _get_css_content(_mtime): 
+    content = ""
+    
+    # 1. 애니메이션
+    with open('./css/animation.css', encoding="UTF-8") as f:
+        content += f'<style>{f.read()}</style>'
+    
+    # 2. 스타일
+    with open('./css/style.css', encoding="UTF-8") as f:
+        content += f'<style>{f.read()}</style>'
+        
+    # 3. 버튼
+    with open('./css/button.css', encoding="UTF-8") as f:
+        content += f'<style>{f.read()}</style>'
+        
+    return content
+
 # ========================================================================================================================
 #메인 css 로드 함수    
 # ========================================================================================================================
+#s@st.cache_data
 def load_css():
-    #1.48.0
+    # 감시할 파일 목록
+    css_files = ['./css/animation.css', './css/style.css', './css/button.css']
+    
+    # 파일들의 수정 시간을 합쳐서 '버전 키'를 만듭니다. (파일 수정 시 즉시 반영됨)
+    current_mtime = sum(os.path.getmtime(f) for f in css_files)
+    
+    # 1. 캐시된 비서 함수한테 데이터를 받아옵니다. (여기서 속도 최적화!)
+    # (이미 읽어둔 게 있으면 0초, 없으면 파일 읽음)
+    css_string = _get_css_content(current_mtime)
+    
+    # 2. 받아온 CSS를 화면에 쏴줍니다.
+    # (st.html은 가벼운 함수라 매번 실행해도 상관없고, 에러도 안 납니다)
+    st.html(css_string)
+def load_css_develop_ver():
     #스타일
     with open('./css/style.css', encoding = "UTF-8") as f:
         css = f.read()
@@ -37,8 +73,6 @@ def load_css():
     st.html(f'<style>{animation}</style>')
     st.html(f'<style>{css}</style>')
     st.html(f'<style>{btn}</style>')#, unsafe_allow_html=True)
-
-
 
 # ========================================================================================================================
 # 로딩 화면(AI 생성 시 보이는 화면)

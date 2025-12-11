@@ -15,6 +15,7 @@ import base64
 
 def show_home():
         st.session_state['page'] = 'static'
+        st.session_state["setting_display"] = 'display'
         #show_gif("./image/대기열 예시.gif")
         #st.image("./image/대기열 예시.gif", output_format="GIF", width = 1200)
 

@@ -169,7 +169,8 @@ div.st-key-admin_format_btn_off,
 div.st-key-admin_grade_btn_off,
 div.st-key-admin_set_btn,
 div.st-key-lab_btn_off,
-div.st-key-admin_page_btn_off{
+div.st-key-admin_page_btn_off,
+div[class *= setting_btn_]{
     width: 100%;
     border-radius:1rem;
     transition: all 0.4s ease;
@@ -184,12 +185,16 @@ div.st-key-admin_format_btn_off [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_grade_btn_off [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_set_btn [data-testid = "stBaseButton-tertiary"],
 div.st-key-lab_btn_off [data-testid = "stBaseButton-tertiary"],
-div.st-key-admin_page_btn_off [data-testid = "stBaseButton-tertiary"]{
+div.st-key-admin_page_btn_off [data-testid = "stBaseButton-tertiary"],
+div[class *= setting_btn_] [data-testid = "stBaseButton-tertiary"]
+{
     justify-content: left;
     transition: all 0.4s ease;
     width: 100%;
     border-radius:1rem;
 }
+
+
 
 div.st-key-display_off [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-ai_set_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
@@ -201,7 +206,8 @@ div.st-key-admin_format_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-admin_grade_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-admin_set_btn [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-lab_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
-div.st-key-admin_page_btn_off [data-testid = "stBaseButton-tertiary"]:hover{
+div.st-key-admin_page_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
+div[class *= setting_btn_] [data-testid = "stBaseButton-tertiary"]:hover{
     transform: translateX(1rem);
     transition: all 0.4s ease;
     width: 100%;
@@ -219,7 +225,8 @@ div.st-key-admin_static_btn_off:hover,
 div.st-key-admin_format_btn_off:hover,
 div.st-key-admin_grade_btn_off:hover,
 div.st-key-admin_set_btn:hover,
-div.st-key-admin_page_btn_off:hover{
+div.st-key-admin_page_btn_off:hover,
+div[class *= setting_btn_]:hover{
     transition: all 0.3s ease;
     
     background-color: #dfe5ee;
@@ -234,7 +241,8 @@ div.st-key-admin_static_btn_on [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_format_btn_on [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_grade_btn_on [data-testid = "stBaseButton-tertiary"],
 div.st-key-lab_btn_on [data-testid = "stBaseButton-tertiary"],
-div.st-key-admin_page_btn_on [data-testid = "stBaseButton-tertiary"]{
+div.st-key-admin_page_btn_on [data-testid = "stBaseButton-tertiary"],
+div[class *= setting_btn_] [data-testid = "stBaseButton-secondary"]{
     transform: translateX(1rem);
     transition: all 0.4s ease;
     width: 100%;
@@ -252,7 +260,8 @@ div.st-key-admin_static_btn_on,
 div.st-key-admin_format_btn_on,
 div.st-key-admin_grade_btn_on,
 div.st-key-lab_btn_on,
-div.st-key-admin_page_btn_on{
+div.st-key-admin_page_btn_on,
+div[class *= setting_btn_] [data-testid = "stBaseButton-secondary"]{
     background-color:var(--front-main);
     border:1px solid var(--main-background);
     transition: all 0.4s ease;
@@ -330,11 +339,13 @@ div.st-key-manual_page_btn2_on [data-testid = "stBaseButton-secondary"],
 div.st-key-ui_page_btn1_on [data-testid = "stBaseButton-secondary"],
 div.st-key-ui_page_btn2_on [data-testid = "stBaseButton-secondary"],
 div.st-key-feedback_page_btn1_on [data-testid = "stBaseButton-secondary"],
-div.st-key-feedback_page_btn2_on [data-testid = "stBaseButton-secondary"]{
+div.st-key-feedback_page_btn2_on [data-testid = "stBaseButton-secondary"],
+div.st-key-system_logic_btn1_on [data-testid = "stBaseButton-secondary"],
+div.st-key-system_logic_btn2_on [data-testid = "stBaseButton-secondary"]{
     border: 1px solid var(--main-color);
     
     color:var(--main-color);
-    background-color: #dfe5ee;
+    background-color: var(--front-main);
 }
 
 
@@ -737,6 +748,7 @@ div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"]{
     padding:0.5rem;
     padding-top: 0.5rem;
     border-radius: 1.2rem;
+    border: 1px solid transparent;
 }
 
 div.st-key-change_display [data-testid = "stBaseButton-tertiary"] > span > span,
@@ -772,7 +784,9 @@ div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"]:hover{
     color:var(--main-color);
     background-color: #f6f6f8;
+    border: 1px solid var(--front-main);
     transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"]{
