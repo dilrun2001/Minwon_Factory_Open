@@ -715,7 +715,8 @@ def show_result():
             case '답변결과':
                 if st.button("유사 답변 (클릭 시 최종 답변으로 전환)", key = f"select_off_rag_{index}", type = "tertiary", icon = ":material/swap_horiz:", help = "클릭 시 유사 답변이 최종 답변이 됩니다."):
                     result.at[index, '최종답변'] = result.iloc[index]['RAG']
-                    #result.at[index,'최종답변 체크'] = 'RAG'
+                    print("버튼 실행했음")
+                    result.at[index,'최종답변 체크'] = 'RAG'
                     st.rerun()
         with st.container(key = f"second_answer_{index}"):
             result.at[index, 'RAG'] = st.text_area("유사 답변", value=  result.iloc[index]['RAG'], height= 360, key=f"result_second_{index}", label_visibility="collapsed")  
@@ -946,6 +947,7 @@ def show_result():
         else:
             first, spacer, second = st.columns((6.8, 1.4, 6.8))
             with first:
+                show_first(index)
                 with st.container(key = f"result_checkbox_only_container_{index}", horizontal=True, gap = "medium"):
                     copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
                     #copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")   
@@ -954,7 +956,7 @@ def show_result():
                     feedback_component(index)
                                 
                     #with st.container(key = f"first_answer_{index}"):
-                show_first(index)
+                
 
             with second:
                 #edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{i}")
