@@ -169,8 +169,7 @@ div.st-key-admin_format_btn_off,
 div.st-key-admin_grade_btn_off,
 div.st-key-admin_set_btn,
 div.st-key-lab_btn_off,
-div.st-key-admin_page_btn_off,
-div[class *= setting_btn_]{
+div.st-key-admin_page_btn_off{
     width: 100%;
     border-radius:1rem;
     transition: all 0.4s ease;
@@ -185,16 +184,12 @@ div.st-key-admin_format_btn_off [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_grade_btn_off [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_set_btn [data-testid = "stBaseButton-tertiary"],
 div.st-key-lab_btn_off [data-testid = "stBaseButton-tertiary"],
-div.st-key-admin_page_btn_off [data-testid = "stBaseButton-tertiary"],
-div[class *= setting_btn_] [data-testid = "stBaseButton-tertiary"]
-{
+div.st-key-admin_page_btn_off [data-testid = "stBaseButton-tertiary"]{
     justify-content: left;
     transition: all 0.4s ease;
     width: 100%;
     border-radius:1rem;
 }
-
-
 
 div.st-key-display_off [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-ai_set_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
@@ -206,8 +201,7 @@ div.st-key-admin_format_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-admin_grade_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-admin_set_btn [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-lab_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
-div.st-key-admin_page_btn_off [data-testid = "stBaseButton-tertiary"]:hover,
-div[class *= setting_btn_] [data-testid = "stBaseButton-tertiary"]:hover{
+div.st-key-admin_page_btn_off [data-testid = "stBaseButton-tertiary"]:hover{
     transform: translateX(1rem);
     transition: all 0.4s ease;
     width: 100%;
@@ -225,8 +219,7 @@ div.st-key-admin_static_btn_off:hover,
 div.st-key-admin_format_btn_off:hover,
 div.st-key-admin_grade_btn_off:hover,
 div.st-key-admin_set_btn:hover,
-div.st-key-admin_page_btn_off:hover,
-div[class *= setting_btn_]:hover{
+div.st-key-admin_page_btn_off:hover{
     transition: all 0.3s ease;
     
     background-color: #dfe5ee;
@@ -241,8 +234,7 @@ div.st-key-admin_static_btn_on [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_format_btn_on [data-testid = "stBaseButton-tertiary"],
 div.st-key-admin_grade_btn_on [data-testid = "stBaseButton-tertiary"],
 div.st-key-lab_btn_on [data-testid = "stBaseButton-tertiary"],
-div.st-key-admin_page_btn_on [data-testid = "stBaseButton-tertiary"],
-div[class *= setting_btn_] [data-testid = "stBaseButton-secondary"]{
+div.st-key-admin_page_btn_on [data-testid = "stBaseButton-tertiary"]{
     transform: translateX(1rem);
     transition: all 0.4s ease;
     width: 100%;
@@ -260,10 +252,8 @@ div.st-key-admin_static_btn_on,
 div.st-key-admin_format_btn_on,
 div.st-key-admin_grade_btn_on,
 div.st-key-lab_btn_on,
-div.st-key-admin_page_btn_on,
-div[class *= setting_btn_] [data-testid = "stBaseButton-secondary"]{
-    background-color:var(--front-main);
-    border:1px solid var(--main-background);
+div.st-key-admin_page_btn_on{
+    background-color:#dfe5ee;
     transition: all 0.4s ease;
     color:var(--main-color);
     text-align: left;
@@ -277,6 +267,7 @@ div.st-key-mf_popover_off [data-testid = "stBaseButton-tertiary"],
 div.st-key-option_tab_menu_off [data-testid = "stBaseButton-tertiary"]{
     transition: all 0.4s ease;
     width: 100%;
+    display:grid;
     justify-content: left;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
@@ -318,6 +309,7 @@ div.st-key-option_expand_menu_on [data-testid = "stBaseButton-tertiary"]{
     color: var(--main-background);
     background-color:#6994d6;
     width: 100%;
+    display:grid;
     justify-content: left;
     border-radius: 1rem;
     padding-left: 0.5rem;
@@ -337,15 +329,11 @@ div.st-key-file_page_btn2_on [data-testid = "stBaseButton-secondary"],
 div.st-key-manual_page_btn1_on [data-testid = "stBaseButton-secondary"],
 div.st-key-manual_page_btn2_on [data-testid = "stBaseButton-secondary"],
 div.st-key-ui_page_btn1_on [data-testid = "stBaseButton-secondary"],
-div.st-key-ui_page_btn2_on [data-testid = "stBaseButton-secondary"],
-div.st-key-feedback_page_btn1_on [data-testid = "stBaseButton-secondary"],
-div.st-key-feedback_page_btn2_on [data-testid = "stBaseButton-secondary"],
-div.st-key-system_logic_btn1_on [data-testid = "stBaseButton-secondary"],
-div.st-key-system_logic_btn2_on [data-testid = "stBaseButton-secondary"]{
+div.st-key-ui_page_btn2_on [data-testid = "stBaseButton-secondary"]{
     border: 1px solid var(--main-color);
     
     color:var(--main-color);
-    background-color: var(--front-main);
+    background-color: #dfe5ee;
 }
 
 
@@ -461,10 +449,10 @@ div[class *= answer_sub_btngroup_]{
     gap:0.4rem;
 }
 
-div[class *= manual_input_btn_]> div > button > div > p,
-div[class *= manual_accept_btn_]> div > button > div > p,
-div[class *= manual_particle_btn_]> div > button > div > p,
-div[class *= manual_unaccept_btn_] > div > button > div > p{
+div[class *= manual_input_btn_]> div > button > div> span > div > p,
+div[class *= manual_accept_btn_]> div > button > div> span > div > p,
+div[class *= manual_particle_btn_]> div > button > div> span > div > p,
+div[class *= manual_unaccept_btn_] > div > button > div> span > div > p{
     font-size: 14px;
 }
 div[class *= manual_input_btn_]> div > button,
@@ -472,8 +460,8 @@ div[class *= manual_accept_btn_]> div > button,
 div[class *= manual_particle_btn_]> div > button ,
 div[class *= manual_unaccept_btn_] > div > button{
     padding: 0.2rem 0.5rem;
-    width: 100%;
-    max-width: 4.5rem;
+
+    width: 5rem;
 }
 
 div[class *= manual_input_btn_on_]> div > button,
@@ -572,13 +560,13 @@ div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"]{
     border: 1px solid #444444;
 }
 
-div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"] > div > p,
-div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > div >p{
+div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"] > div > span > div >p,
+div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] >div> span >div >p{
     font-weight: 600;
     font-size: 2.188rem;
 }
-div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"] > span >[data-testid="stIconMaterial"],
-div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] > span >[data-testid="stIconMaterial"]{
+div.st-key-test_manual_btn [data-testid = "stBaseButton-secondary"] > div>span>span >[data-testid="stIconMaterial"],
+div.st-key-test_file_btn [data-testid = "stBaseButton-secondary"] >div>span> span >[data-testid="stIconMaterial"]{
 
     font-size: 3.125rem;
     justify-content:flex-end;
@@ -743,12 +731,10 @@ div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"],
 div.st-key-reset_btn_container [data-testid = "stPopoverButton"],
 div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"],
 div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"],
-div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"],
-div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"]{
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"]{
     padding:0.5rem;
     padding-top: 0.5rem;
     border-radius: 1.2rem;
-    border: 1px solid transparent;
 }
 
 div.st-key-change_display [data-testid = "stBaseButton-tertiary"] > span > span,
@@ -757,8 +743,7 @@ div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"] > span > 
 div.st-key-reset_btn_container [data-testid = "stPopoverButton"] > span > span,
 div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"] > span > span,
 div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"] > span > span,
-div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"] > span > span,
-div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"] > span > span{
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"] > span > span{
     font-size: 23px;
 }
 
@@ -768,8 +753,7 @@ div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"] > div > p
 div.st-key-reset_btn_container [data-testid = "stPopoverButton"] > div > p,
 div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"] > div > p,
 div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"] > div > p,
-div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"] > div > p,
-div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"] > div > p{
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"] > div > p{
     font-size:17px;
 }
 
@@ -780,13 +764,10 @@ div.st-key-reset_btn_container [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-reset_btn_container [data-testid = "stPopoverButton"]:hover,
 div.st-key-input_minwon_generate [data-testid = "stBaseButton-tertiary"]:hover,
 div.st-key-input_page_show [data-testid = "stBaseButton-tertiary"]:hover,
-div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"]:hover,
-div.st-key-recreate_answer_btn [data-testid = "stBaseButton-tertiary"]:hover{
+div.st-key-total_regenerate_btn [data-testid = "stBaseButton-tertiary"]:hover{
     color:var(--main-color);
     background-color: #f6f6f8;
-    border: 1px solid var(--front-main);
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 div[class *= "switch_page_"] [data-testid = "stBaseButton-secondary"]{
