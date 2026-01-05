@@ -946,6 +946,7 @@ def show_result():
         else:
             first, spacer, second = st.columns((6.8, 1.4, 6.8))
             with first:
+                show_first(index)
                 with st.container(key = f"result_checkbox_only_container_{index}", horizontal=True, gap = "medium"):
                     copy_button(target_key=f"result_first_{index}", button_key = f"copy_btn_{index}", area_number=index)
                     #copy_button(result.iloc[index]['답변결과'], key = f"copy_btn_{index}")   
@@ -954,7 +955,7 @@ def show_result():
                     feedback_component(index)
                                 
                     #with st.container(key = f"first_answer_{index}"):
-                show_first(index)
+                
 
             with second:
                 #edit =  st.toggle("답변 재생성", key = f"edit_answer_sub_{i}")
