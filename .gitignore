@@ -2,4 +2,4 @@
 .streamlit/secrets.toml
 /Streamlit/minwon_chroma_db/
 createcount.txt
-Streamlit/.streamlit/custom_option.toml
+/Streamlit/minwon_history_embeddings.pkl
