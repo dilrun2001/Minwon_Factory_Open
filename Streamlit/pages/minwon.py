@@ -715,7 +715,7 @@ def show_result():
             case '답변결과':
                 if st.button("유사 답변 (클릭 시 최종 답변으로 전환)", key = f"select_off_rag_{index}", type = "tertiary", icon = ":material/swap_horiz:", help = "클릭 시 유사 답변이 최종 답변이 됩니다."):
                     result.at[index, '최종답변'] = result.iloc[index]['RAG']
-                    #result.at[index,'최종답변 체크'] = 'RAG'
+                    result.at[index,'최종답변 체크'] = 'RAG'
                     st.rerun()
         with st.container(key = f"second_answer_{index}"):
             result.at[index, 'RAG'] = st.text_area("유사 답변", value=  result.iloc[index]['RAG'], height= 360, key=f"result_second_{index}", label_visibility="collapsed")  
